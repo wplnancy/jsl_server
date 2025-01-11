@@ -21,41 +21,37 @@ router.addDefaultHandler(async ({ page, browserController }) => {
     // 监听新页面打开事件
     page.on('response', async (response) => {
         const url = response.url();
-        console.error("url", url)
-        const request = response.request();
-        const initiatorUrl = request.headers().referer || request.frame()?.url();
-
-      
-        //先判断用户信息
-
-        // if (url.includes('https://www.jisilu.cn/webapi/account/userinfo/')) {
-        //     // 判断用户信息
-        //     log.info(`Intercepted API response from: ${url}`);
-        //     const userInfoData = await response.json(); // 获取 API 响应 JSON 数据
-        //     if (userInfoData.data === null) {
-        //         // 未登录
-        //     }
-        // }
-
-
         // 检查是否是目标 API 请求
         if (url.includes('https://www.jisilu.cn/webapi/cb/list/')) {
             log.info(`Intercepted API response from: ${url}`);
-            console.info(`Response received from API: ${url}`);
-            console.info(`Request initiated from: ${initiatorUrl}`);
-
             try {
                 const jsonData = await response.json(); // 获取 API 响应 JSON 数据
                 if (jsonData.data?.length > 50) {
-                    // log.info('API Response Data:', jsonData);
                     const store = await KeyValueStore.open();
                     await store.setValue('api-response', jsonData);
                     const filePath = './api-response.json';
                     console.error('写入成功', jsonData?.data?.length)
+
+                    // 检查文件是否存在
+                    try {
+                        await fs.access(filePath); // 检查文件是否存在
+                        console.error('文件存在, 删除')
+
+                        // 如果存在，则删除文件
+                        await fs.unlink(filePath);
+                    } catch (error) {
+                        if (error.code === 'ENOENT') {
+                            console.info(`File ${filePath} does not exist. Skipping deletion.`);
+                        } else {
+                            console.error(`Error while checking file existence:`, error);
+                            throw error; // 如果是其他错误，则抛出
+                        }
+                    }
                     await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
                     log.info(`Saved API response to file: ${filePath}`);
+
                 }
-                
+
             } catch (error) {
                 log.error('Failed to parse API response:', error);
             }
@@ -75,7 +71,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
         if (text === VISIT_TEXT) {
             console.error('当前未登录');
             // 等待 class 为 "not_login" 的元素出现
-            await page.waitForSelector('.not_login', { timeout: TIMEOUT }); 
+            await page.waitForSelector('.not_login', { timeout: TIMEOUT });
             // 查找 class 为 "not_login" 下的 class 为 "el-button-group" 的子元素
             const button = await page.$('.not_login .el-button-group button:first-child');
 
@@ -123,7 +119,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
 
 
                     const userName = await page.$eval('.user_icon .name', (el) => el.textContent?.trim());
-        console.info(`Element content: ${text}`);
+                    console.info(`Element content: ${text}`);
                     console.info(`userName: "${userName}"`);
                     await page.waitForSelector('.jsl-table-body-wrapper .jsl-table-body td .jsl-table-body-wrapper ', { timeout: TIMEOUT * 100 });
                     console.error('等待表格加载完成')
