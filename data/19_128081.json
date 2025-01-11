@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "128081",
+    "bond_nm": "海亮转债",
+    "market": "sz",
+    "btype": "C",
+    "price": 118.298,
+    "full_price": 118.298,
+    "interest": 0,
+    "convert_dt": 0,
+    "convert_cd_tip": "2020-05-27 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "X",
+    "redeem_icon": "",
+    "bond_nm_tip": "",
+    "increase_rt": "-1.81",
+    "curr_iss_amt": "27.024",
+    "orig_iss_amt": "31.500",
+    "volume": "11572.59",
+    "turnover_rt": 3.59,
+    "convert_value": 112.59,
+    "year_left": "0.863",
+    "convert_amt_ratio": 13.3,
+    "convert_amt_ratio2": 12.8,
+    "ytm_rt": -8.128,
+    "ytm_rt_tax": -10.087,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 118.345,
+        "amount": 5.917,
+        "ytm": -8.196,
+        "premium_rt": 5.11
+      },
+      {
+        "type": "sell4",
+        "price": 118.336,
+        "amount": 0.473,
+        "ytm": -8.188,
+        "premium_rt": 5.1
+      },
+      {
+        "type": "sell3",
+        "price": 118.328,
+        "amount": 0.237,
+        "ytm": -8.181,
+        "premium_rt": 5.09
+      },
+      {
+        "type": "sell2",
+        "price": 118.3,
+        "amount": 9.227,
+        "ytm": -8.155,
+        "premium_rt": 5.07
+      },
+      {
+        "type": "sell1",
+        "price": 118.298,
+        "amount": 2.863,
+        "ytm": -8.154,
+        "premium_rt": 5.07
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 118.272,
+        "amount": 0.473,
+        "ytm": -8.13,
+        "premium_rt": 5.04
+      },
+      {
+        "type": "buy2",
+        "price": 118.271,
+        "amount": 5.914,
+        "ytm": -8.129,
+        "premium_rt": 5.04
+      },
+      {
+        "type": "buy3",
+        "price": 118.27,
+        "amount": 0.591,
+        "ytm": -8.128,
+        "premium_rt": 5.04
+      },
+      {
+        "type": "buy4",
+        "price": 118.269,
+        "amount": 0.473,
+        "ytm": -8.127,
+        "premium_rt": 5.04
+      },
+      {
+        "type": "buy5",
+        "price": 118.264,
+        "amount": 5.085,
+        "ytm": -8.122,
+        "premium_rt": 5.04
+      }
+    ],
+    "low": 118.101,
+    "high": 121.413,
+    "open": 120.15,
+    "close": 120.473,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "002203",
+    "stock_nm": "海亮股份",
+    "price": 10.55,
+    "increase_rt": "-3.48",
+    "volume": "17406.49",
+    "stdevry": 35.71,
+    "change_rate": 0.84,
+    "dividend_rate": "0.758",
+    "total_value": "210.82",
+    "float_value": "203.42",
+    "int_debt_rate": 57.31,
+    "debt_rate": 62.12,
+    "pe": 24.365,
+    "pb": 1.468,
+    "pb_flag": "N",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 10.6,
+        "amount": 34.45
+      },
+      {
+        "type": "sell4",
+        "price": 10.59,
+        "amount": 19.486
+      },
+      {
+        "type": "sell3",
+        "price": 10.58,
+        "amount": 13.043
+      },
+      {
+        "type": "sell2",
+        "price": 10.57,
+        "amount": 5.179
+      },
+      {
+        "type": "sell1",
+        "price": 10.56,
+        "amount": 0.528
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 10.55,
+        "amount": 22.155
+      },
+      {
+        "type": "buy2",
+        "price": 10.54,
+        "amount": 204.054
+      },
+      {
+        "type": "buy3",
+        "price": 10.53,
+        "amount": 3.896
+      },
+      {
+        "type": "buy4",
+        "price": 10.52,
+        "amount": 67.854
+      },
+      {
+        "type": "buy5",
+        "price": 10.51,
+        "amount": 97.848
+      }
+    ],
+    "low": 10.52,
+    "high": 11.12,
+    "open": 10.9,
+    "close": 10.93,
+    "quote_info": ""
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "113050",
+    "bond_nm": "南银转债",
+    "market": "sh",
+    "btype": "C",
+    "price": 128.894,
+    "full_price": 128.894,
+    "interest": 0,
+    "convert_dt": 0,
+    "convert_cd_tip": "2021-12-21 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "X",
+    "redeem_icon": "",
+    "bond_nm_tip": "",
+    "increase_rt": "0.43",
+    "curr_iss_amt": "105.114",
+    "orig_iss_amt": "200.000",
+    "volume": "19011.69",
+    "turnover_rt": 1.41,
+    "convert_value": 128.59,
+    "year_left": "2.427",
+    "convert_amt_ratio": 10,
+    "convert_amt_ratio2": 9,
+    "ytm_rt": -6.454,
+    "ytm_rt_tax": -7.144,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 128.99,
+        "amount": 0.129,
+        "ytm": -6.491,
+        "premium_rt": 0.31
+      },
+      {
+        "type": "sell4",
+        "price": 128.987,
+        "amount": 0.129,
+        "ytm": -6.49,
+        "premium_rt": 0.31
+      },
+      {
+        "type": "sell3",
+        "price": 128.98,
+        "amount": 6.965,
+        "ytm": -6.488,
+        "premium_rt": 0.3
+      },
+      {
+        "type": "sell2",
+        "price": 128.97,
+        "amount": 0.387,
+        "ytm": -6.485,
+        "premium_rt": 0.3
+      },
+      {
+        "type": "sell1",
+        "price": 128.9,
+        "amount": 150.426,
+        "ytm": -6.463,
+        "premium_rt": 0.24
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 128.86,
+        "amount": 13.401,
+        "ytm": -6.451,
+        "premium_rt": 0.21
+      },
+      {
+        "type": "buy2",
+        "price": 128.808,
+        "amount": 0.644,
+        "ytm": -6.436,
+        "premium_rt": 0.17
+      },
+      {
+        "type": "buy3",
+        "price": 128.807,
+        "amount": 0.129,
+        "ytm": -6.435,
+        "premium_rt": 0.17
+      },
+      {
+        "type": "buy4",
+        "price": 128.776,
+        "amount": 1.03,
+        "ytm": -6.426,
+        "premium_rt": 0.15
+      },
+      {
+        "type": "buy5",
+        "price": 128.75,
+        "amount": 0.386,
+        "ytm": -6.418,
+        "premium_rt": 0.13
+      }
+    ],
+    "low": 127.01,
+    "high": 129.231,
+    "open": 128.498,
+    "close": 128.348,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "601009",
+    "stock_nm": "南京银行",
+    "price": 10.57,
+    "increase_rt": "0.67",
+    "volume": "39401.46",
+    "stdevry": 22.12,
+    "change_rate": 0.38,
+    "dividend_rate": "4.721",
+    "total_value": "1169.84",
+    "float_value": "1050.58",
+    "int_debt_rate": 71.22,
+    "debt_rate": 92.83,
+    "pe": 5.968,
+    "pb": 0.653,
+    "pb_flag": "Y",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 10.62,
+        "amount": 339.521
+      },
+      {
+        "type": "sell4",
+        "price": 10.61,
+        "amount": 366.363
+      },
+      {
+        "type": "sell3",
+        "price": 10.6,
+        "amount": 769.33
+      },
+      {
+        "type": "sell2",
+        "price": 10.59,
+        "amount": 105.159
+      },
+      {
+        "type": "sell1",
+        "price": 10.58,
+        "amount": 111.831
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 10.57,
+        "amount": 67.327
+      },
+      {
+        "type": "buy2",
+        "price": 10.56,
+        "amount": 103.277
+      },
+      {
+        "type": "buy3",
+        "price": 10.55,
+        "amount": 264.7
+      },
+      {
+        "type": "buy4",
+        "price": 10.54,
+        "amount": 36.995
+      },
+      {
+        "type": "buy5",
+        "price": 10.53,
+        "amount": 74.026
+      }
+    ],
+    "low": 10.37,
+    "high": 10.63,
+    "open": 10.5,
+    "close": 10.5,
+    "quote_info": ""
+  }
+}

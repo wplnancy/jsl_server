@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "123163",
+    "bond_nm": "Z沃转债",
+    "market": "sz",
+    "btype": "C",
+    "price": 167.06,
+    "full_price": 167.06,
+    "interest": 0,
+    "convert_dt": 0,
+    "convert_cd_tip": "2023-04-20 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "Y",
+    "redeem_icon": "R",
+    "bond_nm_tip": "最后交易日：2025年1月10日\r\n最后转股日；2025年1月15日\r\n赎回价：100.26元/张",
+    "increase_rt": "-4.72",
+    "curr_iss_amt": "0.292",
+    "orig_iss_amt": "3.100",
+    "volume": "192169.91",
+    "turnover_rt": 3557.74,
+    "convert_value": 174.49,
+    "year_left": "--",
+    "convert_amt_ratio": 1.1,
+    "convert_amt_ratio2": 0.7,
+    "ytm_rt": null,
+    "ytm_rt_tax": null,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 167.5,
+        "amount": 2.178,
+        "ytm": -8.552,
+        "premium_rt": -4.01
+      },
+      {
+        "type": "sell4",
+        "price": 167.265,
+        "amount": 0.502,
+        "ytm": -8.517,
+        "premium_rt": -4.14
+      },
+      {
+        "type": "sell3",
+        "price": 167.25,
+        "amount": 1.171,
+        "ytm": -8.515,
+        "premium_rt": -4.15
+      },
+      {
+        "type": "sell2",
+        "price": 167.1,
+        "amount": 11.363,
+        "ytm": -8.493,
+        "premium_rt": -4.23
+      },
+      {
+        "type": "sell1",
+        "price": 167.068,
+        "amount": 8.019,
+        "ytm": -8.488,
+        "premium_rt": -4.25
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 167.06,
+        "amount": 6.449,
+        "ytm": -8.487,
+        "premium_rt": -4.26
+      },
+      {
+        "type": "buy2",
+        "price": 167.001,
+        "amount": 3.674,
+        "ytm": -8.478,
+        "premium_rt": -4.29
+      },
+      {
+        "type": "buy3",
+        "price": 167,
+        "amount": 23.046,
+        "ytm": -8.478,
+        "premium_rt": -4.29
+      },
+      {
+        "type": "buy4",
+        "price": 166.989,
+        "amount": 3.674,
+        "ytm": -8.476,
+        "premium_rt": -4.3
+      },
+      {
+        "type": "buy5",
+        "price": 166.9,
+        "amount": 0.334,
+        "ytm": -8.463,
+        "premium_rt": -4.35
+      }
+    ],
+    "low": 165.002,
+    "high": 195.2,
+    "open": 175,
+    "close": 175.336,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "300984",
+    "stock_nm": "金沃股份",
+    "price": 46.99,
+    "increase_rt": "-2.89",
+    "volume": "38662.60",
+    "stdevry": 73.57,
+    "change_rate": 13.97,
+    "dividend_rate": "0.379",
+    "total_value": "40.63",
+    "float_value": "26.53",
+    "int_debt_rate": 35.45,
+    "debt_rate": 49.05,
+    "pe": 162.595,
+    "pb": 5.71,
+    "pb_flag": "N",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 47.2,
+        "amount": 2.36
+      },
+      {
+        "type": "sell4",
+        "price": 47.15,
+        "amount": 23.575
+      },
+      {
+        "type": "sell3",
+        "price": 47.09,
+        "amount": 7.534
+      },
+      {
+        "type": "sell2",
+        "price": 47,
+        "amount": 2.35
+      },
+      {
+        "type": "sell1",
+        "price": 46.99,
+        "amount": 0.644
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 46.98,
+        "amount": 36.175
+      },
+      {
+        "type": "buy2",
+        "price": 46.95,
+        "amount": 22.536
+      },
+      {
+        "type": "buy3",
+        "price": 46.94,
+        "amount": 10.796
+      },
+      {
+        "type": "buy4",
+        "price": 46.91,
+        "amount": 0.469
+      },
+      {
+        "type": "buy5",
+        "price": 46.8,
+        "amount": 0.468
+      }
+    ],
+    "low": 46.2,
+    "high": 52.6,
+    "open": 48.22,
+    "close": 48.39,
+    "quote_info": ""
+  }
+}

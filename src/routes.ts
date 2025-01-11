@@ -1,6 +1,12 @@
-import { createPuppeteerRouter, log, KeyValueStore } from 'crawlee';
+import { createPuppeteerRouter, RequestQueue, log, KeyValueStore } from 'crawlee';
 import fs from 'fs/promises';
 export const router = createPuppeteerRouter();
+
+const delay = async (time: number = 1000) => {
+    await new Promise((resolve) => setTimeout(resolve, time)); // 等待 20 秒
+}
+// 在函数开始时获取 RequestQueue
+const requestQueue = await RequestQueue.open();
 
 const TIMEOUT = 60000;  // 超时时间
 // 未登录展示的描述信息
@@ -32,6 +38,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     const filePath = './api-response.json';
                     console.error('写入成功', jsonData?.data?.length)
 
+
                     // 检查文件是否存在
                     try {
                         await fs.access(filePath); // 检查文件是否存在
@@ -48,8 +55,22 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                         }
                     }
                     await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
+
                     log.info(`Saved API response to file: ${filePath}`);
 
+                    // 处理数据
+                    const length = jsonData.data.length;
+                    // TODO: 修改数量
+
+                    for (let i = 0; i < 30; i++) {
+                        const firstBond = jsonData.data[i]
+                        // 详情地址数据
+                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
+                        await requestQueue.addRequest({
+                            url: detailLink,
+                            label: 'DETAIL',
+                        });
+                    }
                 }
 
             } catch (error) {
@@ -57,8 +78,6 @@ router.addDefaultHandler(async ({ page, browserController }) => {
             }
         }
     });
-
-
 
     try {
         // 等待 class 为 "prompt" 的元素出现
@@ -139,4 +158,64 @@ router.addDefaultHandler(async ({ page, browserController }) => {
         console.info('出错了报错了', error)
         console.info(JSON.stringify(error));
     }
+});
+
+
+router.addHandler('DETAIL', async ({ page, request, log }) => {
+    log.info(`Processing details for: ${request.url}`);
+
+    const store = await KeyValueStore.open();
+
+    // 启用请求拦截
+    await page.setRequestInterception(true);
+
+    // 使用一个 Map 来存储 requestId 和响应数据的对应关系
+    const interceptedResponses = new Map();
+
+    page.on('request', (interceptedRequest) => {
+        const url = interceptedRequest.url();
+
+        if (url.includes('https://www.jisilu.cn/data/cbnew/dish/')) {
+            log.info(`Intercepting request for URL: ${url}`);
+            interceptedRequest.continue(); // 允许请求继续
+        } else {
+            interceptedRequest.continue(); // 对非目标请求继续放行
+        }
+    });
+
+    page.on('response', async (response) => {
+        const url = response.url();
+
+        if (url.includes('https://www.jisilu.cn/data/cbnew/dish/')) {
+            log.info(`Intercepted response for URL: ${url}`);
+            try {
+                const jsonData = await response.json();
+                const parsedUrl = new URL(url);
+                const requestUrl = new URL(request.url);
+                const bondId = parsedUrl.searchParams.get('bond_id'); // 提取 bond_id
+                const index = requestUrl.searchParams.get('index'); // 提取 bond_id
+
+                if (bondId) {
+                    interceptedResponses.set(bondId, jsonData); // 缓存响应数据
+                    const key = `${Number(index) + 1}_${bondId}`;
+                    await store.setValue(key, jsonData); // 保存数据
+                    log.info(`Saved API response for bond_id=${bondId} as ${key}`);
+                }
+            } catch (error) {
+                log.error(`Error parsing response for ${url}:`, error);
+            }
+        }
+    });
+
+    // 确保页面加载完成
+    await page.goto(request.url, { waitUntil: 'networkidle2' });
+
+    // 检查是否捕获到所需数据
+    log.info(`Intercepted responses count: ${interceptedResponses.size}`);
+    if (interceptedResponses.size === 0) {
+        log.info(`没有响应被拦截url: ${request.url}`);
+    }
+
+    // 等待一段时间，确保所有接口调用完成
+    await delay(5000)
 });

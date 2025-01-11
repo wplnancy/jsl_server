@@ -26,7 +26,7 @@ const crawler = new PuppeteerCrawler({
     //         const url = response.url();
     //         console.error("url", url)
     //         Dataset.pushData({ url })
-            
+
     //         //先判断用户信息
 
     //         if (url.includes('https://www.jisilu.cn/webapi/account/userinfo/')) {
@@ -60,6 +60,8 @@ const crawler = new PuppeteerCrawler({
     failedRequestHandler({ request }) {
         log.error(`Request ${request.url} failed.`);
     },
+    maxConcurrency: 5, // 最大并发数
+
 
     browserPoolOptions: {
         useFingerprints: true, // this is the default
@@ -81,7 +83,8 @@ const crawler = new PuppeteerCrawler({
     // proxyConfiguration: new ProxyConfiguration({ proxyUrls: ['...'] }),
     requestHandler: router,
     // Comment this option to scrape the full website.
-    maxRequestsPerCrawl: 20,
+    // 不限制爬取的数量
+    maxRequestsPerCrawl: Infinity,
 });
 
 await crawler.run(startUrls);

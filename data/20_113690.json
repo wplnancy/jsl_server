@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "113690",
+    "bond_nm": "豪24转债",
+    "market": "sh",
+    "btype": "C",
+    "price": 163.309,
+    "full_price": 163.309,
+    "interest": 0,
+    "convert_dt": 108,
+    "convert_cd_tip": "未到转股期；2025-04-29 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "X",
+    "redeem_icon": "",
+    "bond_nm_tip": "",
+    "increase_rt": "-3.31",
+    "curr_iss_amt": "5.500",
+    "orig_iss_amt": "5.500",
+    "volume": "113336.48",
+    "turnover_rt": 122.91,
+    "convert_value": 154.69,
+    "year_left": "5.784",
+    "convert_amt_ratio": 6.6,
+    "convert_amt_ratio2": 6.6,
+    "ytm_rt": -5.564,
+    "ytm_rt_tax": -6.056,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 163.45,
+        "amount": 3.269,
+        "ytm": -5.581,
+        "premium_rt": 5.67
+      },
+      {
+        "type": "sell4",
+        "price": 163.44,
+        "amount": 1.308,
+        "ytm": -5.58,
+        "premium_rt": 5.66
+      },
+      {
+        "type": "sell3",
+        "price": 163.414,
+        "amount": 10.458,
+        "ytm": -5.578,
+        "premium_rt": 5.64
+      },
+      {
+        "type": "sell2",
+        "price": 163.4,
+        "amount": 21.732,
+        "ytm": -5.576,
+        "premium_rt": 5.63
+      },
+      {
+        "type": "sell1",
+        "price": 163.394,
+        "amount": 1.144,
+        "ytm": -5.576,
+        "premium_rt": 5.63
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 163.308,
+        "amount": 1.47,
+        "ytm": -5.567,
+        "premium_rt": 5.57
+      },
+      {
+        "type": "buy2",
+        "price": 163.303,
+        "amount": 0.163,
+        "ytm": -5.566,
+        "premium_rt": 5.57
+      },
+      {
+        "type": "buy3",
+        "price": 163.302,
+        "amount": 0.163,
+        "ytm": -5.566,
+        "premium_rt": 5.57
+      },
+      {
+        "type": "buy4",
+        "price": 163.224,
+        "amount": 1.143,
+        "ytm": -5.558,
+        "premium_rt": 5.52
+      },
+      {
+        "type": "buy5",
+        "price": 163.219,
+        "amount": 0.163,
+        "ytm": -5.558,
+        "premium_rt": 5.52
+      }
+    ],
+    "low": 162.319,
+    "high": 173.497,
+    "open": 170.007,
+    "close": 168.906,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "603809",
+    "stock_nm": "豪能股份",
+    "price": 13.04,
+    "increase_rt": "-5.09",
+    "volume": "143457.48",
+    "stdevry": 58.81,
+    "change_rate": 16.37,
+    "dividend_rate": "0.851",
+    "total_value": "83.61",
+    "float_value": "83.61",
+    "int_debt_rate": 45.9,
+    "debt_rate": 56.71,
+    "pe": 31.048,
+    "pb": 3.461,
+    "pb_flag": "N",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 13.08,
+        "amount": 24.198
+      },
+      {
+        "type": "sell4",
+        "price": 13.07,
+        "amount": 18.037
+      },
+      {
+        "type": "sell3",
+        "price": 13.06,
+        "amount": 4.049
+      },
+      {
+        "type": "sell2",
+        "price": 13.05,
+        "amount": 53.239
+      },
+      {
+        "type": "sell1",
+        "price": 13.04,
+        "amount": 50.471
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 13.03,
+        "amount": 135.646
+      },
+      {
+        "type": "buy2",
+        "price": 13.02,
+        "amount": 116.008
+      },
+      {
+        "type": "buy3",
+        "price": 13.01,
+        "amount": 39.55
+      },
+      {
+        "type": "buy4",
+        "price": 13,
+        "amount": 47.84
+      },
+      {
+        "type": "buy5",
+        "price": 12.99,
+        "amount": 16.497
+      }
+    ],
+    "low": 12.99,
+    "high": 14.56,
+    "open": 14.15,
+    "close": 13.74,
+    "quote_info": ""
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "127033",
+    "bond_nm": "中装转2",
+    "market": "sz",
+    "btype": "C",
+    "price": 66.301,
+    "full_price": 66.301,
+    "interest": 0,
+    "convert_dt": 0,
+    "convert_cd_tip": "2021-10-22 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "X",
+    "redeem_icon": "",
+    "bond_nm_tip": "",
+    "increase_rt": "-4.60",
+    "curr_iss_amt": "10.837",
+    "orig_iss_amt": "11.600",
+    "volume": "33914.80",
+    "turnover_rt": 46.13,
+    "convert_value": 62.65,
+    "year_left": "2.263",
+    "convert_amt_ratio": 62.4,
+    "convert_amt_ratio2": 46.2,
+    "ytm_rt": 28.462,
+    "ytm_rt_tax": 26.778,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 66.688,
+        "amount": 0.4,
+        "ytm": 28.163,
+        "premium_rt": 6.45
+      },
+      {
+        "type": "sell4",
+        "price": 66.66,
+        "amount": 0.333,
+        "ytm": 28.187,
+        "premium_rt": 6.41
+      },
+      {
+        "type": "sell3",
+        "price": 66.6,
+        "amount": 0.533,
+        "ytm": 28.24,
+        "premium_rt": 6.31
+      },
+      {
+        "type": "sell2",
+        "price": 66.543,
+        "amount": 5.124,
+        "ytm": 28.29,
+        "premium_rt": 6.22
+      },
+      {
+        "type": "sell1",
+        "price": 66.5,
+        "amount": 6.65,
+        "ytm": 28.327,
+        "premium_rt": 6.15
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 66.301,
+        "amount": 3.845,
+        "ytm": 28.503,
+        "premium_rt": 5.83
+      },
+      {
+        "type": "buy2",
+        "price": 66.3,
+        "amount": 7.625,
+        "ytm": 28.504,
+        "premium_rt": 5.83
+      },
+      {
+        "type": "buy3",
+        "price": 66.292,
+        "amount": 0.066,
+        "ytm": 28.511,
+        "premium_rt": 5.82
+      },
+      {
+        "type": "buy4",
+        "price": 66.29,
+        "amount": 0.862,
+        "ytm": 28.512,
+        "premium_rt": 5.82
+      },
+      {
+        "type": "buy5",
+        "price": 66.289,
+        "amount": 0.398,
+        "ytm": 28.513,
+        "premium_rt": 5.82
+      }
+    ],
+    "low": 66.201,
+    "high": 69.941,
+    "open": 69.5,
+    "close": 69.5,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "002822",
+    "stock_nm": "ST中装",
+    "price": 3.22,
+    "increase_rt": "-5.01",
+    "volume": "4631.06",
+    "stdevry": 62.51,
+    "change_rate": 2.65,
+    "dividend_rate": "0.000",
+    "total_value": "23.45",
+    "float_value": "17.37",
+    "int_debt_rate": 56.38,
+    "debt_rate": 70.82,
+    "pe": -1.712,
+    "pb": 1.161,
+    "pb_flag": "N",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 3.27,
+        "amount": 23.936
+      },
+      {
+        "type": "sell4",
+        "price": 3.26,
+        "amount": 29.699
+      },
+      {
+        "type": "sell3",
+        "price": 3.25,
+        "amount": 44.135
+      },
+      {
+        "type": "sell2",
+        "price": 3.24,
+        "amount": 45.967
+      },
+      {
+        "type": "sell1",
+        "price": 3.23,
+        "amount": 33.818
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 3.22,
+        "amount": 20.318
+      },
+      {
+        "type": "buy2",
+        "price": 0,
+        "amount": 0
+      },
+      {
+        "type": "buy3",
+        "price": 0,
+        "amount": 0
+      },
+      {
+        "type": "buy4",
+        "price": 0,
+        "amount": 0
+      },
+      {
+        "type": "buy5",
+        "price": 0,
+        "amount": 0
+      }
+    ],
+    "low": 3.22,
+    "high": 3.41,
+    "open": 3.34,
+    "close": 3.39,
+    "quote_info": ""
+  }
+}

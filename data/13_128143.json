@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "128143",
+    "bond_nm": "锋龙转债",
+    "market": "sz",
+    "btype": "C",
+    "price": 142,
+    "full_price": 142,
+    "interest": 0,
+    "convert_dt": 0,
+    "convert_cd_tip": "2021-07-14 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "X",
+    "redeem_icon": "",
+    "bond_nm_tip": "",
+    "increase_rt": "-0.18",
+    "curr_iss_amt": "1.730",
+    "orig_iss_amt": "2.450",
+    "volume": "26200.66",
+    "turnover_rt": 105.87,
+    "convert_value": 138.39,
+    "year_left": "1.995",
+    "convert_amt_ratio": 5.3,
+    "convert_amt_ratio2": 4.9,
+    "ytm_rt": -9.159,
+    "ytm_rt_tax": -10.523,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 142.243,
+        "amount": 1.707,
+        "ytm": -9.25,
+        "premium_rt": 2.79
+      },
+      {
+        "type": "sell4",
+        "price": 142.201,
+        "amount": 0.427,
+        "ytm": -9.237,
+        "premium_rt": 2.76
+      },
+      {
+        "type": "sell3",
+        "price": 142.2,
+        "amount": 62.71,
+        "ytm": -9.236,
+        "premium_rt": 2.75
+      },
+      {
+        "type": "sell2",
+        "price": 142.1,
+        "amount": 0.711,
+        "ytm": -9.204,
+        "premium_rt": 2.68
+      },
+      {
+        "type": "sell1",
+        "price": 142,
+        "amount": 19.17,
+        "ytm": -9.171,
+        "premium_rt": 2.61
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 141.968,
+        "amount": 0.142,
+        "ytm": -9.161,
+        "premium_rt": 2.59
+      },
+      {
+        "type": "buy2",
+        "price": 141.826,
+        "amount": 0.284,
+        "ytm": -9.115,
+        "premium_rt": 2.48
+      },
+      {
+        "type": "buy3",
+        "price": 141.8,
+        "amount": 0.142,
+        "ytm": -9.106,
+        "premium_rt": 2.47
+      },
+      {
+        "type": "buy4",
+        "price": 141.66,
+        "amount": 0.425,
+        "ytm": -9.061,
+        "premium_rt": 2.36
+      },
+      {
+        "type": "buy5",
+        "price": 141.541,
+        "amount": 0.142,
+        "ytm": -9.022,
+        "premium_rt": 2.28
+      }
+    ],
+    "low": 139.961,
+    "high": 145.757,
+    "open": 143.063,
+    "close": 142.263,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "002931",
+    "stock_nm": "锋龙股份",
+    "price": 17.34,
+    "increase_rt": "1.11",
+    "volume": "18968.52",
+    "stdevry": 59.06,
+    "change_rate": 5.84,
+    "dividend_rate": "0.577",
+    "total_value": "35.51",
+    "float_value": "32.37",
+    "int_debt_rate": 20.64,
+    "debt_rate": 31.47,
+    "pe": -340,
+    "pb": 4.733,
+    "pb_flag": "N",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 17.4,
+        "amount": 5.394
+      },
+      {
+        "type": "sell4",
+        "price": 17.39,
+        "amount": 1.043
+      },
+      {
+        "type": "sell3",
+        "price": 17.38,
+        "amount": 0.174
+      },
+      {
+        "type": "sell2",
+        "price": 17.36,
+        "amount": 21.353
+      },
+      {
+        "type": "sell1",
+        "price": 17.35,
+        "amount": 14.227
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 17.34,
+        "amount": 10.751
+      },
+      {
+        "type": "buy2",
+        "price": 17.33,
+        "amount": 46.271
+      },
+      {
+        "type": "buy3",
+        "price": 17.32,
+        "amount": 14.722
+      },
+      {
+        "type": "buy4",
+        "price": 17.31,
+        "amount": 35.486
+      },
+      {
+        "type": "buy5",
+        "price": 17.3,
+        "amount": 42.385
+      }
+    ],
+    "low": 16.85,
+    "high": 17.95,
+    "open": 17.19,
+    "close": 17.15,
+    "quote_info": ""
+  }
+}

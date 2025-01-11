@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "127092",
+    "bond_nm": "运机转债",
+    "market": "sz",
+    "btype": "C",
+    "price": 178.2,
+    "full_price": 178.2,
+    "interest": 0,
+    "convert_dt": 0,
+    "convert_cd_tip": "2024-03-27 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "N",
+    "redeem_icon": "G",
+    "bond_nm_tip": "本次（2024年11月18日至2024年12月6日）不提前赎回，以2025年12月6日后的首个交易日起重新计算",
+    "increase_rt": "-4.03",
+    "curr_iss_amt": "6.176",
+    "orig_iss_amt": "7.300",
+    "volume": "17733.88",
+    "turnover_rt": 15.63,
+    "convert_value": 172.41,
+    "year_left": "4.699",
+    "convert_amt_ratio": 26.6,
+    "convert_amt_ratio2": 12.3,
+    "ytm_rt": -8.048,
+    "ytm_rt_tax": -8.722,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 178.816,
+        "amount": 0.179,
+        "ytm": -8.121,
+        "premium_rt": 3.71
+      },
+      {
+        "type": "sell4",
+        "price": 178.6,
+        "amount": 0.714,
+        "ytm": -8.097,
+        "premium_rt": 3.59
+      },
+      {
+        "type": "sell3",
+        "price": 178.599,
+        "amount": 1.607,
+        "ytm": -8.097,
+        "premium_rt": 3.59
+      },
+      {
+        "type": "sell2",
+        "price": 178.5,
+        "amount": 0.893,
+        "ytm": -8.086,
+        "premium_rt": 3.53
+      },
+      {
+        "type": "sell1",
+        "price": 178.2,
+        "amount": 1.782,
+        "ytm": -8.052,
+        "premium_rt": 3.36
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 178.1,
+        "amount": 0.356,
+        "ytm": -8.041,
+        "premium_rt": 3.3
+      },
+      {
+        "type": "buy2",
+        "price": 178.08,
+        "amount": 6.767,
+        "ytm": -8.039,
+        "premium_rt": 3.29
+      },
+      {
+        "type": "buy3",
+        "price": 178.065,
+        "amount": 3.739,
+        "ytm": -8.037,
+        "premium_rt": 3.28
+      },
+      {
+        "type": "buy4",
+        "price": 178,
+        "amount": 2.67,
+        "ytm": -8.03,
+        "premium_rt": 3.24
+      },
+      {
+        "type": "buy5",
+        "price": 177.909,
+        "amount": 0.178,
+        "ytm": -8.02,
+        "premium_rt": 3.19
+      }
+    ],
+    "low": 177.85,
+    "high": 192,
+    "open": 192,
+    "close": 185.68,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "001288",
+    "stock_nm": "运机集团",
+    "price": 30,
+    "increase_rt": "-3.78",
+    "volume": "10214.54",
+    "stdevry": 47.84,
+    "change_rate": 4.28,
+    "dividend_rate": "0.790",
+    "total_value": "50.06",
+    "float_value": "23.20",
+    "int_debt_rate": 25.37,
+    "debt_rate": 46.73,
+    "pe": 44.91,
+    "pb": 2.378,
+    "pb_flag": "N",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 30.05,
+        "amount": 21.035
+      },
+      {
+        "type": "sell4",
+        "price": 30.04,
+        "amount": 37.55
+      },
+      {
+        "type": "sell3",
+        "price": 30.03,
+        "amount": 30.673
+      },
+      {
+        "type": "sell2",
+        "price": 30.02,
+        "amount": 9.907
+      },
+      {
+        "type": "sell1",
+        "price": 30,
+        "amount": 12.6
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 29.93,
+        "amount": 1.497
+      },
+      {
+        "type": "buy2",
+        "price": 29.92,
+        "amount": 0.299
+      },
+      {
+        "type": "buy3",
+        "price": 29.91,
+        "amount": 7.178
+      },
+      {
+        "type": "buy4",
+        "price": 29.9,
+        "amount": 2.99
+      },
+      {
+        "type": "buy5",
+        "price": 29.89,
+        "amount": 1.495
+      }
+    ],
+    "low": 29.33,
+    "high": 32.2,
+    "open": 32.02,
+    "close": 31.18,
+    "quote_info": ""
+  }
+}

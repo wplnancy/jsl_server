@@ -1,0 +1,186 @@
+{
+  "code": 200,
+  "msg": "",
+  "bond": {
+    "bond_id": "113044",
+    "bond_nm": "大秦转债",
+    "market": "sh",
+    "btype": "C",
+    "price": 109.283,
+    "full_price": 109.283,
+    "interest": 0,
+    "convert_dt": 0,
+    "convert_cd_tip": "2021-06-18 开始转股",
+    "convert_price_valid": "Y",
+    "redeem_flag": "Y",
+    "redeem_icon": "R",
+    "bond_nm_tip": "最后交易日；2025年2月5日\r\n最后转股日；2025年2月10日\r\n赎回价：100.4203元/张",
+    "increase_rt": "-2.47",
+    "curr_iss_amt": "66.424",
+    "orig_iss_amt": "320.000",
+    "volume": "26098.63",
+    "turnover_rt": 3.57,
+    "convert_value": 109.28,
+    "year_left": "--",
+    "convert_amt_ratio": 5.6,
+    "convert_amt_ratio2": 5.6,
+    "ytm_rt": null,
+    "ytm_rt_tax": null,
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 109.375,
+        "amount": 2.625,
+        "ytm": 0.588,
+        "premium_rt": 0.09
+      },
+      {
+        "type": "sell4",
+        "price": 109.36,
+        "amount": 15.857,
+        "ytm": 0.595,
+        "premium_rt": 0.07
+      },
+      {
+        "type": "sell3",
+        "price": 109.316,
+        "amount": 0.109,
+        "ytm": 0.617,
+        "premium_rt": 0.03
+      },
+      {
+        "type": "sell2",
+        "price": 109.3,
+        "amount": 252.374,
+        "ytm": 0.624,
+        "premium_rt": 0.02
+      },
+      {
+        "type": "sell1",
+        "price": 109.298,
+        "amount": 81.974,
+        "ytm": 0.625,
+        "premium_rt": 0.01
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 109.253,
+        "amount": 0.765,
+        "ytm": 0.647,
+        "premium_rt": -0.03
+      },
+      {
+        "type": "buy2",
+        "price": 109.2,
+        "amount": 3.276,
+        "ytm": 0.673,
+        "premium_rt": -0.07
+      },
+      {
+        "type": "buy3",
+        "price": 109.177,
+        "amount": 3.93,
+        "ytm": 0.684,
+        "premium_rt": -0.1
+      },
+      {
+        "type": "buy4",
+        "price": 109.114,
+        "amount": 9.82,
+        "ytm": 0.715,
+        "premium_rt": -0.15
+      },
+      {
+        "type": "buy5",
+        "price": 109.106,
+        "amount": 10.038,
+        "ytm": 0.718,
+        "premium_rt": -0.16
+      }
+    ],
+    "low": 108.848,
+    "high": 112.315,
+    "open": 112.051,
+    "close": 112.051,
+    "quote_info": "",
+    "suspension_news": ""
+  },
+  "stock": {
+    "stock_id": "601006",
+    "stock_nm": "大秦铁路",
+    "price": 6.24,
+    "increase_rt": "-2.65",
+    "volume": "78468.22",
+    "stdevry": 18.1,
+    "change_rate": 0.66,
+    "dividend_rate": "6.170",
+    "total_value": "1179.68",
+    "float_value": "1181.66",
+    "int_debt_rate": 11.66,
+    "debt_rate": 18.65,
+    "pe": 12.555,
+    "pb": 0.761,
+    "pb_flag": "N",
+    "sell": [
+      {
+        "type": "sell5",
+        "price": 6.29,
+        "amount": 880.16
+      },
+      {
+        "type": "sell4",
+        "price": 6.28,
+        "amount": 567.368
+      },
+      {
+        "type": "sell3",
+        "price": 6.27,
+        "amount": 488.316
+      },
+      {
+        "type": "sell2",
+        "price": 6.26,
+        "amount": 286.441
+      },
+      {
+        "type": "sell1",
+        "price": 6.25,
+        "amount": 156.549
+      }
+    ],
+    "buy": [
+      {
+        "type": "buy1",
+        "price": 6.24,
+        "amount": 194.804
+      },
+      {
+        "type": "buy2",
+        "price": 6.23,
+        "amount": 649.727
+      },
+      {
+        "type": "buy3",
+        "price": 6.22,
+        "amount": 593.749
+      },
+      {
+        "type": "buy4",
+        "price": 6.21,
+        "amount": 601.19
+      },
+      {
+        "type": "buy5",
+        "price": 6.2,
+        "amount": 997.58
+      }
+    ],
+    "low": 6.22,
+    "high": 6.41,
+    "open": 6.4,
+    "close": 6.41,
+    "quote_info": ""
+  }
+}
