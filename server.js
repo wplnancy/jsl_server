@@ -6,6 +6,8 @@ import koaBody from 'koa-body';
 import cron from 'node-cron';
 import { crawler } from './src/main.js'
 
+import {isMarketOpen} from './src/date.js'
+
 const app = new Koa();
 const router = new Router();
 
@@ -68,17 +70,31 @@ app.listen(PORT, () => {
 });
 
 
-// 定时任务：每天 15:00 执行
-cron.schedule('0 15 * * *', async () => {
-  console.log('Running crawler task at 3:00 PM...');
-  
-  // 执行爬虫
-  await crawler.run(startUrls);
+// 定时任务，每天在市场开市时间启动任务
+const runCrawlerTask = async () => {
+  console.error('当前时间是否开市', isMarketOpen())
+  if (isMarketOpen()) {
+    console.log('Running crawler task every 10 minutes during trading hours...');
 
-  // 显式关闭浏览器
-  await crawler.browserPool.closeAllBrowsers();
+    // 执行爬虫任务
+    await crawler.run(startUrls);
 
-  console.log('Crawler task completed and browsers closed.');
+    // 显式关闭浏览器
+    await crawler.browserPool.closeAllBrowsers();
+
+    console.log('Crawler task completed and browsers closed.');
+  } else {
+    console.log('Market is closed. Skipping crawler task...');
+  }
+};
+
+// 启动时立即执行一次
+runCrawlerTask();
+
+
+// 定时任务，每天在市场开市时间启动任务  每 10min 这行一次数据更新
+cron.schedule('*/10 * * * *', async () => {
+  runCrawlerTask();
 });
 
 console.log('Scheduler is running...');
