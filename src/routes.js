@@ -23,7 +23,7 @@ const TIMEOUT = 60000;  // 超时时间
 const VISIT_TEXT = '游客仅显示前 30 条转债记录，请登录查看完整列表数据';
 const COOKIES_KEY = 'cookies';  // 存储 cookies 的键
 
-const { user_name, password } = ACCOUNT.dongtian;
+const { user_name, password } = ACCOUNT.leichao;
 
 router.addDefaultHandler(async ({ page, browserController }) => {
     console.info(`enqueueing new URLs`);
