@@ -1,7 +1,7 @@
 import { createPuppeteerRouter, RequestQueue, log, KeyValueStore } from 'crawlee';
 import fs from 'fs/promises';
 export const router = createPuppeteerRouter();
-import { delay, insertDataToDB } from './utils.js'
+import { delay, insertDataToDB, checkCookieValidity } from './utils.js'
 import { insertBoundIndexData } from './insertBoundIndexData.js';
 import dayjs from 'dayjs';
 // 在函数开始时获取 RequestQueue
@@ -22,19 +22,65 @@ const TIMEOUT = 60000;  // 超时时间
 // 未登录展示的描述信息
 const VISIT_TEXT = '游客仅显示前 30 条转债记录，请登录查看完整列表数据';
 const COOKIES_KEY = 'cookies';  // 存储 cookies 的键
+const LOCAL_STORAGE_KEY = 'localStorage';
 
 const { user_name, password } = ACCOUNT.leichao;
 
+
+const addBoundIndex = async (page) => {
+    // 获取可转债等权数据
+    // 获取 "转债等权指数"
+    console.error("获取转债等权指数");
+    const bondIndex = await page.$eval('.rolling-index .index-data a.bold-400', el => el.textContent.trim());
+
+    // 获取价格中位数
+    const medianPrice = await page.$eval('.rolling-index .avg-data div:nth-child(1)', el => el.textContent.trim());
+
+    // 获取溢价率中位数
+    const medianPremiumRate = await page.$eval('.rolling-index .avg-data div:nth-child(2)', el => el.textContent.trim());
+
+    // 获取到期收益率
+    const yieldToMaturity = await page.$eval('.rolling-index .avg-data div:nth-child(3)', el => el.textContent.trim());
+
+    const boundInfo = {
+        id: 1,
+        bond_index: bondIndex,
+        median_price: medianPrice,
+        median_premium_rate: medianPremiumRate,
+        yield_to_maturity: yieldToMaturity,
+        created_at: dayjs().toDate()
+    }
+    await insertBoundIndexData([boundInfo]);
+}
+
+
 router.addDefaultHandler(async ({ page, browserController }) => {
     console.info(`enqueueing new URLs`);
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+
     // 加载 cookies
     const store = await KeyValueStore.open();
     const savedCookies = await store.getValue(COOKIES_KEY);
+    const savedLocalStorage = await store.getValue(LOCAL_STORAGE_KEY);
 
-    if (savedCookies) {
+    const isValid = await checkCookieValidity(savedCookies);
+
+    if (isValid) {
         console.info('Loading saved cookies...');
         await page.setCookie(...savedCookies);  // 设置 cookies
+
+        // 恢复 LocalStorage
+        if (savedLocalStorage) {
+            console.info('Loading saved LocalStorage...');
+            await page.evaluate(data => {
+                const parsedData = JSON.parse(data);
+                for (const key in parsedData) {
+                    localStorage.setItem(key, parsedData[key]);
+                }
+            }, savedLocalStorage);
+        }
     }
+
 
     // 监听新页面打开事件
     page.on('response', async (response) => {
@@ -94,15 +140,8 @@ router.addDefaultHandler(async ({ page, browserController }) => {
         }
     });
 
-    try {
-        // 等待 class 为 "prompt" 的元素出现
-        await page.waitForSelector('.prompt', { timeout: 10000 }); // 10秒超时
-        console.info('Element with class "prompt" is now visible on the page.');
-
-        // 现在可以对该元素进行操作，例如获取内容
-        const text = await page.$eval('.prompt', (el) => el.textContent?.trim());
-        console.info(`Element content: ${text}`);
-        if (text === VISIT_TEXT) {
+    const handleNoLogin = async () => {
+        try {
             console.error('当前未登录');
             // 等待 class 为 "not_login" 的元素出现
             await page.waitForSelector('.not_login', { timeout: TIMEOUT });
@@ -119,6 +158,9 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     console.info('Clicking the "登录" button...');
                     await button.click();
                     await page.waitForNavigation({ waitUntil: 'networkidle0' }); // 等待页面跳转完成
+                    // 等待 1s
+                    await delay(1000);
+
                     // 找到输入框
                     const inputSelector = 'input.form-control[name="user_name"]';
                     await page.waitForSelector(inputSelector, { timeout: TIMEOUT }); // 10秒超时
@@ -128,8 +170,6 @@ router.addDefaultHandler(async ({ page, browserController }) => {
 
                     const passwordSelector = 'input.form-control[name="password"]';
                     await page.waitForSelector(passwordSelector, { timeout: TIMEOUT }); // 10秒超时
-
-                    console.info('Input element found. Typing "968716asD@"...');
 
                     // 输入文本
                     await page.type(passwordSelector, password);
@@ -142,12 +182,18 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     await page.click(agreeSelector);
                     await page.click('.password_login form .text_align_center');
 
-                    // 登录成功后保存 cookie
-                    const cookies = await page.cookies();
-                    await store.setValue(COOKIES_KEY, cookies);  // 保存 cookies
-                    console.info('Cookies saved.', cookies);
-
                     await page.waitForSelector('.user_icon .name', { timeout: TIMEOUT });
+                    // 登录逻辑...
+                    const cookies = await page.cookies();
+                    const localStorageData = await page.evaluate(() => JSON.stringify(localStorage));
+
+                    // 保存 cookies 和 LocalStorage
+                    await store.setValue(COOKIES_KEY, cookies);
+                    await store.setValue(LOCAL_STORAGE_KEY, localStorageData);
+                    console.info('Login successful. Cookies and LocalStorage saved.');
+                    cookies.forEach(cookie => {
+                        console.log(`Cookie 有效期: ${cookie.name}, Expires: ${cookie.expires}`);
+                    });
 
 
                     const userName = await page.$eval('.user_icon .name', (el) => el.textContent?.trim());
@@ -160,40 +206,66 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                         return table.querySelectorAll('tr').length;
                     });
                     console.error('第一个表格的长度', firstTableRowCount)
+                    await addBoundIndex(page)
 
-                    // 获取可转债等权数据
-                     // 获取 "转债等权指数"
-                    const bondIndex = await page.$eval('.rolling-index .index-data a.bold-400', el => el.textContent.trim());
-                    
-                    // 获取价格中位数
-                    const medianPrice = await page.$eval('.rolling-index .avg-data div:nth-child(1)', el => el.textContent.trim());
 
-                    // 获取溢价率中位数
-                    const medianPremiumRate = await page.$eval('.rolling-index .avg-data div:nth-child(2)', el => el.textContent.trim());
-
-                    // 获取到期收益率
-                    const yieldToMaturity = await page.$eval('.rolling-index .avg-data div:nth-child(3)', el => el.textContent.trim());
-
-                    const boundInfo = {
-                        id: 1,
-                        bond_index: bondIndex,
-                        median_price: medianPrice,
-                        median_premium_rate: medianPremiumRate,
-                        yield_to_maturity: yieldToMaturity,
-                        created_at: dayjs().toDate()
-                    }
-                    await insertBoundIndexData([boundInfo]);
                 } else {
                     console.warn('The first button is not the "登录" button.');
                 }
             } else {
                 console.info('No button found under ".not_login .el-button-group".');
             }
+        } catch (error) {
+            console.info('出错了', error)
+            console.info(JSON.stringify(error));
+        }
+    }
+
+    // 检查登录状态
+    try {
+        await page.waitForNavigation({ waitUntil: 'networkidle0' }); // 等待页面跳转完成
+        // 等待 class 为 "prompt" 的元素出现
+        await page.waitForSelector('.prompt', { timeout: 10000 }); // 10秒超时
+
+        // 现在可以对该元素进行操作，例如获取内容
+        const text = await page.$eval('.prompt', (el) => el.textContent?.trim());
+        console.info(`出现: ${text}`);
+
+        if (text === VISIT_TEXT) {
+            await handleNoLogin();
+        } else {
+            console.log("未登录文案未匹配")
         }
     } catch (error) {
-        console.info('出错了报错了', error)
-        console.info(JSON.stringify(error));
+        console.log(`未出现: ${VISIT_TEXT}`)
+        // 标识已登录
+        // 如果一直未出现，就去检测下当前获取的数量
+        const selector = 'span.stat-count'; // 选择器
+        await page.waitForSelector(selector, { timeout: 50000 });
+        const resultText = await page.$eval(selector, el => el.textContent.trim());
+
+        // 提取 "/" 后面的数字
+        const match = resultText.match(/\/\s*(\d+)/);
+
+        let numberAfterSlash;
+        if (match) {
+            numberAfterSlash = match[1]; // 捕获的数字
+            console.log('Number after "/":', numberAfterSlash);
+        } else {
+            console.error('Failed to extract number after "/"');
+        }
+        console.log("numberAfterSlash", numberAfterSlash)
+        if (parseInt(numberAfterSlash) > 30) {
+            console.error('已登录')
+            // 如果已经登录则不需要再执行登录操作
+            await addBoundIndex(page);
+
+        } else {
+            throw (new Error("未登录"))
+            await handleNoLogin();
+        }
     }
+
 });
 
 

@@ -78,3 +78,31 @@ export const insertDataToDB = async (data) => {
     }
   })();
 }
+
+
+
+export const checkCookieValidity = async (cookies) => {
+  try {
+    if (!cookies) return false;
+      // 找到指定的 cookie
+      const loginCookie = cookies.find(cookie => cookie.name === 'kbzw__user_login');
+      if (!loginCookie) {
+          console.warn('Cookie kbzw__user_login 不存在，可能需要重新登录');
+          return false; // 表示需要重新登录
+      }
+
+      const currentTime = Date.now() / 1000; // 当前时间戳（秒）
+      console.info(`Cookie "kbzw__user_login" expires at: ${loginCookie.expires}, current time: ${currentTime}`);
+
+      if (loginCookie.expires > currentTime) {
+          console.info('Cookie 未过期，无需重新登录');
+          return true; // Cookie 有效
+      } else {
+          console.warn('Cookie 已过期，需要重新登录');
+          return false; // Cookie 过期，需要重新登录
+      }
+  } catch (error) {
+      console.error('检查 Cookie 有效性时发生错误:', error);
+      return false; // 出现错误，默认需要重新登录
+  }
+};

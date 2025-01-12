@@ -110,8 +110,8 @@ const runCrawlerTask = async () => {
     // 执行爬虫任务
     await crawler.run(startUrls);
 
-    // 显式关闭浏览器
-    await crawler.browserPool.closeAllBrowsers();
+    // 显式关闭浏览器 如果关闭浏览器，会导致用户 cookie
+    // await crawler.browserPool.closeAllBrowsers();
 
     console.log('Crawler task completed and browsers closed.');
   } else {
@@ -137,8 +137,9 @@ if (isTest) {
   // 执行爬虫任务
   await crawler.run(startUrls);
 
-  // 显式关闭浏览器
-  await crawler.browserPool.closeAllBrowsers();
+  // console.error('第二次爬');
+  // await crawler.run(startUrls);
+  // await crawler.browserPool.closeAllBrowsers();
 
   console.log('Crawler task completed and browsers closed.');
 }
