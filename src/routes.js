@@ -1,23 +1,33 @@
 import { createPuppeteerRouter, RequestQueue, log, KeyValueStore } from 'crawlee';
 import fs from 'fs/promises';
 export const router = createPuppeteerRouter();
-
-const delay = async (time: number = 1000) => {
-    await new Promise((resolve) => setTimeout(resolve, time)); // 等待 20 秒
-}
+import { delay, insertDataToDB } from './utils.js'
 // 在函数开始时获取 RequestQueue
 const requestQueue = await RequestQueue.open();
+
+const ACCOUNT = {
+    dongtian: {
+        user_name: '13166911205',
+        password: 'a123456b'
+    },
+    leichao: {
+        user_name: '15001374711',
+        password: '968716asD'
+    }
+}
 
 const TIMEOUT = 60000;  // 超时时间
 // 未登录展示的描述信息
 const VISIT_TEXT = '游客仅显示前 30 条转债记录，请登录查看完整列表数据';
 const COOKIES_KEY = 'cookies';  // 存储 cookies 的键
 
+const { user_name, password } = ACCOUNT.dongtian;
+
 router.addDefaultHandler(async ({ page, browserController }) => {
     console.info(`enqueueing new URLs`);
     // 加载 cookies
     const store = await KeyValueStore.open();
-    const savedCookies: any[] = await store.getValue(COOKIES_KEY);
+    const savedCookies = await store.getValue(COOKIES_KEY);
 
     if (savedCookies) {
         console.info('Loading saved cookies...');
@@ -33,44 +43,47 @@ router.addDefaultHandler(async ({ page, browserController }) => {
             try {
                 const jsonData = await response.json(); // 获取 API 响应 JSON 数据
                 if (jsonData.data?.length > 50) {
+                    // 获取到对应的数据入库
+                    await insertDataToDB(jsonData.data)
                     const store = await KeyValueStore.open();
                     await store.setValue('api-response', jsonData);
-                    const filePath = './api-response.json';
-                    console.error('写入成功', jsonData?.data?.length)
 
+                    // 写入数据
+                    // const filePath = './api-response.json';
+                    // console.error('写入成功', jsonData?.data?.length)
 
                     // 检查文件是否存在
-                    try {
-                        await fs.access(filePath); // 检查文件是否存在
-                        console.error('文件存在, 删除')
+                    // try {
+                    //     await fs.access(filePath); // 检查文件是否存在
+                    //     console.error('文件存在, 删除')
 
-                        // 如果存在，则删除文件
-                        await fs.unlink(filePath);
-                    } catch (error) {
-                        if (error.code === 'ENOENT') {
-                            console.info(`File ${filePath} does not exist. Skipping deletion.`);
-                        } else {
-                            console.error(`Error while checking file existence:`, error);
-                            throw error; // 如果是其他错误，则抛出
-                        }
-                    }
-                    await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
+                    //     // 如果存在，则删除文件
+                    //     await fs.unlink(filePath);
+                    // } catch (error) {
+                    //     if (error.code === 'ENOENT') {
+                    //         console.info(`File ${filePath} does not exist. Skipping deletion.`);
+                    //     } else {
+                    //         console.error(`Error while checking file existence:`, error);
+                    //         throw error; // 如果是其他错误，则抛出
+                    //     }
+                    // }
+                    // await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
 
-                    log.info(`Saved API response to file: ${filePath}`);
+                    // log.info(`Saved API response to file: ${filePath}`);
 
                     // 处理数据
                     const length = jsonData.data.length;
                     // TODO: 修改数量
 
-                    for (let i = 0; i < 30; i++) {
-                        const firstBond = jsonData.data[i]
-                        // 详情地址数据
-                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
-                        await requestQueue.addRequest({
-                            url: detailLink,
-                            label: 'DETAIL',
-                        });
-                    }
+                    // for (let i = 0; i < 1; i++) {
+                    //     const firstBond = jsonData.data[i]
+                    //     // 详情地址数据
+                    //     const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
+                    //     await requestQueue.addRequest({
+                    //         url: detailLink,
+                    //         label: 'DETAIL',
+                    //     });
+                    // }
                 }
 
             } catch (error) {
@@ -108,10 +121,8 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     const inputSelector = 'input.form-control[name="user_name"]';
                     await page.waitForSelector(inputSelector, { timeout: TIMEOUT }); // 10秒超时
 
-                    console.info('Input element found. Typing "13166911205"...');
-
                     // 输入文本
-                    await page.type(inputSelector, '13166911205');
+                    await page.type(inputSelector, user_name);
 
                     const passwordSelector = 'input.form-control[name="password"]';
                     await page.waitForSelector(passwordSelector, { timeout: TIMEOUT }); // 10秒超时
@@ -119,7 +130,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     console.info('Input element found. Typing "968716asD@"...');
 
                     // 输入文本
-                    await page.type(passwordSelector, 'a123456b');
+                    await page.type(passwordSelector, password);
                     const checkSelector = ".user_agree_box .remember_me input[name='auto_login']"
                     await page.waitForSelector(checkSelector, { timeout: TIMEOUT }); // 10秒超时
                     await page.click(checkSelector);

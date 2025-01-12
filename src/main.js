@@ -2,15 +2,12 @@
 import { PuppeteerCrawler, log, Dataset } from 'crawlee';
 import { BrowserName, DeviceCategory, OperatingSystemsName } from '@crawlee/browser-pool';
 
-
 import { router } from './routes.js';
-
-const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
 // 设置日志等级
 log.setLevel(log.LEVELS.DEBUG);
 
-const crawler = new PuppeteerCrawler({
+export const crawler = new PuppeteerCrawler({
     // 设置浏览器为非无头模式
     launchContext: {
         launchOptions: {
@@ -86,7 +83,3 @@ const crawler = new PuppeteerCrawler({
     // 不限制爬取的数量
     maxRequestsPerCrawl: Infinity,
 });
-
-await crawler.run(startUrls);
-// 显式关闭浏览器
-await crawler.browserPool.closeAllBrowsers();

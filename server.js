@@ -2,10 +2,14 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import cors from 'koa2-cors';
 import mysql from 'mysql2/promise';
-import  koaBody from 'koa-body';
+import koaBody from 'koa-body';
+import cron from 'node-cron';
+import { crawler } from './src/main.js'
 
 const app = new Koa();
 const router = new Router();
+
+const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
 // 数据库连接配置
 const dbConfig = {
@@ -62,3 +66,19 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
+// 定时任务：每天 15:00 执行
+cron.schedule('0 15 * * *', async () => {
+  console.log('Running crawler task at 3:00 PM...');
+  
+  // 执行爬虫
+  await crawler.run(startUrls);
+
+  // 显式关闭浏览器
+  await crawler.browserPool.closeAllBrowsers();
+
+  console.log('Crawler task completed and browsers closed.');
+});
+
+console.log('Scheduler is running...');
