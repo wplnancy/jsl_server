@@ -93,9 +93,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2022-11-07",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 100,
@@ -640,9 +638,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2023-08-16",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 101,
@@ -1655,9 +1651,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2019-11-21",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 100,
@@ -1860,9 +1854,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2020-12-17",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 107.86,
@@ -3019,9 +3011,7 @@
       "market_cd": "sb",
       "btype": "C",
       "list_dt": "2024-11-01",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 107.03,
@@ -4374,9 +4364,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2021-07-26",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 105.23,
@@ -6888,9 +6876,7 @@
       "market_cd": "szmb",
       "btype": "C",
       "list_dt": "2022-05-30",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 111.37,
@@ -7026,9 +7012,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2023-11-03",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 102.34,
@@ -8172,9 +8156,7 @@
       "market_cd": "szmb",
       "btype": "C",
       "list_dt": "2021-03-10",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 105.97,
@@ -9594,9 +9576,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2023-07-19",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 106.42,
@@ -11147,9 +11127,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2022-08-11",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 102.51,
@@ -12227,9 +12205,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2021-01-15",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 106.47,
@@ -13171,9 +13147,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2022-05-17",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 102.1,
@@ -13239,9 +13213,7 @@
       "market_cd": "szmb",
       "btype": "C",
       "list_dt": "2021-11-29",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 104.69,
@@ -13983,9 +13955,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2020-07-03",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 114.4,
@@ -14120,9 +14090,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2023-11-21",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 93.24,
@@ -15604,9 +15572,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2022-05-26",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 108.62,
@@ -17285,9 +17251,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2020-12-04",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 109.26,
@@ -21736,9 +21700,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2020-03-16",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 108.43,
@@ -22404,9 +22366,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2020-01-23",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 109.73,
@@ -23014,9 +22974,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2022-08-12",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 106.14,
@@ -24969,9 +24927,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2022-03-23",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 106.56,
@@ -25237,9 +25193,7 @@
       "market_cd": "shkc",
       "btype": "C",
       "list_dt": "2022-07-28",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 100.36,
@@ -25375,9 +25329,7 @@
       "market_cd": "szmb",
       "btype": "C",
       "list_dt": "2020-03-18",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 108.53,
@@ -25443,9 +25395,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2022-07-21",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 107.49,
@@ -26121,9 +26071,7 @@
       "market_cd": "szmb",
       "btype": "C",
       "list_dt": "2022-09-07",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 100.81,
@@ -26797,9 +26745,7 @@
       "market_cd": "shkc",
       "btype": "C",
       "list_dt": "2022-08-02",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 100.28,
@@ -29821,9 +29767,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2021-12-06",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 108.86,
@@ -30495,9 +30439,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2021-02-18",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 114.6,
@@ -31237,9 +31179,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2021-11-18",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 104.33,
@@ -31981,9 +31921,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2021-02-04",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 107.19,
@@ -32255,9 +32193,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2022-04-27",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 108.38,
@@ -33677,9 +33613,7 @@
       "market_cd": "shmb",
       "btype": "C",
       "list_dt": "2021-06-01",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 106.28,
@@ -34085,9 +34019,7 @@
       "market_cd": "szmb",
       "btype": "C",
       "list_dt": "2020-08-20",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 99.59,
@@ -34425,9 +34357,7 @@
       "market_cd": "szcy",
       "btype": "C",
       "list_dt": "2020-09-24",
-      "t_flag": [
-        1
-      ],
+      "t_flag": [1],
       "owned": 1,
       "hold": 0,
       "bond_value": 112.35,
