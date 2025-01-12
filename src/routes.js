@@ -53,10 +53,24 @@ const addBoundIndex = async (page) => {
     await insertBoundIndexData([boundInfo]);
 }
 
+const mockBrowser = async (page) => {
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+
+    await page.setViewport({
+        width: 1366,
+        height: 768,
+    });
+
+    await page.setExtraHTTPHeaders({
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Connection': 'keep-alive',
+    });
+}
+
 
 router.addDefaultHandler(async ({ page, browserController }) => {
     console.info(`enqueueing new URLs`);
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    await mockBrowser(page)
 
     // 加载 cookies
     const store = await KeyValueStore.open();
@@ -270,6 +284,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
 
 
 router.addHandler('DETAIL', async ({ page, request, log }) => {
+    await mockBrowser(page)
     log.info(`Processing details for: ${request.url}`);
 
     const store = await KeyValueStore.open();
