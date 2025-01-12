@@ -21,7 +21,6 @@ export const crawler = new PuppeteerCrawler({
     //     // 监听 API 响应
     //     page.on('response', async (response) => {
     //         const url = response.url();
-    //         console.error("url", url)
     //         Dataset.pushData({ url })
 
     //         //先判断用户信息

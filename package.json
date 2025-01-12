@@ -1,32 +1,33 @@
 {
-    "name": "my-crawler",
-    "version": "0.0.1",
-    "type": "module",
-    "description": "This is an example of a Crawlee project.",
-    "dependencies": {
-        "crawlee": "^3.0.0",
-        "dayjs": "^1.11.13",
-        "koa": "^2.15.3",
-        "koa-body": "^6.0.1",
-        "koa-router": "^13.0.1",
-        "koa2-cors": "^2.0.6",
-        "mysql2": "^3.12.0",
-        "node-cron": "^3.0.3",
-        "puppeteer": "*"
-    },
-    "devDependencies": {
-        "@apify/tsconfig": "^0.1.0",
-        "@types/node": "^22.0.0",
-        "tsx": "^4.4.0",
-        "typescript": "~5.7.0"
-    },
-    "scripts": {
-        "start": "npm run start:dev",
-        "start:prod": "node dist/main.js",
-        "start:dev": "tsx src/main.ts",
-        "build": "tsc",
-        "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
-    },
-    "author": "It's not you it's me",
-    "license": "ISC"
+  "name": "my-crawler",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "This is an example of a Crawlee project.",
+  "dependencies": {
+    "crawlee": "^3.0.0",
+    "dayjs": "^1.11.13",
+    "koa": "^2.15.3",
+    "koa-body": "^6.0.1",
+    "koa-router": "^13.0.1",
+    "koa2-cors": "^2.0.6",
+    "mysql2": "^3.12.0",
+    "node-cron": "^3.0.3",
+    "puppeteer": "*"
+  },
+  "devDependencies": {
+    "@apify/tsconfig": "^0.1.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.4.0",
+    "typescript": "~5.7.0"
+  },
+  "scripts": {
+    "start": "pm2 start ./server.js",
+    "debug": "node ./server.js",
+    "start:prod": "node dist/main.js",
+    "start:dev": "tsx src/main.ts",
+    "build": "tsc",
+    "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
+  },
+  "author": "It's not you it's me",
+  "license": "ISC"
 }

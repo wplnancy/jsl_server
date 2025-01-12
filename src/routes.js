@@ -2,6 +2,8 @@ import { createPuppeteerRouter, RequestQueue, log, KeyValueStore } from 'crawlee
 import fs from 'fs/promises';
 export const router = createPuppeteerRouter();
 import { delay, insertDataToDB } from './utils.js'
+import { insertBoundIndexData } from './insertBoundIndexData.js';
+import dayjs from 'dayjs';
 // 在函数开始时获取 RequestQueue
 const requestQueue = await RequestQueue.open();
 
@@ -158,6 +160,29 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                         return table.querySelectorAll('tr').length;
                     });
                     console.error('第一个表格的长度', firstTableRowCount)
+
+                    // 获取可转债等权数据
+                     // 获取 "转债等权指数"
+                    const bondIndex = await page.$eval('.rolling-index .index-data a.bold-400', el => el.textContent.trim());
+                    
+                    // 获取价格中位数
+                    const medianPrice = await page.$eval('.rolling-index .avg-data div:nth-child(1)', el => el.textContent.trim());
+
+                    // 获取溢价率中位数
+                    const medianPremiumRate = await page.$eval('.rolling-index .avg-data div:nth-child(2)', el => el.textContent.trim());
+
+                    // 获取到期收益率
+                    const yieldToMaturity = await page.$eval('.rolling-index .avg-data div:nth-child(3)', el => el.textContent.trim());
+
+                    const boundInfo = {
+                        id: 1,
+                        bond_index: bondIndex,
+                        median_price: medianPrice,
+                        median_premium_rate: medianPremiumRate,
+                        yield_to_maturity: yieldToMaturity,
+                        created_at: dayjs().toDate()
+                    }
+                    await insertBoundIndexData([boundInfo]);
                 } else {
                     console.warn('The first button is not the "登录" button.');
                 }

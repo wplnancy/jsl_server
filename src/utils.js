@@ -66,10 +66,6 @@ export const insertDataToDB = async (data) => {
 
       for (const item of data) {
         const values = sanitizeItem(item);
-        if (item.bond_nm === '贵广转债') {
-          console.log("item", item);
-        }
-        // console.log("Executing Query with values:", values); // 调试输出
         await connection.execute(query, values);
       }
 

@@ -11,6 +11,8 @@ import {isMarketOpen} from './src/date.js'
 const app = new Koa();
 const router = new Router();
 
+const isTest = true;
+
 const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
 // 数据库连接配置
@@ -39,6 +41,35 @@ async function fetchSummaryData(limit = 100) {
   await connection.end();
   return rows;
 }
+
+// 新增：获取 bound_index 表的数据
+async function fetchBoundIndexData(limit = 100) {
+  const connection = await mysql.createConnection(dbConfig);
+  const [rows] = await connection.execute('SELECT * FROM bound_index LIMIT ?', [limit]);
+  await connection.end();
+  return rows;
+}
+
+
+// 新增：API 路由 - 获取 bound_index 数据
+router.get('/api/bound_index', async (ctx) => {
+  const { limit = 1000 } = ctx.query;
+  try {
+    const data = await fetchBoundIndexData(parseInt(limit));
+    ctx.body = {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error('Error fetching bound_index data:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: 'Failed to fetch bound_index data',
+      error: error.message,
+    };
+  }
+});
 
 // API 路由 - 获取 summary 数据
 router.get('/api/summary', async (ctx) => {
@@ -91,7 +122,6 @@ const runCrawlerTask = async () => {
 // 启动时立即执行一次
 runCrawlerTask();
 
-
 // 实时更新
 // 定时任务，每天在市场开市时间启动任务  每 10min 这行一次数据更新
 const time = 10;
@@ -101,6 +131,17 @@ cron.schedule(`*/${time} * * * *`, async () => {
 });
 
 
+if (isTest) {
+  console.log('开始测试任务');
+
+  // 执行爬虫任务
+  await crawler.run(startUrls);
+
+  // 显式关闭浏览器
+  await crawler.browserPool.closeAllBrowsers();
+
+  console.log('Crawler task completed and browsers closed.');
+}
 // ---- 确保盘后更新 -----
 // 每天 13:16 执行任务，只有在是交易日的情况下
 cron.schedule(`10 ${time + 1} * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
