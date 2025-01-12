@@ -4,8 +4,6 @@ import cors from 'koa2-cors';
 import mysql from 'mysql2/promise';
 import  koaBody from 'koa-body';
 
-console.error("koaBody", koaBody)
-
 const app = new Koa();
 const router = new Router();
 
