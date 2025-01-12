@@ -92,8 +92,25 @@ const runCrawlerTask = async () => {
 runCrawlerTask();
 
 
+// 实时更新
 // 定时任务，每天在市场开市时间启动任务  每 10min 这行一次数据更新
-cron.schedule('*/10 * * * *', async () => {
+const time = 10;
+console.error(`定时任务， 每次 ${time} 分钟更新一次`)
+cron.schedule(`*/${time} * * * *`, async () => {
+  runCrawlerTask();
+});
+
+
+// ---- 确保盘后更新 -----
+// 每天 13:16 执行任务，只有在是交易日的情况下
+cron.schedule(`10 ${time + 1} * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
+  console.error('启动 13:10 定时更新器')
+  runCrawlerTask();
+});
+
+// 每天的 3 点 16 分执行一次任务，只有在是交易日的情况下
+cron.schedule(`10 ${time + 1} * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
+  console.error('启动 15:10 定时更新器')
   runCrawlerTask();
 });
 
