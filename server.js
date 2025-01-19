@@ -103,6 +103,7 @@ app.listen(PORT, () => {
 
 // 定时任务，每天在市场开市时间启动任务
 const runCrawlerTask = async () => {
+  console.error(`执行第----    *** ${count + 1} ***   ----次`);
   console.error('当前时间是否开市', isMarketOpen())
   if (isMarketOpen()) {
     console.log('Running crawler task every 10 minutes during trading hours...');
@@ -120,13 +121,14 @@ const runCrawlerTask = async () => {
 };
 
 // 启动时立即执行一次
+const count = 0; // 记录第几次执行
 runCrawlerTask();
 
 // 实时更新
 // 定时任务，每天在市场开市时间启动任务  每 10min 这行一次数据更新
 const time = 10;
-console.error(`定时任务， 每次 ${time} 分钟更新一次`)
 cron.schedule(`*/${time} * * * *`, async () => {
+  console.error(`定时任务， 每次 ${time} 分钟刷新一次`)
   runCrawlerTask();
 });
 
@@ -138,8 +140,8 @@ if (isTest) {
   await crawler.run(startUrls);
 
   // console.error('第二次爬');
-  // await crawler.run(startUrls);
-  // await crawler.browserPool.closeAllBrowsers();
+  await crawler.run(startUrls);
+  await crawler.browserPool.closeAllBrowsers();
 
   console.log('Crawler task completed and browsers closed.');
 }

@@ -4,6 +4,7 @@ export const router = createPuppeteerRouter();
 import { delay, insertDataToDB, checkCookieValidity } from './utils.js'
 import { insertBoundIndexData } from './insertBoundIndexData.js';
 import dayjs from 'dayjs';
+import { timeout } from 'puppeteer';
 // 在函数开始时获取 RequestQueue
 const requestQueue = await RequestQueue.open();
 
@@ -104,6 +105,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
             log.info(`Intercepted API response from: ${url}`);
             try {
                 const jsonData = await response.json(); // 获取 API 响应 JSON 数据
+                console.error('redeem_status', jsonData.data?.[0].bond_nm, jsonData.data?.[0].redeem_status)
                 if (jsonData.data?.length > 50) {
                     // 获取到对应的数据入库
                     await insertDataToDB(jsonData.data)
@@ -220,9 +222,25 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                         return table.querySelectorAll('tr').length;
                     });
                     console.error('第一个表格的长度', firstTableRowCount)
-                    await addBoundIndex(page)
+                    console.log('添加等权指数')
+                    await addBoundIndex(page);
+                    // 等待页面加载完成
+                    await page.waitForSelector('.custom-menu-btn');
 
+                    // 点击元素
+                    await page.click('.custom-menu-btn');
+                    await page.waitForFunction(() => {
+                        return document.querySelectorAll('.el-table__body-wrapper tr').length > 6;
+                    });
 
+                    // 确保表格数据是全的 校验表格勾选的选中状态
+                    await page.waitForSelector('.margin-top-20.text-align-center');
+
+                    // 选择并点击第一个 button
+                    await page.click('.margin-top-20.text-align-center button:first-of-type');
+                    await page.waitForNetworkIdle();
+                    // 等待数据库入库
+                    await delay(10000)
                 } else {
                     console.warn('The first button is not the "登录" button.');
                 }
@@ -271,15 +289,64 @@ router.addDefaultHandler(async ({ page, browserController }) => {
         console.log("numberAfterSlash", numberAfterSlash)
         if (parseInt(numberAfterSlash) > 30) {
             console.error('已登录')
-            // 如果已经登录则不需要再执行登录操作
+            console.log('添加等权指数')
             await addBoundIndex(page);
+            // 等待页面加载完成
+            // await page.waitForSelector('.custom-menu-btn', { timeout : 600000});
 
+            // // 点击元素
+            // await page.click('.custom-menu-btn');
+            // await page.waitForFunction(() => {
+            //     return document.querySelectorAll('.el-table__body-wrapper tr').length > 6;
+            // });
+
+            // // 确保表格数据是全的 校验表格勾选的选中状态
+
+            // await page.waitForSelector('.margin-top-20.text-align-center');
+
+            // // 选择并点击第一个 button
+            // await page.click('.margin-top-20.text-align-center button:first-of-type');
+            // 获取登录后的 Cookies
+            // const cookies = await page.cookies();
+
+            // 转换 Cookies 格式
+            // const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
+            const response = await page.evaluate(async () => {
+                const res = await fetch('https://www.jisilu.cn/webapi/cb/save_custom/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Cookie': cookieHeader, // 携带 Cookies
+                    },
+                    body: JSON.stringify({ columns: '1,70,2,3,5,6,7,8,9,89,10,91,11,12,14,-15,-77,78,79,90,80,92,81,82,83,84,16,17,18,19,20,21,22,134,23,24,72,25,26,27,28,29,30,31,32,33,34,35,36,75,44,46,47,50,52,53,74,73,54,55,56,57,58,59,60,61,62,76,63,64,67,71,86,87,88,69' }),
+                    credentials: 'include', // 发送 Cookies
+                });
+                return res.json();
+            });
+
+            console.log('服务器返回:', response);
+            await delay(10000)
+            console.error('获取列表数据')
+            const listResponse = await page.evaluate(async () => {
+                const res = await fetch('https://www.jisilu.cn/webapi/cb/list/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Cookie': cookieHeader, // 携带 Cookies
+                    },
+                    credentials: 'include', // 发送 Cookies
+                });
+                return res.json();
+            });
+            console.log('列表服务器返回:', listResponse);
+            await page.waitForNetworkIdle();
+            // 等待数据库入库
+            await delay(10000)
         } else {
             throw (new Error("未登录"))
             await handleNoLogin();
         }
     }
-
 });
 
 
