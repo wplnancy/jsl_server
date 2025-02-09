@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 export const router = createPuppeteerRouter();
 import { delay, insertDataToDB, checkCookieValidity } from './utils.js'
 import { insertBoundIndexData } from './insertBoundIndexData.js';
+import { insertBoundCellData } from './insertBoundCell.js';
 import dayjs from 'dayjs';
 import { timeout } from 'puppeteer';
 // 在函数开始时获取 RequestQueue
@@ -69,9 +70,21 @@ const mockBrowser = async (page) => {
 }
 
 
-router.addDefaultHandler(async ({ page, browserController }) => {
+router.addDefaultHandler(async ({ session, page, request, browserController }) => {
     console.info(`enqueueing new URLs`);
     await mockBrowser(page)
+    // 使用会话的 cookies
+    const cookies = session.getCookies(request.url);
+    if (cookies.length) {
+        await page.setCookie(...cookies);
+    }
+
+    // 执行登录操作或其他需要保持会话状态的操作
+    // ...
+
+    // 保存会话的 cookies
+    const newCookies = await page.cookies();
+    session.setCookies(newCookies, request.url);
 
     // 加载 cookies
     const store = await KeyValueStore.open();
@@ -140,15 +153,15 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     const length = jsonData.data.length;
                     // TODO: 修改数量
 
-                    // for (let i = 0; i < 1; i++) {
-                    //     const firstBond = jsonData.data[i]
-                    //     // 详情地址数据
-                    //     const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
-                    //     await requestQueue.addRequest({
-                    //         url: detailLink,
-                    //         label: 'DETAIL',
-                    //     });
-                    // }
+                    for (let i = 0; i < length; i++) {
+                        const firstBond = jsonData.data[i]
+                        // 详情地址数据
+                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
+                        await requestQueue.addRequest({
+                            url: detailLink,
+                            label: 'DETAIL',
+                        });
+                    }
                 }
 
             } catch (error) {
@@ -216,6 +229,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     const userName = await page.$eval('.user_icon .name', (el) => el.textContent?.trim());
                     console.info(`Element content: ${text}`);
                     console.info(`userName: "${userName}"`);
+
                     await page.waitForSelector('.jsl-table-body-wrapper .jsl-table-body td .jsl-table-body-wrapper ', { timeout: TIMEOUT * 100 });
                     console.error('等待表格加载完成')
                     // 此处需要等待表格数据加载完成
@@ -228,7 +242,7 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                     // 等待页面加载完成
                     await page.waitForSelector('.custom-menu-btn');
 
-                    // 点击元素
+                    // 点击自定义列表
                     await page.click('.custom-menu-btn');
                     await page.waitForFunction(() => {
                         return document.querySelectorAll('.el-table__body-wrapper tr').length > 6;
@@ -291,7 +305,22 @@ router.addDefaultHandler(async ({ page, browserController }) => {
         if (parseInt(numberAfterSlash) > 30) {
             console.error('已登录')
             console.log('添加等权指数')
-            await addBoundIndex(page);            
+            await addBoundIndex(page);
+            // 等待页面加载完成
+            console.error('等待自定义列表按钮加载完成')
+            await page.waitForSelector('.custom-menu-btn');
+            await page.click('.custom-menu-btn');
+            await page.waitForFunction(() => {
+                return document.querySelectorAll('.el-table__body-wrapper tr').length > 6;
+            });
+
+            // 确保表格数据是全的 校验表格勾选的选中状态
+            await page.waitForSelector('.margin-top-20.text-align-center');
+
+            // 选择并点击第一个 button
+            await page.click('.margin-top-20.text-align-center button:first-of-type');
+            await page.waitForNetworkIdle();
+            await delay(60000)
         } else {
             throw (new Error("未登录"))
             await handleNoLogin();
@@ -300,9 +329,21 @@ router.addDefaultHandler(async ({ page, browserController }) => {
 });
 
 
-router.addHandler('DETAIL', async ({ page, request, log }) => {
+router.addHandler('DETAIL', async ({ session, page, request, log }) => {
     await mockBrowser(page)
     log.info(`Processing details for: ${request.url}`);
+     // 使用会话的 cookies
+     const cookies = session.getCookies(request.url);
+     if (cookies.length) {
+         await page.setCookie(...cookies);
+     }
+
+     // 执行登录操作或其他需要保持会话状态的操作
+     // ...
+
+     // 保存会话的 cookies
+     const newCookies = await page.cookies();
+     session.setCookies(newCookies, request.url);
 
     const store = await KeyValueStore.open();
 
@@ -326,21 +367,28 @@ router.addHandler('DETAIL', async ({ page, request, log }) => {
     page.on('response', async (response) => {
         const url = response.url();
 
-        if (url.includes('https://www.jisilu.cn/data/cbnew/dish/')) {
+        if (url.includes('https://www.jisilu.cn/data/cbnew/detail_hist/')) {
             log.info(`Intercepted response for URL: ${url}`);
             try {
                 const jsonData = await response.json();
-                const parsedUrl = new URL(url);
-                const requestUrl = new URL(request.url);
-                const bondId = parsedUrl.searchParams.get('bond_id'); // 提取 bond_id
-                const index = requestUrl.searchParams.get('index'); // 提取 bond_id
+                await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2))
 
-                if (bondId) {
-                    interceptedResponses.set(bondId, jsonData); // 缓存响应数据
-                    const key = `${Number(index) + 1}_${bondId}`;
-                    await store.setValue(key, jsonData); // 保存数据
-                    log.info(`Saved API response for bond_id=${bondId} as ${key}`);
-                }
+                await insertBoundCellData([{
+                    bond_id: jsonData?.rows?.[0]?.id,
+                    info: JSON.stringify(jsonData?.rows)
+                }])
+
+                // const parsedUrl = new URL(url);
+                // const requestUrl = new URL(request.url);
+                // const bondId = parsedUrl.searchParams.get('bond_id'); // 提取 bond_id
+                // const index = requestUrl.searchParams.get('index'); // 提取 bond_id
+
+                // if (bondId) {
+                //     interceptedResponses.set(bondId, jsonData); // 缓存响应数据
+                //     const key = `${Number(index) + 1}_${bondId}`;
+                //     await store.setValue(key, jsonData); // 保存数据
+                //     log.info(`Saved API response for bond_id=${bondId} as ${key}`);
+                // }
             } catch (error) {
                 log.error(`Error parsing response for ${url}:`, error);
             }

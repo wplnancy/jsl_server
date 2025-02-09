@@ -48,12 +48,38 @@ async function fetchBoundIndexData(limit = 100) {
   return rows;
 }
 
+async function fetchBoundCellData(bond_id) {
+  const connection = await mysql.createConnection(dbConfig);
+  const [rows] = await connection.execute('SELECT * FROM bond_cells where bond_id = ?', [bond_id]);
+  await connection.end();
+  return rows;
+}
+
 
 // 新增：API 路由 - 获取 bound_index 数据
 router.get('/api/bound_index', async (ctx) => {
   const { limit = 1000 } = ctx.query;
   try {
     const data = await fetchBoundIndexData(parseInt(limit));
+    ctx.body = {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error('Error fetching bound_index data:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: 'Failed to fetch bound_index data',
+      error: error.message,
+    };
+  }
+});
+
+router.get('/api/bond_cell', async (ctx) => {
+  const { bond_id } = ctx.query;
+  try {
+    const data = await fetchBoundCellData(bond_id);
     ctx.body = {
       success: true,
       data,

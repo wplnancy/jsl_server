@@ -76,10 +76,6 @@ export const insertDataToDB = async (data) => {
   })();
 };
 
-
-
-
-
 export const checkCookieValidity = async (cookies) => {
   try {
     if (!cookies) return false;

@@ -1,5 +1,5 @@
 // For more information, see https://crawlee.dev/
-import { PuppeteerCrawler, log, Dataset } from 'crawlee';
+import { PuppeteerCrawler, log, Dataset, SessionPool } from 'crawlee';
 import { BrowserName, DeviceCategory, OperatingSystemsName } from '@crawlee/browser-pool';
 
 import { router } from './routes.js';
@@ -8,7 +8,8 @@ import { router } from './routes.js';
 log.setLevel(log.LEVELS.DEBUG);
 
 export const crawler = new PuppeteerCrawler({
-    // 设置浏览器为非无头模式
+    // 启用会话池
+    useSessionPool: true,
     launchContext: {
         launchOptions: {
             devtools: true,
