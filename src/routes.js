@@ -338,7 +338,6 @@ router.addDefaultHandler(async ({ page, browserController }) => {
                 });
                 return res.json();
             });
-            console.log('列表服务器返回:', listResponse);
             await page.waitForNetworkIdle();
             // 等待数据库入库
             await delay(10000)

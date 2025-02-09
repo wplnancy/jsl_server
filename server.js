@@ -140,7 +140,7 @@ if (isTest) {
   await crawler.run(startUrls);
 
   // console.error('第二次爬');
-  await crawler.run(startUrls);
+  // await crawler.run(startUrls);
   await crawler.browserPool.closeAllBrowsers();
 
   console.log('Crawler task completed and browsers closed.');
