@@ -105,8 +105,7 @@ const runCrawlerTask = async () => {
   console.error(`执行第----    *** ${count + 1} ***   ----次`);
   console.error('当前时间是否开市', isMarketOpen())
   if (isMarketOpen()) {
-    console.log('Running crawler task every 10 minutes during trading hours...');
-
+    console.log('开始爬虫任务');
     // 执行爬虫任务
     await crawler.run(startUrls);
 
