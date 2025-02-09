@@ -126,11 +126,11 @@ app.listen(PORT, () => {
 
 
 // 定时任务，每天在市场开市时间启动任务
-const runCrawlerTask = async () => {
+const runCrawlerTask = async ({ ignoreMarketOpen = false }) => {
   return;
   console.error(`执行第----    *** ${count + 1} ***   ----次`);
   console.error('当前时间是否开市', isMarketOpen())
-  if (isMarketOpen()) {
+  if (isMarketOpen() || ignoreMarketOpen) {
     console.log('开始爬虫任务');
     // 执行爬虫任务
     await crawler.run(startUrls);
@@ -157,13 +157,13 @@ cron.schedule(`0 * * * *`, async () => {
 // 每天 13:16 执行任务，只有在是交易日的情况下
 cron.schedule(`10 13 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
   console.error('启动 13:10 定时更新器')
-  runCrawlerTask();
+  runCrawlerTask({ ignoreMarketOpen: true });
 });
 
 // 每天的 3 点 16 分执行一次任务，只有在是交易日的情况下
 cron.schedule(`10 15 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
   console.error('启动 15:10 定时更新器')
-  runCrawlerTask();
+  runCrawlerTask({ ignoreMarketOpen: true });
 });
 
 console.log('Scheduler is running...');

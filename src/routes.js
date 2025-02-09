@@ -153,10 +153,15 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     const length = jsonData.data.length;
                     // TODO: 修改数量
 
+                    const now = new Date();
+                    const currentHour = now.getHours(); // 返回 0~23 的小时数
+                    if (currentHour !== 15) return;
+                    console.log('超过 15 点开始跑数据');
                     for (let i = 0; i < length; i++) {
+                        // 判断当前时间是否是 15: 00 以后
                         const firstBond = jsonData.data[i]
                         // 详情地址数据
-                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
+                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}&bond_id=${firstBond.bond_id}`;
                         await requestQueue.addRequest({
                             url: detailLink,
                             label: 'DETAIL',
@@ -331,6 +336,29 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
 
 router.addHandler('DETAIL', async ({ session, page, request, log }) => {
     await mockBrowser(page)
+     // 加载 cookies
+     const store = await KeyValueStore.open();
+     const savedCookies = await store.getValue(COOKIES_KEY);
+     const savedLocalStorage = await store.getValue(LOCAL_STORAGE_KEY);
+ 
+     const isValid = await checkCookieValidity(savedCookies);
+ 
+     if (isValid) {
+         console.info('Loading saved cookies...');
+         await page.setCookie(...savedCookies);  // 设置 cookies
+ 
+         // 恢复 LocalStorage
+         if (savedLocalStorage) {
+             console.info('Loading saved LocalStorage...');
+             await page.evaluate(data => {
+                 const parsedData = JSON.parse(data);
+                 for (const key in parsedData) {
+                     localStorage.setItem(key, parsedData[key]);
+                 }
+             }, savedLocalStorage);
+         }
+     }
+    
     log.info(`Processing details for: ${request.url}`);
      // 使用会话的 cookies
      const cookies = session.getCookies(request.url);
@@ -344,8 +372,6 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
      // 保存会话的 cookies
      const newCookies = await page.cookies();
      session.setCookies(newCookies, request.url);
-
-    const store = await KeyValueStore.open();
 
     // 启用请求拦截
     await page.setRequestInterception(true);
@@ -373,15 +399,23 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
                 const jsonData = await response.json();
                 await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2))
 
+                // 比如存在未到转股期的数据 https://www.jisilu.cn/data/convert_bond_detail/113070 
+                /**
+                 *  返回的结构如下： {
+                    "page": 1,
+                    "rows": [],
+                    "total": 0
+                  }
+                */
+                const parsedUrl = new URL(url);
+                const requestUrl = new URL(request.url);
+                console.log("requestUrl", requestUrl)
+                const bondId = requestUrl.searchParams.get('bond_id'); // 提取 bond_id
+                console.log("bondId", bondId)
                 await insertBoundCellData([{
-                    bond_id: jsonData?.rows?.[0]?.id,
+                    bond_id: bondId,
                     info: JSON.stringify(jsonData?.rows)
                 }])
-
-                // const parsedUrl = new URL(url);
-                // const requestUrl = new URL(request.url);
-                // const bondId = parsedUrl.searchParams.get('bond_id'); // 提取 bond_id
-                // const index = requestUrl.searchParams.get('index'); // 提取 bond_id
 
                 // if (bondId) {
                 //     interceptedResponses.set(bondId, jsonData); // 缓存响应数据
