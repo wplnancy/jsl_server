@@ -124,7 +124,6 @@ runCrawlerTask();
 
 // 开市时期，每间隔 1h 获取一次最新数据
 cron.schedule(`0 * * * *`, async () => {
-  console.error(`定时任务， 每次 ${time} 分钟刷新一次`)
   runCrawlerTask();
 });
 
