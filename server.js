@@ -11,8 +11,6 @@ import {isMarketOpen} from './src/date.js'
 const app = new Koa();
 const router = new Router();
 
-const isTest = true;
-
 const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
 // 数据库连接配置
@@ -103,6 +101,7 @@ app.listen(PORT, () => {
 
 // 定时任务，每天在市场开市时间启动任务
 const runCrawlerTask = async () => {
+  return;
   console.error(`执行第----    *** ${count + 1} ***   ----次`);
   console.error('当前时间是否开市', isMarketOpen())
   if (isMarketOpen()) {
@@ -112,7 +111,7 @@ const runCrawlerTask = async () => {
     await crawler.run(startUrls);
 
     // 显式关闭浏览器 如果关闭浏览器，会导致用户 cookie
-    // await crawler.browserPool.closeAllBrowsers();
+    await crawler.browserPool.closeAllBrowsers();
 
     console.log('Crawler task completed and browsers closed.');
   } else {
@@ -124,36 +123,21 @@ const runCrawlerTask = async () => {
 const count = 0; // 记录第几次执行
 runCrawlerTask();
 
-// 实时更新
-// 定时任务，每天在市场开市时间启动任务  每 10min 这行一次数据更新
-const time = 10;
-cron.schedule(`*/${time} * * * *`, async () => {
+// 开市时期，每间隔 1h 获取一次最新数据
+cron.schedule(`0 * * * *`, async () => {
   console.error(`定时任务， 每次 ${time} 分钟刷新一次`)
   runCrawlerTask();
 });
 
-
-if (isTest) {
-  console.log('开始测试任务');
-
-  // 执行爬虫任务
-  await crawler.run(startUrls);
-
-  // console.error('第二次爬');
-  // await crawler.run(startUrls);
-  await crawler.browserPool.closeAllBrowsers();
-
-  console.log('Crawler task completed and browsers closed.');
-}
 // ---- 确保盘后更新 -----
 // 每天 13:16 执行任务，只有在是交易日的情况下
-cron.schedule(`10 ${time + 1} * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
+cron.schedule(`10 13 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
   console.error('启动 13:10 定时更新器')
   runCrawlerTask();
 });
 
 // 每天的 3 点 16 分执行一次任务，只有在是交易日的情况下
-cron.schedule(`10 ${time + 1} * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
+cron.schedule(`10 15 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
   console.error('启动 15:10 定时更新器')
   runCrawlerTask();
 });
