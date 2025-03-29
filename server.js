@@ -115,6 +115,12 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         updateFields.push('target_price = ?');
         updateValues.push(updateData.target_price);
       }
+
+      if ('target_heavy_price' in updateData) {
+        updateFields.push('target_heavy_price = ?');
+        updateValues.push(updateData.target_heavy_price);
+      }
+
       if ('level' in updateData) {
         updateFields.push('level = ?');
         updateValues.push(updateData.level);
@@ -132,10 +138,11 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
     } else {
       // 创建新记录，使用默认值处理未提供的字段
       await connection.execute(
-        'INSERT INTO bond_strategies (bond_id, target_price, level, is_analyzed) VALUES (?, ?, ?, ?)',
+        'INSERT INTO bond_strategies (bond_id, target_price, target_heavy_price, level, is_analyzed) VALUES (?, ?, ?, ?, ?)',
         [
           bond_id,
           updateData.target_price || '',
+          updateData.target_heavy_price || '',
           updateData.level || '',
           'is_analyzed' in updateData ? updateData.is_analyzed : 0
         ]
