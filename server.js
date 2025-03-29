@@ -36,9 +36,26 @@ app.use(koaBody.default());
 // 数据库查询函数
 async function fetchSummaryData(limit = 100) {
   const connection = await mysql.createConnection(dbConfig);
-  const [rows] = await connection.execute('SELECT * FROM summary LIMIT ?', [limit]);
-  await connection.end();
-  return rows;
+  const query = `
+    SELECT 
+      s.*,
+      bs.target_price,
+      bs.level,
+      IFNULL(bs.is_analyzed, 0) as is_analyzed
+    FROM summary s
+    LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
+    LIMIT ?
+  `;
+  
+  try {
+    const [rows] = await connection.execute(query, [limit]);
+    return rows;
+  } catch (error) {
+    console.error('Error fetching summary data:', error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
 }
 
 // 新增：获取 bound_index 表的数据
@@ -187,13 +204,21 @@ router.get('/api/bond_cell', async (ctx) => {
 
 // API 路由 - 获取 summary 数据
 router.get('/api/summary', async (ctx) => {
-  const { limit = 1000 } = ctx.query; // 支持通过查询参数限制返回条目
+  const { limit = 1000 } = ctx.query;
   try {
     const data = await fetchSummaryData(parseInt(limit));
     for (let item of data) {
+      // 处理日期格式
       if (item.maturity_dt) {
-        item.maturity_dt = dayjs(item.maturity_dt).format('YYYY-MM-DD')
+        item.maturity_dt = dayjs(item.maturity_dt).format('YYYY-MM-DD');
       }
+      
+      // 确保is_analyzed为数字类型，并设置默认值
+      item.is_analyzed = item.is_analyzed ? 1 : 0;
+      
+      // 确保target_price和level有默认值
+      item.target_price = item.target_price || null;
+      item.level = item.level || '';
     }
 
     ctx.body = {
