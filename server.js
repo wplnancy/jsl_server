@@ -78,8 +78,8 @@ router.get('/api/bound_index', async (ctx) => {
 });
 
 
-// 新增：更新或创建可转债策略
-async function updateOrCreateBondStrategy(bond_id, target_price, level, is_analyzed) {
+// 优化：更新或创建可转债策略，支持部分字段更新
+async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
   const connection = await mysql.createConnection(dbConfig);
   
   try {
@@ -90,16 +90,38 @@ async function updateOrCreateBondStrategy(bond_id, target_price, level, is_analy
     );
     
     if (existingRows.length > 0) {
-      // 更新现有记录
-      await connection.execute(
-        'UPDATE bond_strategies SET target_price = ?, level = ?, is_analyzed = ? WHERE bond_id = ?',
-        [target_price, level, is_analyzed, bond_id]
-      );
+      // 构建动态更新SQL
+      const updateFields = [];
+      const updateValues = [];
+      
+      if ('target_price' in updateData) {
+        updateFields.push('target_price = ?');
+        updateValues.push(updateData.target_price);
+      }
+      if ('level' in updateData) {
+        updateFields.push('level = ?');
+        updateValues.push(updateData.level);
+      }
+      if ('is_analyzed' in updateData) {
+        updateFields.push('is_analyzed = ?');
+        updateValues.push(updateData.is_analyzed);
+      }
+      
+      if (updateFields.length > 0) {
+        const updateSQL = `UPDATE bond_strategies SET ${updateFields.join(', ')} WHERE bond_id = ?`;
+        updateValues.push(bond_id);
+        await connection.execute(updateSQL, updateValues);
+      }
     } else {
-      // 创建新记录
+      // 创建新记录，使用默认值处理未提供的字段
       await connection.execute(
         'INSERT INTO bond_strategies (bond_id, target_price, level, is_analyzed) VALUES (?, ?, ?, ?)',
-        [bond_id, target_price, level, is_analyzed]
+        [
+          bond_id,
+          updateData.target_price || '',
+          updateData.level || '',
+          'is_analyzed' in updateData ? updateData.is_analyzed : 0
+        ]
       );
     }
     
@@ -112,9 +134,9 @@ async function updateOrCreateBondStrategy(bond_id, target_price, level, is_analy
   }
 }
 
-// 新增：API路由 - 更新或创建可转债策略
+// 优化：API路由 - 更新或创建可转债策略
 router.post('/api/bond_strategies', async (ctx) => {
-  const { bond_id, target_price, level, is_analyzed } = ctx.request.body;
+  const { bond_id, ...updateData } = ctx.request.body;
   
   // 验证必要参数
   if (!bond_id) {
@@ -127,12 +149,7 @@ router.post('/api/bond_strategies', async (ctx) => {
   }
   
   try {
-    await updateOrCreateBondStrategy(
-      bond_id, 
-      target_price || null, 
-      level || null, 
-      is_analyzed !== undefined ? is_analyzed : 0
-    );
+    await updateOrCreateBondStrategy(bond_id, updateData);
     
     ctx.body = {
       success: true,
