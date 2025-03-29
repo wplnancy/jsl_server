@@ -124,8 +124,7 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     console.log('入库成功')
                     await insertDataToDB(jsonData.data)
                     const store = await KeyValueStore.open();
-                    await store.setValue('api-response', jsonData);
-
+                    // await store.setValue('api-response', jsonData);
                     // 写入数据
                     // const filePath = './api-response.json';
                     // console.error('写入成功', jsonData?.data?.length)
@@ -155,18 +154,20 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
 
                     const now = new Date();
                     const currentHour = now.getHours(); // 返回 0~23 的小时数
-                    if (currentHour !== 15) return;
-                    console.log('超过 15 点开始跑数据');
-                    for (let i = 0; i < length; i++) {
-                        // 判断当前时间是否是 15: 00 以后
-                        const firstBond = jsonData.data[i]
-                        // 详情地址数据
-                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}&bond_id=${firstBond.bond_id}`;
-                        await requestQueue.addRequest({
-                            url: detailLink,
-                            label: 'DETAIL',
-                        });
-                    }
+                    // if (currentHour < 15) return;
+                    // console.log('超过 15 点开始跑数据');
+                    // for (let i = 0; i < length; i++) {
+                    //     // 间隔 10000
+                    //     await delay(10000);
+                    //     // 判断当前时间是否是 15: 00 以后
+                    //     const firstBond = jsonData.data[i]
+                    //     // 详情地址数据
+                    //     const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}&bond_id=${firstBond.bond_id}`;
+                    //     await requestQueue.addRequest({
+                    //         url: detailLink,
+                    //         label: 'DETAIL',
+                    //     });
+                    // }
                 }
 
             } catch (error) {
@@ -397,8 +398,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
             log.info(`Intercepted response for URL: ${url}`);
             try {
                 const jsonData = await response.json();
-                await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2))
-
+                // await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2))
                 // 比如存在未到转股期的数据 https://www.jisilu.cn/data/convert_bond_detail/113070 
                 /**
                  *  返回的结构如下： {
@@ -409,9 +409,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
                 */
                 const parsedUrl = new URL(url);
                 const requestUrl = new URL(request.url);
-                console.log("requestUrl", requestUrl)
                 const bondId = requestUrl.searchParams.get('bond_id'); // 提取 bond_id
-                console.log("bondId", bondId)
                 await insertBoundCellData([{
                     bond_id: bondId,
                     info: JSON.stringify(jsonData?.rows)
