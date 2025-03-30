@@ -246,7 +246,7 @@ router.get('/api/summary', async (ctx) => {
 
 // 防止重复请求的简单实现
 let isRefreshing = false;
-const REFRESH_COOLDOWN = 1 * 60 *  1000; // 1分钟冷却时间
+const REFRESH_COOLDOWN = 10 *  1000; // 10s 冷却时间
 let lastRefreshTime = 0;
 
 // 添加带有冷却时间的刷新接口
