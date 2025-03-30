@@ -10,6 +10,7 @@ log.setLevel(log.LEVELS.DEBUG);
 export const crawler = new PuppeteerCrawler({
     // 启用会话池
     useSessionPool: true,
+    persistCookiesPerSession: true, // 添加此配置以确保 cookie 持久化
     launchContext: {
         launchOptions: {
             devtools: true,

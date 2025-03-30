@@ -82,10 +82,6 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
     // 执行登录操作或其他需要保持会话状态的操作
     // ...
 
-    // 保存会话的 cookies
-    const newCookies = await page.cookies();
-    session.setCookies(newCookies, request.url);
-
     // 加载 cookies
     const store = await KeyValueStore.open();
     const savedCookies = await store.getValue(COOKIES_KEY);
@@ -94,8 +90,8 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
     const isValid = await checkCookieValidity(savedCookies);
 
     if (isValid) {
-        console.info('Loading saved cookies...');
-        await page.setCookie(...savedCookies);  // 设置 cookies
+        console.info('使用已保存的 cookies...');
+        await page.setCookie(...savedCookies);
 
         // 恢复 LocalStorage
         if (savedLocalStorage) {
@@ -107,8 +103,15 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                 }
             }, savedLocalStorage);
         }
+    } else {
+        console.info('需要重新登录...');
+        // 执行登录逻辑
+        // ... 登录代码 ...
+        
+        // 保存新的 cookies
+        const newCookies = await page.cookies();
+        await store.setValue(COOKIES_KEY, newCookies);
     }
-
 
     // 监听新页面打开事件
     page.on('response', async (response) => {
