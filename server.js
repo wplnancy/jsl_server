@@ -40,6 +40,7 @@ async function fetchSummaryData(limit = 100) {
     SELECT 
       s.*,
       bs.target_price,
+      bs.target_heavy_price,
       bs.level,
       IFNULL(bs.is_analyzed, 0) as is_analyzed
     FROM summary s
