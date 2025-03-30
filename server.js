@@ -41,6 +41,7 @@ async function fetchSummaryData(limit = 100) {
       s.*,
       bs.target_price,
       bs.target_heavy_price,
+      bs.is_state_owned,
       bs.level,
       IFNULL(bs.is_analyzed, 0) as is_analyzed
     FROM summary s
@@ -122,6 +123,11 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         updateValues.push(updateData.target_heavy_price);
       }
 
+      if ('is_state_owned' in updateData) {
+        updateFields.push('is_state_owned = ?');
+        updateValues.push(updateData.is_state_owned);
+      }
+
       if ('level' in updateData) {
         updateFields.push('level = ?');
         updateValues.push(updateData.level);
@@ -139,11 +145,12 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
     } else {
       // 创建新记录，使用默认值处理未提供的字段
       await connection.execute(
-        'INSERT INTO bond_strategies (bond_id, target_price, target_heavy_price, level, is_analyzed) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO bond_strategies (bond_id, target_price, target_heavy_price, is_state_owned, level, is_analyzed) VALUES (?, ?, ?, ?, ?, ?)',
         [
           bond_id,
           updateData.target_price || '',
           updateData.target_heavy_price || '',
+          updateData.is_state_owned || 0,
           updateData.level || '',
           'is_analyzed' in updateData ? updateData.is_analyzed : 0
         ]
@@ -301,6 +308,7 @@ router.get('/api/refresh-with-cooldown', async (ctx) => {
             // 确保target_price和level有默认值
             item.target_price = item.target_price || null;
             item.level = item.level || '';
+            item.is_state_owned = item.is_state_owned ? 1 : 0;
         }
         
         ctx.body = {
