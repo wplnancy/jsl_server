@@ -15,8 +15,22 @@ export const crawler = new PuppeteerCrawler({
         launchOptions: {
             devtools: true,
             headless: false, // 让浏览器以有头模式运行
+            args: [
+                '--disable-web-security',
+                '--disable-features=IsolateOrigins,site-per-process',
+                '--no-sandbox',
+                '--window-size=1920,1080'
+            ],
+            defaultViewport: {
+                width: 1920,
+                height: 1080
+            }
         },
     },
+    // 增加页面超时时间
+    navigationTimeoutSecs: 120,
+    // 增加请求超时时间
+    requestHandlerTimeoutSecs: 120,
     // async requestHandler({ page, request }) {
     //     log.info(`Opening page: ${request.url}`);
 

@@ -91,7 +91,16 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
 
     if (isValid) {
         console.info('使用已保存的 cookies...');
+        
+        // 先清除所有现有的 cookies
+        const client = await page.target().createCDPSession();
+        await client.send('Network.clearBrowserCookies');
+        
+        // 设置保存的 cookies
         await page.setCookie(...savedCookies);
+        
+        // 刷新页面以确保 cookies 生效
+        await page.reload({ waitUntil: 'networkidle0' });
 
         // 恢复 LocalStorage
         if (savedLocalStorage) {
@@ -315,21 +324,49 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
             console.error('已登录')
             console.log('添加等权指数')
             await addBoundIndex(page);
-            // 等待页面加载完成
-            console.error('等待自定义列表按钮加载完成')
-            await page.waitForSelector('.custom-menu-btn');
-            await page.click('.custom-menu-btn');
+            
+            // 修改等待页面加载的逻辑
+            console.error('等待页面完全加载...')
+            
+            // 等待网络请求完成
+            await page.waitForNetworkIdle({ timeout: TIMEOUT });
+            
+            // 等待主要内容加载
+            await page.waitForSelector('.jsl-table-body-wrapper', { timeout: TIMEOUT });
+            
+            // 确保自定义列表按钮存在
             await page.waitForFunction(() => {
-                return document.querySelectorAll('.el-table__body-wrapper tr').length > 6;
+                const btn = document.querySelector('.custom-menu-btn');
+                return btn && btn.offsetParent !== null; // 确保元素可见
+            }, { timeout: TIMEOUT });
+            
+            console.error('点击自定义列表按钮');
+            await page.click('.custom-menu-btn');
+            
+            // 等待弹窗出现
+            await page.waitForSelector('.el-table__body-wrapper', { 
+                visible: true,
+                timeout: TIMEOUT 
+            });
+            
+            // 等待表格数据加载
+            await page.waitForFunction(() => {
+                const rows = document.querySelectorAll('.el-table__body-wrapper tr');
+                return rows.length > 6;
+            }, { timeout: TIMEOUT });
+
+            // 确保确认按钮可见
+            await page.waitForSelector('.margin-top-20.text-align-center button:first-of-type', {
+                visible: true,
+                timeout: TIMEOUT
             });
 
-            // 确保表格数据是全的 校验表格勾选的选中状态
-            await page.waitForSelector('.margin-top-20.text-align-center');
-
-            // 选择并点击第一个 button
+            // 点击确认按钮
             await page.click('.margin-top-20.text-align-center button:first-of-type');
+            
+            // 等待数据加载完成
             await page.waitForNetworkIdle();
-            await delay(60000)
+            await delay(10000); // 给一些额外时间确保数据完全加载
         } else {
             throw (new Error("未登录"))
             await handleNoLogin();
