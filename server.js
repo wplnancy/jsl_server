@@ -143,18 +143,43 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         await connection.execute(updateSQL, updateValues);
       }
     } else {
-      // 创建新记录，使用默认值处理未提供的字段
-      await connection.execute(
-        'INSERT INTO bond_strategies (bond_id, target_price, target_heavy_price, is_state_owned, level, is_analyzed) VALUES (?, ?, ?, ?, ?, ?)',
-        [
-          bond_id,
-          updateData.target_price || '',
-          updateData.target_heavy_price || '',
-          updateData.is_state_owned || 0,
-          updateData.level || '',
-          'is_analyzed' in updateData ? updateData.is_analyzed : 0
-        ]
-      );
+      const fields = ['bond_id'];
+      const values = [bond_id];
+      const placeholders = ['?'];
+
+      // 动态添加存在的字段
+      if ('target_price' in updateData) {
+        fields.push('target_price');
+        values.push(updateData.target_price);
+        placeholders.push('?');
+      }
+
+      if ('target_heavy_price' in updateData) {
+        fields.push('target_heavy_price');
+        values.push(updateData.target_heavy_price);
+        placeholders.push('?');
+      }
+
+      if ('is_state_owned' in updateData) {
+        fields.push('is_state_owned');
+        values.push(updateData.is_state_owned);
+        placeholders.push('?');
+      }
+
+      if ('level' in updateData) {
+        fields.push('level');
+        values.push(updateData.level);
+        placeholders.push('?');
+      }
+
+      if ('is_analyzed' in updateData) {
+        fields.push('is_analyzed');
+        values.push(updateData.is_analyzed);
+        placeholders.push('?');
+      }
+
+      const insertSQL = `INSERT INTO bond_strategies (${fields.join(', ')}) VALUES (${placeholders.join(', ')})`;
+      await connection.execute(insertSQL, values);
     }
     
     return true;
