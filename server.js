@@ -6,6 +6,7 @@ import koaBody from 'koa-body';
 import cron from 'node-cron';
 import { crawler } from './src/main.js'
 import dayjs from 'dayjs';
+import { PlaywrightCrawler, RequestQueue } from 'crawlee';
 
 import {isMarketOpen} from './src/date.js'
 
@@ -367,20 +368,29 @@ app.listen(PORT, () => {
 
 // 定时任务，每天在市场开市时间启动任务
 const runCrawlerTask = async ({ ignoreMarketOpen = false } = {}) => {
-  console.error(`执行第----    *** ${count + 1} ***   ----次`);
-  console.error('当前时间是否开市', isMarketOpen())
-  if (isMarketOpen() || ignoreMarketOpen) {
-    console.log('开始爬虫任务');
-    // 执行爬虫任务
-    await crawler.run(startUrls);
-
-    // 显式关闭浏览器 如果关闭浏览器，会导致用户 cookie
-    await crawler.browserPool.closeAllBrowsers();
-
-    console.log('Crawler task completed and browsers closed.');
-  } else {
-    console.log('Market is closed. Skipping crawler task...');
-  }
+    if (isMarketOpen() || ignoreMarketOpen) {
+        console.log('开始爬虫任务');
+        try {
+            // 创建新的请求队列
+            const requestQueue = await RequestQueue.open();
+            
+            // 清理请求队列
+            await requestQueue.drop();
+            
+            // 运行爬虫
+            await crawler.run(startUrls);
+        } catch (error) {
+            console.error('爬虫任务执行出错:', error);
+        } finally {
+            try {
+                if (crawler.browserPool) {
+                    await crawler.browserPool.closeAllBrowsers();
+                }
+            } catch (error) {
+                console.error('关闭浏览器出错:', error);
+            }
+        }
+    }
 };
 
 // 启动时立即执行一次
@@ -406,3 +416,26 @@ cron.schedule(`10 15 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一�
 });
 
 console.log('Scheduler is running...');
+
+const crawler = new PlaywrightCrawler({
+    // ... 其他配置
+    requestHandlerTimeoutSecs: 180, // 增加请求处理超时时间
+    maxRequestRetries: 3,           // 设置请求重试次数
+    requestHandler: async ({ request, page, log }) => {
+        try {
+            // 你的爬虫逻辑
+        } catch (error) {
+            log.error(`Failed to process ${request.url}: ${error.message}`);
+            throw error;
+        }
+    },
+    failedRequestHandler: async ({ request, error, log }) => {
+        log.error(`Request ${request.url} failed ${request.retryCount} times`);
+    },
+    requestQueue: {
+        timeoutSecs: 300,            // 设置请求队列超时时间
+        retryCountOnFailure: 3,      // 失败重试次数
+    },
+    navigationTimeoutSecs: 180,      // 导航超时时间
+    handlePageTimeoutSecs: 180,      // 页面处理超时时间
+});
