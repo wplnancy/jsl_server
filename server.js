@@ -132,9 +132,16 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         updateFields.push('level = ?');
         updateValues.push(updateData.level);
       }
+
       if ('is_analyzed' in updateData) {
         updateFields.push('is_analyzed = ?');
         updateValues.push(updateData.is_analyzed);
+      }
+
+      // 添加 profit_strategy 字段的更新
+      if ('profit_strategy' in updateData) {
+        updateFields.push('profit_strategy = ?');
+        updateValues.push(updateData.profit_strategy);
       }
       
       if (updateFields.length > 0) {
@@ -175,6 +182,13 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
       if ('is_analyzed' in updateData) {
         fields.push('is_analyzed');
         values.push(updateData.is_analyzed);
+        placeholders.push('?');
+      }
+
+      // 添加 profit_strategy 字段的插入
+      if ('profit_strategy' in updateData) {
+        fields.push('profit_strategy');
+        values.push(updateData.profit_strategy);
         placeholders.push('?');
       }
 
