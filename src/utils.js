@@ -77,7 +77,7 @@ export const insertDataToDB = async (data) => {
 };
 
 export const checkCookieValidity = async (cookies) => {
-  console.log('检查 cookies:', cookies);
+  console.log('检查 cookies:');
   try {
     if (!cookies) return false;
       // 找到指定的 cookie
