@@ -430,26 +430,3 @@ cron.schedule(`10 15 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一�
 });
 
 console.log('Scheduler is running...');
-
-const crawler = new PlaywrightCrawler({
-    // ... 其他配置
-    requestHandlerTimeoutSecs: 180, // 增加请求处理超时时间
-    maxRequestRetries: 3,           // 设置请求重试次数
-    requestHandler: async ({ request, page, log }) => {
-        try {
-            // 你的爬虫逻辑
-        } catch (error) {
-            log.error(`Failed to process ${request.url}: ${error.message}`);
-            throw error;
-        }
-    },
-    failedRequestHandler: async ({ request, error, log }) => {
-        log.error(`Request ${request.url} failed ${request.retryCount} times`);
-    },
-    requestQueue: {
-        timeoutSecs: 300,            // 设置请求队列超时时间
-        retryCountOnFailure: 3,      // 失败重试次数
-    },
-    navigationTimeoutSecs: 180,      // 导航超时时间
-    handlePageTimeoutSecs: 180,      // 页面处理超时时间
-});
