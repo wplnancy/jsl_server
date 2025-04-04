@@ -1,15 +1,17 @@
 // For more information, see https://crawlee.dev/
-import { PuppeteerCrawler, log, Dataset, SessionPool } from 'crawlee';
+import { PuppeteerCrawler, log, Dataset, SessionPool, RequestQueue } from 'crawlee';
 import { BrowserName, DeviceCategory, OperatingSystemsName } from '@crawlee/browser-pool';
-
 import { router } from './routes.js';
 
 // 设置日志等级
 log.setLevel(log.LEVELS.DEBUG);
+export const requestQueue = await RequestQueue.open();
+
 
 export const crawler = new PuppeteerCrawler({
     // 启用会话池
     useSessionPool: true,
+    requestQueue,
     persistCookiesPerSession: true, // 添加此配置以确保 cookie 持久化
     launchContext: {
         launchOptions: {

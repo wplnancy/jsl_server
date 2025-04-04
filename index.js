@@ -19,11 +19,11 @@ const count = 1;
     const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
     // 创建新的请求队列
-    const requestQueue = await RequestQueue.open();
-    log.info('请求队列已初始化');
+    // const requestQueue = await RequestQueue.open();
+    // log.info('请求队列已初始化');
             
-    // 清理请求队列
-    await requestQueue.drop();
+    // // 清理请求队列
+    // await requestQueue.drop();
     log.info('旧请求队列已清理');
 
     for (let i = 0; i < count; i++) {
@@ -44,10 +44,8 @@ const count = 1;
     }
     
     // 最后关闭所有浏览器
-    log.info('爬虫任务全部完成，准备关闭浏览器');
-    await crawler.browserPool.closeAllBrowsers();
+    // await crawler.browserPool.closeAllBrowsers();
     
-    log.info('爬虫任务完成，所有浏览器已关闭');
   } catch (error) {
     log.error(`爬虫任务发生错误: ${error.message}`);
     log.debug(`错误堆栈: ${error.stack}`);

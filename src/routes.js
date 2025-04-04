@@ -6,8 +6,7 @@ import { insertBoundIndexData } from './insertBoundIndexData.js';
 import { insertBoundCellData } from './insertBoundCell.js';
 import dayjs from 'dayjs';
 import { timeout } from 'puppeteer';
-// 在函数开始时获取 RequestQueue
-const requestQueue = await RequestQueue.open();
+import { requestQueue } from './main.js'
 
 const ACCOUNT = {
     dongtian: {
