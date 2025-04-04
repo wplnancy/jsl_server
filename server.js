@@ -43,6 +43,7 @@ async function fetchSummaryData(limit = 100) {
       bs.target_price,
       bs.target_heavy_price,
       bs.is_state_owned,
+      bs.profit_strategy,
       bs.level,
       IFNULL(bs.is_analyzed, 0) as is_analyzed
     FROM summary s

@@ -167,19 +167,19 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     const now = new Date();
                     const currentHour = now.getHours(); // 返回 0~23 的小时数
                     // if (currentHour < 15) return;
-                    // console.log('超过 15 点开始跑数据');
-                    // for (let i = 0; i < length; i++) {
-                    //     // 间隔 10000
-                    //     await delay(10000);
-                    //     // 判断当前时间是否是 15: 00 以后
-                    //     const firstBond = jsonData.data[i]
-                    //     // 详情地址数据
-                    //     const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}&bond_id=${firstBond.bond_id}`;
-                    //     await requestQueue.addRequest({
-                    //         url: detailLink,
-                    //         label: 'DETAIL',
-                    //     });
-                    // }
+                    console.log('超过 15 点开始跑数据');
+                    for (let i = 0; i < length; i++) {
+                        // 间隔 10000
+                        await delay(10000);
+                        // 判断当前时间是否是 15: 00 以后
+                        const firstBond = jsonData.data[i]
+                        // 详情地址数据
+                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}&bond_id=${firstBond.bond_id}`;
+                        await requestQueue.addRequest({
+                            url: detailLink,
+                            label: 'DETAIL',
+                        });
+                    }
                 }
 
             } catch (error) {
