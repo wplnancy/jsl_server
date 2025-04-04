@@ -6,7 +6,8 @@ import { insertBoundIndexData } from './insertBoundIndexData.js';
 import { insertBoundCellData } from './insertBoundCell.js';
 import dayjs from 'dayjs';
 import { timeout } from 'puppeteer';
-import { requestQueue } from './main.js'
+// 在函数开始时获取 RequestQueue
+const requestQueue = await RequestQueue.open();
 
 const ACCOUNT = {
     dongtian: {
@@ -81,6 +82,10 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
     // 执行登录操作或其他需要保持会话状态的操作
     // ...
 
+    // 保存会话的 cookies
+    const newCookies = await page.cookies();
+    session.setCookies(newCookies, request.url);
+
     // 加载 cookies
     const store = await KeyValueStore.open();
     const savedCookies = await store.getValue(COOKIES_KEY);
@@ -126,103 +131,57 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
         const url = response.url();
         // 检查是否是目标 API 请求
         if (url.includes('https://www.jisilu.cn/webapi/cb/list/')) {
-            log.info(`拦截到API响应: ${url}`);
-            
+            log.info(`Intercepted API response from: ${url}`);
             try {
-                // 检查状态码
-                const status = response.status();
-                if (status !== 200) {
-                    log.error(`API响应状态码异常: ${status}`);
-                    return;
-                }
-                
-                // 直接获取JSON数据
-                let jsonData;
-                try {
-                    jsonData = await response.json();
-                    log.debug('JSON解析成功');
-                } catch (jsonError) {
-                    log.error(`JSON解析失败: ${jsonError.message}`);
-                    return;
-                }
-                
-                // 检查JSON数据结构
-                if (!jsonData || typeof jsonData !== 'object') {
-                    log.error('API响应不是有效的JSON对象');
-                    return;
-                }
-                
-                if (!jsonData.data || !Array.isArray(jsonData.data)) {
-                    log.error('API响应缺少data字段或data不是数组', jsonData);
-                    return;
-                }
-                
-                if (jsonData.data.length === 0) {
-                    log.info('API响应data数组为空');
-                    return;
-                }
-                
-                // 打印数据信息，帮助调试
-                log.info(`获取到数据条数: ${jsonData.data.length}`);
-                if (jsonData.data[0]) {
-                    log.info(`第一条数据: bond_nm=${jsonData.data[0]?.bond_nm}, redeem_status=${jsonData.data[0]?.redeem_status}`);
-                }
-                
-                // 处理数据
-                if (jsonData.data?.length > 50 && jsonData.data[0]?.redeem_status !== undefined) {
-                    log.info('数据符合入库条件，准备入库');
-                    try {
-                        await insertDataToDB(jsonData.data);
-                        log.info('入库成功');
-                    } catch (dbError) {
-                        log.error(`数据入库失败: ${dbError.message}`);
-                    }
-                    
+                const jsonData = await response.json(); // 获取 API 响应 JSON 数据
+                console.error('redeem_status', jsonData.data?.[0].bond_nm, jsonData.data?.[0].redeem_status)
+                if (jsonData.data?.length > 50 && jsonData.data?.[0]?.redeem_status) {
+                    // 获取到对应的数据入库
+                    console.log('入库成功')
+                    await insertDataToDB(jsonData.data)
                     const store = await KeyValueStore.open();
-                    
+                    await store.setValue('api-response', jsonData);
+
+                    // 写入数据
+                    // const filePath = './api-response.json';
+                    // console.error('写入成功', jsonData?.data?.length)
+
+                    // 检查文件是否存在
+                    // try {
+                    //     await fs.access(filePath); // 检查文件是否存在
+                    //     console.error('文件存在, 删除')
+
+                    //     // 如果存在，则删除文件
+                    //     await fs.unlink(filePath);
+                    // } catch (error) {
+                    //     if (error.code === 'ENOENT') {
+                    //         console.info(`File ${filePath} does not exist. Skipping deletion.`);
+                    //     } else {
+                    //         console.error(`Error while checking file existence:`, error);
+                    //         throw error; // 如果是其他错误，则抛出
+                    //     }
+                    // }
+                    // await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
+
+                    // log.info(`Saved API response to file: ${filePath}`);
+
                     // 处理数据
-                    const length = 1 || jsonData.data.length;
-                    log.info(`准备处理 ${length} 条数据的详情`);
-                    
-                    const now = new Date();
-                    const currentHour = now.getHours();
-                    log.info(`当前时间: ${now}, 小时: ${currentHour}`);
-                    
-                    // if (currentHour < 15) return;
-                    console.log('准备获取详情数据');
-                    
-                    for (let i = 0; i < length; i++) {
-                        try {
-                            // 间隔 10000
-                            await delay(10000);
-                            
-                            // 获取债券数据
-                            const bond = jsonData.data[i];
-                            if (!bond || !bond.bond_id) {
-                                log.error(`第${i}条数据无效或缺少bond_id`);
-                                continue;
-                            }
-                            
-                            // 详情地址数据
-                            const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${bond.bond_id}?index=${i}&bond_id=${bond.bond_id}`;
-                            log.info(`添加详情页请求: ${detailLink}`);
-                            
-                            await requestQueue.addRequest({
-                                url: detailLink,
-                                label: 'DETAIL',
-                            });
-                            
-                            log.info(`成功将 ${bond.bond_id} 添加到请求队列`);
-                        } catch (queueError) {
-                            log.error(`添加请求队列失败: ${queueError.message}`);
-                        }
+                    const length = jsonData.data.length;
+                    // TODO: 修改数量
+
+                    for (let i = 0; i < 1; i++) {
+                        const firstBond = jsonData.data[i]
+                        // 详情地址数据
+                        const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
+                        await requestQueue.addRequest({
+                            url: detailLink,
+                            label: 'DETAIL',
+                        });
                     }
-                } else {
-                    log.info(`数据不符合入库条件: 长度=${jsonData.data?.length}, 第一条redeem_status=${jsonData.data[0]?.redeem_status}`);
                 }
+
             } catch (error) {
-                log.error(`处理API响应时发生错误: ${error.message}`);
-                log.debug(`错误堆栈: ${error.stack}`);
+                log.error('Failed to parse API response:', error);
             }
         }
     });
@@ -363,49 +322,24 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
             console.error('已登录')
             console.log('添加等权指数')
             await addBoundIndex(page);
-            
-            // 修改等待页面加载的逻辑
-            console.error('等待页面完全加载...')
-            
+            // 等待页面加载完成
+            console.error('等待自定义列表按钮加载完成')
             // 等待网络请求完成
             await page.waitForNetworkIdle({ timeout: TIMEOUT });
             
-            // 等待主要内容加载
-            await page.waitForSelector('.jsl-table-body-wrapper', { timeout: TIMEOUT });
-            
-            // 确保自定义列表按钮存在
-            await page.waitForFunction(() => {
-                const btn = document.querySelector('.custom-menu-btn');
-                return btn && btn.offsetParent !== null; // 确保元素可见
-            }, { timeout: TIMEOUT });
-            
-            console.error('点击自定义列表按钮');
+            await page.waitForSelector('.custom-menu-btn');
             await page.click('.custom-menu-btn');
-            
-            // 等待弹窗出现
-            await page.waitForSelector('.el-table__body-wrapper', { 
-                visible: true,
-                timeout: TIMEOUT 
-            });
-            
-            // 等待表格数据加载
             await page.waitForFunction(() => {
-                const rows = document.querySelectorAll('.el-table__body-wrapper tr');
-                return rows.length > 6;
-            }, { timeout: TIMEOUT });
-
-            // 确保确认按钮可见
-            await page.waitForSelector('.margin-top-20.text-align-center button:first-of-type', {
-                visible: true,
-                timeout: TIMEOUT
+                return document.querySelectorAll('.el-table__body-wrapper tr').length > 6;
             });
 
-            // 点击确认按钮
+            // 确保表格数据是全的 校验表格勾选的选中状态
+            await page.waitForSelector('.margin-top-20.text-align-center');
+
+            // 选择并点击第一个 button
             await page.click('.margin-top-20.text-align-center button:first-of-type');
-            
-            // 等待数据加载完成
             await page.waitForNetworkIdle();
-            await delay(10000); // 给一些额外时间确保数据完全加载
+            await delay(60000)
         } else {
             throw (new Error("未登录"))
             await handleNoLogin();
@@ -418,9 +352,9 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
     console.log(1111)
     await mockBrowser(page)
      // 加载 cookies
-     const store = await KeyValueStore.open();
-     const savedCookies = await store.getValue(COOKIES_KEY);
-     const savedLocalStorage = await store.getValue(LOCAL_STORAGE_KEY);
+     const detailStore = await KeyValueStore.open();
+     const savedCookies = await detailStore.getValue(COOKIES_KEY);
+     const savedLocalStorage = await detailStore.getValue(LOCAL_STORAGE_KEY);
  
      const isValid = await checkCookieValidity(savedCookies);
  
@@ -454,6 +388,8 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
      const newCookies = await page.cookies();
      session.setCookies(newCookies, request.url);
 
+    const store = await KeyValueStore.open();
+
     // 启用请求拦截
     await page.setRequestInterception(true);
 
@@ -475,49 +411,29 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         const url = response.url();
 
         if (url.includes('https://www.jisilu.cn/data/cbnew/detail_hist/')) {
-            log.info(`拦截到详情页API响应: ${url}`);
+            log.info(`Intercepted response for URL: ${url}`);
             try {
-                // 检查状态码
-                const status = response.status();
-                if (status !== 200) {
-                    log.error(`详情页API响应状态码异常: ${status}`);
-                    return;
-                }
-                
-                // 直接获取JSON数据
-                let jsonData;
-                try {
-                    jsonData = await response.json();
-                    log.debug('详情页JSON解析成功');
-                } catch (jsonError) {
-                    log.error(`详情页JSON解析失败: ${jsonError.message}`);
-                    return;
-                }
-                
-                // 解析URL参数
-                const requestUrl = new URL(request.url);
-                const bondId = requestUrl.searchParams.get('bond_id');
-                
-                if (!bondId) {
-                    log.error('无法从URL获取bond_id');
-                    return;
-                }
-                
-                log.info(`处理 bond_id=${bondId} 的详情数据`);
-                
-                // 准备入库数据
-                try {
-                    await insertBoundCellData([{
-                        bond_id: bondId,
-                        info: JSON.stringify(jsonData?.rows || [])
-                    }]);
-                    log.info(`bond_id=${bondId} 的详情数据入库成功`);
-                } catch (dbError) {
-                    log.error(`详情数据入库失败: ${dbError.message}`);
-                }
+                const jsonData = await response.json();
+                // await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2))
+
+                await insertBoundCellData([{
+                    bond_id: jsonData?.rows?.[0]?.id,
+                    info: JSON.stringify(jsonData?.rows)
+                }])
+
+                // const parsedUrl = new URL(url);
+                // const requestUrl = new URL(request.url);
+                // const bondId = parsedUrl.searchParams.get('bond_id'); // 提取 bond_id
+                // const index = requestUrl.searchParams.get('index'); // 提取 bond_id
+
+                // if (bondId) {
+                //     interceptedResponses.set(bondId, jsonData); // 缓存响应数据
+                //     const key = `${Number(index) + 1}_${bondId}`;
+                //     await store.setValue(key, jsonData); // 保存数据
+                //     log.info(`Saved API response for bond_id=${bondId} as ${key}`);
+                // }
             } catch (error) {
-                log.error(`处理详情页API响应时发生错误: ${error.message}`);
-                log.debug(`错误堆栈: ${error.stack}`);
+                log.error(`Error parsing response for ${url}:`, error);
             }
         }
     });
@@ -534,3 +450,5 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
     // 等待一段时间，确保所有接口调用完成
     await delay(5000)
 });
+
+

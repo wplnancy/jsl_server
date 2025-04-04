@@ -11,7 +11,7 @@ import { log } from 'crawlee';
 // 设置日志级别为DEBUG，帮助调试
 log.setLevel(log.LEVELS.DEBUG);
 
-const count = 1;
+const count = 2;
 
 (async () => {
   try {
