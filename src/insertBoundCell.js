@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import { pool } from './db.js';
 
 // 定义数据字段
 const fields = [
@@ -16,48 +16,27 @@ const sanitizeItem = (item) => {
 
 // 插入数据到数据库的函数
 export const insertBoundCellData = async (data) => {
-  // 连接到数据库
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '12345678',
-    database: 'kzz_datax'
-  });
-
+  const connection = await pool.getConnection();
   try {
-    console.log('Database connection established.');
-
-    // 动态生成插入和更新的 SQL 查询
-    const updateFields = fields
-      // .filter(field => field !== "id")  // 排除主键
-      .map(field => `${field} = VALUES(${field})`)  // 用于 ON DUPLICATE KEY UPDATE 子句
-      .join(", ");
-
-    const query = `
-      INSERT INTO bond_cells (
-        ${fields.join(", ")}
-      ) VALUES (
-        ${fields.map(() => "?").join(", ")}
-      )
-      ON DUPLICATE KEY UPDATE
-        ${updateFields}
-    `;
-
-    // 遍历数据并插入到数据库
     for (const item of data) {
-      const values = sanitizeItem(item);
+      const { bond_id, info } = item;
       
-      // 如果你想调试查看每个值的插入情况，可以取消注释下面这一行
-      // console.log("Executing Query with values:", values);
-
-      await connection.execute(query, values);
+      // 使用 ON DUPLICATE KEY UPDATE 实现 upsert
+      const [result] = await connection.query(
+        `INSERT INTO bound_cell (bond_id, info, created_at, updated_at)
+         VALUES (?, ?, NOW(), NOW())
+         ON DUPLICATE KEY UPDATE 
+         info = VALUES(info),
+         updated_at = NOW()`,
+        [bond_id, info]
+      );
+      
+      console.log(`债券 ${bond_id} 数据${result.affectedRows === 1 ? '插入' : '更新'}成功`);
     }
-
-    console.log('Data inserted or updated successfully.');
   } catch (error) {
-    console.error('Error inserting or updating data:', error);
+    console.error('插入/更新债券数据失败:', error);
+    throw error;
   } finally {
-    await connection.end();
-    console.log('Database connection closed.');
+    connection.release();
   }
 };

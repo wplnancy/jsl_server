@@ -95,14 +95,14 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
 
     if (isValid) {
         console.info('使用已保存的 cookies...');
-        
+
         // 先清除所有现有的 cookies
         const client = await page.target().createCDPSession();
         await client.send('Network.clearBrowserCookies');
-        
+
         // 设置保存的 cookies
         await page.setCookie(...savedCookies);
-        
+
         // 刷新页面以确保 cookies 生效
         await page.reload({ waitUntil: 'networkidle0' });
 
@@ -120,7 +120,7 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
         console.info('需要重新登录...');
         // 执行登录逻辑
         // ... 登录代码 ...
-        
+
         // 保存新的 cookies
         const newCookies = await page.cookies();
         await store.setValue(COOKIES_KEY, newCookies);
@@ -169,7 +169,7 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     const length = jsonData.data.length;
                     // TODO: 修改数量
 
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 0; i++) {
                         const firstBond = jsonData.data[i]
                         // 详情地址数据
                         const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
@@ -326,7 +326,7 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
             console.error('等待自定义列表按钮加载完成')
             // 等待网络请求完成
             await page.waitForNetworkIdle({ timeout: TIMEOUT });
-            
+
             await page.waitForSelector('.custom-menu-btn');
             await page.click('.custom-menu-btn');
             await page.waitForFunction(() => {
@@ -349,47 +349,43 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
 
 
 router.addHandler('DETAIL', async ({ session, page, request, log }) => {
-    console.log(1111)
     await mockBrowser(page)
-     // 加载 cookies
-     const detailStore = await KeyValueStore.open();
-     const savedCookies = await detailStore.getValue(COOKIES_KEY);
-     const savedLocalStorage = await detailStore.getValue(LOCAL_STORAGE_KEY);
- 
-     const isValid = await checkCookieValidity(savedCookies);
- 
-     if (isValid) {
-         console.info('Loading saved cookies...');
-         await page.setCookie(...savedCookies);  // 设置 cookies
- 
-         // 恢复 LocalStorage
-         if (savedLocalStorage) {
-             console.info('Loading saved LocalStorage...');
-             await page.evaluate(data => {
-                 const parsedData = JSON.parse(data);
-                 for (const key in parsedData) {
-                     localStorage.setItem(key, parsedData[key]);
-                 }
-             }, savedLocalStorage);
-         }
-     }
-    
-    log.info(`Processing details for: ${request.url}`);
-     // 使用会话的 cookies
-     const cookies = session.getCookies(request.url);
-     if (cookies.length) {
-         await page.setCookie(...cookies);
-     }
-
-     // 执行登录操作或其他需要保持会话状态的操作
-     // ...
-
-     // 保存会话的 cookies
-     const newCookies = await page.cookies();
-     session.setCookies(newCookies, request.url);
-
+    // 加载 cookies
     const store = await KeyValueStore.open();
+    const savedCookies = await store.getValue(COOKIES_KEY);
+    const savedLocalStorage = await store.getValue(LOCAL_STORAGE_KEY);
 
+    const isValid = await checkCookieValidity(savedCookies);
+
+    if (isValid) {
+        console.info('Loading saved cookies...');
+        await page.setCookie(...savedCookies);  // 设置 cookies
+
+        // 恢复 LocalStorage
+        if (savedLocalStorage) {
+            console.info('Loading saved LocalStorage...');
+            await page.evaluate(data => {
+                const parsedData = JSON.parse(data);
+                for (const key in parsedData) {
+                    localStorage.setItem(key, parsedData[key]);
+                }
+            }, savedLocalStorage);
+        }
+    }
+
+    log.info(`Processing details for: ${request.url}`);
+    // 使用会话的 cookies
+    const cookies = session.getCookies(request.url);
+    if (cookies.length) {
+        await page.setCookie(...cookies);
+    }
+
+    // 执行登录操作或其他需要保持会话状态的操作
+    // ...
+
+    // 保存会话的 cookies
+    const newCookies = await page.cookies();
+    session.setCookies(newCookies, request.url);
     // 启用请求拦截
     await page.setRequestInterception(true);
 
