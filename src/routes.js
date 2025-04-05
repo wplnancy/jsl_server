@@ -489,10 +489,57 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         };
     });
     
+    // 获取转股价调整历史
+    const adjLogs = await page.evaluate(() => {
+        // 打印整个文档内容，用于调试
+        console.log('整个文档内容:', document.body.innerHTML);
+        
+        // 尝试多种选择器
+        const adjLogsElement = document.querySelector('#adj_logs');
+        const adjLogsElementByClass = document.querySelector('td[id="adj_logs"]');
+        const allTds = document.querySelectorAll('td');
+        
+        console.log('通过 ID 选择器找到的元素:', adjLogsElement);
+        console.log('通过属性选择器找到的元素:', adjLogsElementByClass);
+        console.log('所有 td 元素数量:', allTds.length);
+        
+        // 遍历所有 td 元素查找包含 "转股价调整历史" 的元素
+        const targetTd = Array.from(allTds).find(td => 
+            td.textContent.includes('转股价调整历史')
+        );
+        
+        if (targetTd) {
+            console.log('找到包含目标文本的 td:', targetTd);
+            // 获取其相邻的 td
+            const nextTd = targetTd.nextElementSibling;
+            if (nextTd) {
+                console.log('相邻的 td 内容:', nextTd.innerHTML);
+                return nextTd.closest('tr').outerHTML;
+            }
+        }
+        
+        return null;
+    });
+    
+    // 输出调试信息
+    if (adjLogs === null) {
+        log.error('未找到转股价调整历史元素');
+        
+        // 保存页面内容以供调试
+        await page.content().then(content => {
+            log.debug('页面内容:', content);
+        });
+    } else {
+        log.info('成功找到转股价调整历史元素');
+    }
+
     log.info(`债券 ${request.userData.bondId} 的行业信息: ${industryInfo}`);
     log.info(`债券 ${request.userData.bondId} 的概念标签: ${JSON.stringify(concepts, null, 2)}`);
     if (priceInfo) {
         log.info(`债券 ${request.userData.bondId} 的历史最高价: ${priceInfo.maxPrice}, 最低价: ${priceInfo.minPrice}`);
+    }
+    if (adjLogs) {
+        log.info(`债券 ${request.userData.bondId} 的转股价调整历史已获取`);
     }
     
     // 调用 insertBoundCellData 保存数据
@@ -500,9 +547,10 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         await insertBoundCellData([{
             bond_id: request.userData.bondId,
             industry: industryInfo,
-            concept: JSON.stringify(concepts),  // 存储包含 name 和 href 的对象数组
+            concept: JSON.stringify(concepts),
             max_history_price: priceInfo?.maxPrice || null,
-            min_history_price: priceInfo?.minPrice || null
+            min_history_price: priceInfo?.minPrice || null,
+            adj_logs: adjLogs
         }]);
         log.info(`债券 ${request.userData.bondId} 的数据已保存到数据库`);
     } catch (error) {
