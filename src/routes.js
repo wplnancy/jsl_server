@@ -472,53 +472,33 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         }));
     });
     
-    // 获取历史最高价和最低价
+    // 获取价格信息
     const priceInfo = await page.evaluate(() => {
         const priceCell = document.querySelector('td.extitle');
         if (!priceCell) return null;
 
-        const text = priceCell.textContent;
-        
-        // 使用正则表达式提取价格
-        const minPriceMatch = text.match(/最低价：(\d+\.?\d*)/);
-        const maxPriceMatch = text.match(/最高价：(\d+\.?\d*)/);
+        // 提取最低价和最高价的时间
+        const minPriceMatch = priceCell.innerHTML.match(/最低价：[\d.]+ <span title="([^"]+)"/);
+        const maxPriceMatch = priceCell.innerHTML.match(/最高价：[\d.]+ <span title="([^"]+)"/);
+
+        const minPrice = parseFloat(priceCell.textContent.match(/最低价：([\d.]+)/)?.[1] || 0);
+        const maxPrice = parseFloat(priceCell.textContent.match(/最高价：([\d.]+)/)?.[1] || 0);
         
         return {
-            minPrice: minPriceMatch ? parseFloat(minPriceMatch[1]) : null,
-            maxPrice: maxPriceMatch ? parseFloat(maxPriceMatch[1]) : null
+            minPrice,
+            maxPrice,
+            minPriceDate: minPriceMatch ? minPriceMatch[1].trim() : null,
+            maxPriceDate: maxPriceMatch ? maxPriceMatch[1].trim() : null
         };
     });
     
     // 获取转股价调整历史
     const adjLogs = await page.evaluate(() => {
-        // 打印整个文档内容，用于调试
-        console.log('整个文档内容:', document.body.innerHTML);
-        
-        // 尝试多种选择器
         const adjLogsElement = document.querySelector('#adj_logs');
-        const adjLogsElementByClass = document.querySelector('td[id="adj_logs"]');
-        const allTds = document.querySelectorAll('td');
+        if (!adjLogsElement) return null;
         
-        console.log('通过 ID 选择器找到的元素:', adjLogsElement);
-        console.log('通过属性选择器找到的元素:', adjLogsElementByClass);
-        console.log('所有 td 元素数量:', allTds.length);
-        
-        // 遍历所有 td 元素查找包含 "转股价调整历史" 的元素
-        const targetTd = Array.from(allTds).find(td => 
-            td.textContent.includes('转股价调整历史')
-        );
-        
-        if (targetTd) {
-            console.log('找到包含目标文本的 td:', targetTd);
-            // 获取其相邻的 td
-            const nextTd = targetTd.nextElementSibling;
-            if (nextTd) {
-                console.log('相邻的 td 内容:', nextTd.innerHTML);
-                return nextTd.closest('tr').outerHTML;
-            }
-        }
-        
-        return null;
+        const trElement = adjLogsElement.closest('tr');
+        return trElement ? trElement.outerHTML : null;
     });
     
     // 输出调试信息
@@ -550,9 +530,12 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
             concept: JSON.stringify(concepts),
             max_history_price: priceInfo?.maxPrice || null,
             min_history_price: priceInfo?.minPrice || null,
+            max_price_date: priceInfo?.maxPriceDate || null,
+            min_price_date: priceInfo?.minPriceDate || null,
             adj_logs: adjLogs
         }]);
         log.info(`债券 ${request.userData.bondId} 的数据已保存到数据库`);
+        log.info(`最高价时间: ${priceInfo?.maxPriceDate}, 最低价时间: ${priceInfo?.minPriceDate}`);
     } catch (error) {
         log.error(`保存数据失败: ${error.message}`);
         log.debug(error.stack);

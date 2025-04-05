@@ -26,8 +26,17 @@ export const insertBoundCellData = async (data) => {
         max_history_price,
         min_history_price,
         info = JSON.stringify([]),
-        adj_logs
+        adj_logs,
+        max_price_date,
+        min_price_date
       } = item;
+
+      // 处理日期格式
+      const formatDate = (dateStr) => {
+        if (!dateStr) return null;
+        // 移除多余的空格和时间部分
+        return dateStr.trim().split(' ')[0];
+      };
 
       // 确保所有值都被正确处理
       const values = [
@@ -37,14 +46,23 @@ export const insertBoundCellData = async (data) => {
         max_history_price || null,
         min_history_price || null,
         info || JSON.stringify([]),
-        adj_logs ? encodeURIComponent(adj_logs) : null  // 使用 URL 编码来保存 HTML 内容
+        adj_logs ? encodeURIComponent(adj_logs) : null,
+        formatDate(min_price_date),
+        formatDate(max_price_date)
       ];
 
-      // 添加调试日志
-      console.log("原始 HTML 长度:", adj_logs ? adj_logs.length : 0);
-      console.log("编码后的 HTML 长度:", values[6] ? values[6].length : 0);
-      console.log("编码后的内容前100个字符:", values[6] ? values[6].substring(0, 100) : null);
-      
+      console.log("准备插入的数据:", {
+        bond_id,
+        industry,
+        concept,
+        max_history_price,
+        min_history_price,
+        info_length: info ? info.length : 0,
+        adj_logs_length: adj_logs ? adj_logs.length : 0,
+        min_price_date: formatDate(min_price_date),
+        max_price_date: formatDate(max_price_date)
+      });
+
       // 使用 ON DUPLICATE KEY UPDATE 实现 upsert
       const [result] = await connection.query(
         `INSERT INTO bond_cells (
@@ -54,27 +72,34 @@ export const insertBoundCellData = async (data) => {
           max_history_price,
           min_history_price,
           info,
-          adj_logs
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+          adj_logs,
+          min_price_date,
+          max_price_date
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE 
           industry = COALESCE(VALUES(industry), industry),
           concept = COALESCE(VALUES(concept), concept),
           max_history_price = COALESCE(VALUES(max_history_price), max_history_price),
           min_history_price = COALESCE(VALUES(min_history_price), min_history_price),
           info = COALESCE(VALUES(info), info),
-          adj_logs = COALESCE(VALUES(adj_logs), adj_logs)`,
+          adj_logs = COALESCE(VALUES(adj_logs), adj_logs),
+          min_price_date = COALESCE(VALUES(min_price_date), min_price_date),
+          max_price_date = COALESCE(VALUES(max_price_date), max_price_date)`,
         values
       );
 
       // 验证存储的数据
       const [stored] = await connection.query(
-        'SELECT adj_logs FROM bond_cells WHERE bond_id = ?',
+        'SELECT adj_logs, min_price_date, max_price_date FROM bond_cells WHERE bond_id = ?',
         [bond_id]
       );
       
       if (stored && stored[0]) {
-        console.log("存储后的数据长度:", stored[0].adj_logs ? stored[0].adj_logs.length : 0);
-        console.log("存储的数据是否完整:", stored[0].adj_logs === values[6]);
+        console.log("存储后的数据:", {
+          adj_logs_length: stored[0].adj_logs ? stored[0].adj_logs.length : 0,
+          min_price_date: stored[0].min_price_date,
+          max_price_date: stored[0].max_price_date
+        });
       }
       
       console.log(`债券 ${bond_id} 数据${result.affectedRows === 1 ? '插入' : '更新'}成功`);
