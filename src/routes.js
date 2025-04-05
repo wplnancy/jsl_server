@@ -169,13 +169,16 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     const length = jsonData.data.length;
                     // TODO: 修改数量
 
-                    for (let i = 0; i < 0; i++) {
+                    for (let i = 0; i < 3; i++) {
                         const firstBond = jsonData.data[i]
                         // 详情地址数据
                         const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
                         await requestQueue.addRequest({
                             url: detailLink,
                             label: 'DETAIL',
+                            userData: {
+                                bondId: firstBond.bond_id
+                            }
                         });
                     }
                 }
@@ -349,7 +352,7 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
 
 
 router.addHandler('DETAIL', async ({ session, page, request, log }) => {
-    await mockBrowser(page)
+    await mockBrowser(page);
     // 加载 cookies
     const store = await KeyValueStore.open();
     const savedCookies = await store.getValue(COOKIES_KEY);
@@ -403,36 +406,37 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         }
     });
 
-    page.on('response', async (response) => {
-        const url = response.url();
+    // page.on('response', async (response) => {
+    //     const url = response.url();
 
-        if (url.includes('https://www.jisilu.cn/data/cbnew/detail_hist/')) {
-            log.info(`Intercepted response for URL: ${url}`);
-            try {
-                const jsonData = await response.json();
-                // await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2))
+    //     if (url.includes('https://www.jisilu.cn/data/cbnew/detail_hist/')) {
+    //         log.info(`Intercepted response for URL: ${url}`);
+    //         try {
+    //             const jsonData = await response.json();
+    //             // await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2))
 
-                await insertBoundCellData([{
-                    bond_id: jsonData?.rows?.[0]?.id,
-                    info: JSON.stringify(jsonData?.rows)
-                }])
+    //             await insertBoundCellData([{
+    //                 bond_id: jsonData?.rows?.[0]?.id,
+    //                 // info: JSON.stringify(jsonData?.rows)
+    //                 info: JSON.stringify([])
+    //             }])
 
-                // const parsedUrl = new URL(url);
-                // const requestUrl = new URL(request.url);
-                // const bondId = parsedUrl.searchParams.get('bond_id'); // 提取 bond_id
-                // const index = requestUrl.searchParams.get('index'); // 提取 bond_id
+    //             // const parsedUrl = new URL(url);
+    //             // const requestUrl = new URL(request.url);
+    //             // const bondId = parsedUrl.searchParams.get('bond_id'); // 提取 bond_id
+    //             // const index = requestUrl.searchParams.get('index'); // 提取 bond_id
 
-                // if (bondId) {
-                //     interceptedResponses.set(bondId, jsonData); // 缓存响应数据
-                //     const key = `${Number(index) + 1}_${bondId}`;
-                //     await store.setValue(key, jsonData); // 保存数据
-                //     log.info(`Saved API response for bond_id=${bondId} as ${key}`);
-                // }
-            } catch (error) {
-                log.error(`Error parsing response for ${url}:`, error);
-            }
-        }
-    });
+    //             // if (bondId) {
+    //             //     interceptedResponses.set(bondId, jsonData); // 缓存响应数据
+    //             //     const key = `${Number(index) + 1}_${bondId}`;
+    //             //     await store.setValue(key, jsonData); // 保存数据
+    //             //     log.info(`Saved API response for bond_id=${bondId} as ${key}`);
+    //             // }
+    //         } catch (error) {
+    //             log.error(`Error parsing response for ${url}:`, error);
+    //         }
+    //     }
+    // });
 
     // 确保页面加载完成
     await page.goto(request.url, { waitUntil: 'networkidle2' });
@@ -445,6 +449,66 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
 
     // 等待一段时间，确保所有接口调用完成
     await delay(5000)
+
+    // 获取行业信息
+    const industryInfo = await page.evaluate(() => {
+        const newIndustry = document.querySelector('#industry_new');
+        if (newIndustry) {
+            return newIndustry.textContent.trim();
+        }
+        const oldIndustry = document.querySelector('#industry_old');
+        if (oldIndustry) {
+            return oldIndustry.textContent.trim();
+        }
+        return '';
+    });
+    
+    // 获取概念标签
+    const concepts = await page.evaluate(() => {
+        const conceptItems = document.querySelectorAll('.concept .list .item a');
+        return Array.from(conceptItems).map(item => ({
+            name: item.textContent.trim(),
+            href: item.getAttribute('href')
+        }));
+    });
+    
+    // 获取历史最高价和最低价
+    const priceInfo = await page.evaluate(() => {
+        const priceCell = document.querySelector('td.extitle');
+        if (!priceCell) return null;
+
+        const text = priceCell.textContent;
+        
+        // 使用正则表达式提取价格
+        const minPriceMatch = text.match(/最低价：(\d+\.?\d*)/);
+        const maxPriceMatch = text.match(/最高价：(\d+\.?\d*)/);
+        
+        return {
+            minPrice: minPriceMatch ? parseFloat(minPriceMatch[1]) : null,
+            maxPrice: maxPriceMatch ? parseFloat(maxPriceMatch[1]) : null
+        };
+    });
+    
+    log.info(`债券 ${request.userData.bondId} 的行业信息: ${industryInfo}`);
+    log.info(`债券 ${request.userData.bondId} 的概念标签: ${JSON.stringify(concepts, null, 2)}`);
+    if (priceInfo) {
+        log.info(`债券 ${request.userData.bondId} 的历史最高价: ${priceInfo.maxPrice}, 最低价: ${priceInfo.minPrice}`);
+    }
+    
+    // 调用 insertBoundCellData 保存数据
+    try {
+        await insertBoundCellData([{
+            bond_id: request.userData.bondId,
+            industry: industryInfo,
+            concept: JSON.stringify(concepts),  // 存储包含 name 和 href 的对象数组
+            max_history_price: priceInfo?.maxPrice || null,
+            min_history_price: priceInfo?.minPrice || null
+        }]);
+        log.info(`债券 ${request.userData.bondId} 的数据已保存到数据库`);
+    } catch (error) {
+        log.error(`保存数据失败: ${error.message}`);
+        log.debug(error.stack);
+    }
 });
 
 

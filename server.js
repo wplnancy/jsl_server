@@ -44,6 +44,7 @@ async function fetchSummaryData(limit = 100) {
       bs.target_heavy_price,
       bs.is_state_owned,
       bs.profit_strategy,
+      bs.finance_data,
       bs.level,
       IFNULL(bs.is_analyzed, 0) as is_analyzed
     FROM summary s
@@ -120,6 +121,11 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         updateValues.push(updateData.target_price);
       }
 
+      if ('finance_data' in updateData) {
+        updateFields.push('finance_data = ?');
+        updateValues.push(updateData.finance_data);
+      }
+
       if ('target_heavy_price' in updateData) {
         updateFields.push('target_heavy_price = ?');
         updateValues.push(updateData.target_heavy_price);
@@ -161,6 +167,11 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         fields.push('target_price');
         values.push(updateData.target_price);
         placeholders.push('?');
+      }
+
+      if ('finance_data' in updateData) {
+        updateFields.push('finance_data = ?');
+        updateValues.push(updateData.finance_data);
       }
 
       if ('target_heavy_price' in updateData) {

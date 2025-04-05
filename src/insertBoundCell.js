@@ -19,16 +19,39 @@ export const insertBoundCellData = async (data) => {
   const connection = await pool.getConnection();
   try {
     for (const item of data) {
-      const { bond_id, info } = item;
+      const {
+        bond_id,
+        industry,
+        concept,
+        max_history_price,
+        min_history_price,
+        info = JSON.stringify([])
+      } = item;
       
       // 使用 ON DUPLICATE KEY UPDATE 实现 upsert
       const [result] = await connection.query(
-        `INSERT INTO bound_cell (bond_id, info, created_at, updated_at)
-         VALUES (?, ?, NOW(), NOW())
-         ON DUPLICATE KEY UPDATE 
-         info = VALUES(info),
-         updated_at = NOW()`,
-        [bond_id, info]
+        `INSERT INTO bond_cells (
+          bond_id,
+          industry,
+          concept,
+          max_history_price,
+          min_history_price,
+          info
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+          industry = COALESCE(VALUES(industry), industry),
+          concept = COALESCE(VALUES(concept), concept),
+          max_history_price = COALESCE(VALUES(max_history_price), max_history_price),
+          min_history_price = COALESCE(VALUES(min_history_price), min_history_price),
+          info = COALESCE(VALUES(info), info)`,
+        [
+          bond_id,
+          industry || null,
+          concept || null,
+          max_history_price || null,
+          min_history_price || null,
+          info || null
+        ]
       );
       
       console.log(`债券 ${bond_id} 数据${result.affectedRows === 1 ? '插入' : '更新'}成功`);
