@@ -46,7 +46,8 @@ async function fetchSummaryData(limit = 100) {
       bs.profit_strategy,
       bs.finance_data,
       bs.level,
-      IFNULL(bs.is_analyzed, 0) as is_analyzed
+      IFNULL(bs.is_analyzed, 0) as is_analyzed,
+      IFNULL(bs.is_favorite, 0) as is_favorite
     FROM summary s
     LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
     LIMIT ?
@@ -147,6 +148,14 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         updateValues.push(updateData.is_analyzed);
       }
 
+      // 是否加入收藏
+      if ('is_favorite' in updateData) {
+        fields.push('is_favorite');
+        values.push(updateData.is_favorite);
+        placeholders.push('?');
+      }
+  
+
       // 添加 profit_strategy 字段的更新
       if ('profit_strategy' in updateData) {
         updateFields.push('profit_strategy = ?');
@@ -196,6 +205,13 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
       if ('is_analyzed' in updateData) {
         fields.push('is_analyzed');
         values.push(updateData.is_analyzed);
+        placeholders.push('?');
+      }
+
+      // 是否加入收藏
+      if ('is_favorite' in updateData) {
+        fields.push('is_favorite');
+        values.push(updateData.is_favorite);
         placeholders.push('?');
       }
 
