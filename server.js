@@ -110,12 +110,13 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
       'SELECT id FROM bond_strategies WHERE bond_id = ?', 
       [bond_id]
     );
+
+    // 构建动态更新SQL
+    const updateFields = [];
+    const updateValues = [];
+    
     
     if (existingRows.length > 0) {
-      // 构建动态更新SQL
-      const updateFields = [];
-      const updateValues = [];
-      
       if ('target_price' in updateData) {
         updateFields.push('target_price = ?');
         updateValues.push(updateData.target_price);
@@ -274,6 +275,8 @@ router.get('/api/summary', async (ctx) => {
   const { limit = 1000 } = ctx.query;
   try {
     const data = await fetchSummaryData(parseInt(limit));
+    // 等权指数
+    const bond_index = await fetchBoundIndexData(parseInt(limit));
     for (let item of data) {
       // 处理日期格式
       if (item.maturity_dt) {
@@ -291,6 +294,7 @@ router.get('/api/summary', async (ctx) => {
     ctx.body = {
       success: true,
       data,
+      bond_index
     };
   } catch (error) {
     console.error('Error fetching data:', error);
