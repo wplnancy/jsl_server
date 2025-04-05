@@ -169,7 +169,7 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     const length = jsonData.data.length;
                     // TODO: 修改数量
 
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 0; i++) {
                         const firstBond = jsonData.data[i]
                         // 详情地址数据
                         const detailLink = `https://www.jisilu.cn/data/convert_bond_detail/${firstBond.bond_id}?index=${i}`;
@@ -500,18 +500,27 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         const trElement = adjLogsElement.closest('tr');
         return trElement ? trElement.outerHTML : null;
     });
+
+    // 转股不下修历史
+    const unadjLogs = await page.evaluate(() => {
+        const unadjLogsElement = document.querySelector('#unadj_logs');
+        if (!unadjLogsElement) return null;
+        
+        const trElement = unadjLogsElement.closest('tr');
+        return trElement ? trElement.outerHTML : null;
+    });
     
     // 输出调试信息
-    if (adjLogs === null) {
-        log.error('未找到转股价调整历史元素');
+    // if (adjLogs === null) {
+    //     log.error('未找到转股价调整历史元素');
         
-        // 保存页面内容以供调试
-        await page.content().then(content => {
-            log.debug('页面内容:', content);
-        });
-    } else {
-        log.info('成功找到转股价调整历史元素');
-    }
+    //     // 保存页面内容以供调试
+    //     await page.content().then(content => {
+    //         log.debug('页面内容:', content);
+    //     });
+    // } else {
+    //     log.info('成功找到转股价调整历史元素');
+    // }
 
     log.info(`债券 ${request.userData.bondId} 的行业信息: ${industryInfo}`);
     log.info(`债券 ${request.userData.bondId} 的概念标签: ${JSON.stringify(concepts, null, 2)}`);
@@ -532,7 +541,8 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
             min_history_price: priceInfo?.minPrice || null,
             max_price_date: priceInfo?.maxPriceDate || null,
             min_price_date: priceInfo?.minPriceDate || null,
-            adj_logs: adjLogs
+            adj_logs: adjLogs,
+            unadj_logs: unadjLogs
         }]);
         log.info(`债券 ${request.userData.bondId} 的数据已保存到数据库`);
         log.info(`最高价时间: ${priceInfo?.maxPriceDate}, 最低价时间: ${priceInfo?.minPriceDate}`);

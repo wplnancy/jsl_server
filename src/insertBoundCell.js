@@ -27,6 +27,7 @@ export const insertBoundCellData = async (data) => {
         min_history_price,
         info = JSON.stringify([]),
         adj_logs,
+        unadj_logs,
         max_price_date,
         min_price_date
       } = item;
@@ -47,6 +48,7 @@ export const insertBoundCellData = async (data) => {
         min_history_price || null,
         info || JSON.stringify([]),
         adj_logs ? encodeURIComponent(adj_logs) : null,
+        unadj_logs ? encodeURIComponent(unadj_logs) : null,
         formatDate(min_price_date),
         formatDate(max_price_date)
       ];
@@ -59,6 +61,7 @@ export const insertBoundCellData = async (data) => {
         min_history_price,
         info_length: info ? info.length : 0,
         adj_logs_length: adj_logs ? adj_logs.length : 0,
+        unadj_logs_length: unadj_logs ? unadj_logs.length : 0,
         min_price_date: formatDate(min_price_date),
         max_price_date: formatDate(max_price_date)
       });
@@ -73,9 +76,10 @@ export const insertBoundCellData = async (data) => {
           min_history_price,
           info,
           adj_logs,
+          unadj_logs,
           min_price_date,
           max_price_date
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         ON DUPLICATE KEY UPDATE 
           industry = COALESCE(VALUES(industry), industry),
           concept = COALESCE(VALUES(concept), concept),
@@ -83,6 +87,7 @@ export const insertBoundCellData = async (data) => {
           min_history_price = COALESCE(VALUES(min_history_price), min_history_price),
           info = COALESCE(VALUES(info), info),
           adj_logs = COALESCE(VALUES(adj_logs), adj_logs),
+          unadj_logs = COALESCE(VALUES(unadj_logs), unadj_logs),
           min_price_date = COALESCE(VALUES(min_price_date), min_price_date),
           max_price_date = COALESCE(VALUES(max_price_date), max_price_date)`,
         values
