@@ -497,8 +497,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         const adjLogsElement = document.querySelector('#adj_logs');
         if (!adjLogsElement) return null;
         
-        const trElement = adjLogsElement.closest('tr');
-        return trElement ? trElement.outerHTML : null;
+        return adjLogsElement ? adjLogsElement.outerHTML : null;
     });
 
     // 转股不下修历史
@@ -506,8 +505,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         const unadjLogsElement = document.querySelector('#unadj_logs');
         if (!unadjLogsElement) return null;
         
-        const trElement = unadjLogsElement.closest('tr');
-        return trElement ? trElement.outerHTML : null;
+        return unadjLogsElement ? unadjLogsElement.outerHTML : null;
     });
     
     // 输出调试信息
