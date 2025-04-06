@@ -269,6 +269,16 @@ router.post('/api/bond_strategies', async (ctx) => {
 
 router.get('/api/bond_cell', async (ctx) => {
   const { bond_id } = ctx.query;
+  
+  if (!bond_id) {
+    ctx.status = 400;
+    ctx.body = {
+      success: false,
+      message: 'bond_id 参数是必需的'
+    };
+    return;
+  }
+
   try {
     const data = await fetchBoundCellData(bond_id);
     ctx.body = {
@@ -276,11 +286,11 @@ router.get('/api/bond_cell', async (ctx) => {
       data,
     };
   } catch (error) {
-    console.error('Error fetching bound_index data:', error);
+    console.error('Error fetching bond_cell data:', error);
     ctx.status = 500;
     ctx.body = {
       success: false,
-      message: 'Failed to fetch bound_index data',
+      message: 'Failed to fetch bond_cell data',
       error: error.message,
     };
   }
