@@ -273,71 +273,68 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     // 选择并点击第一个 button
                     await page.click('.margin-top-20.text-align-center button:first-of-type');
                     await page.waitForNetworkIdle();
-            
-            // 点击自动刷新复选框
-            console.log('准备点击自动刷新复选框...');
-            try {
-                // 等待复选框容器出现
-                await page.waitForSelector('.el-checkbox.margin-left-10', { timeout: 10000 });
-                
-                // 打印所有匹配的元素信息
-                const checkboxesInfo = await page.$$eval('.el-checkbox.margin-left-10', (elements) => {
-                    return elements.map(el => ({
-                        text: el.textContent,
-                        html: el.outerHTML,
-                        hasInput: !!el.querySelector('input[type="checkbox"]'),
-                        inputType: el.querySelector('input') ? el.querySelector('input').type : 'none'
-                    }));
-                });
 
-                // 尝试直接点击包含目标文本的复选框
-                const result = await page.$$eval('.el-checkbox.margin-left-10', (checkboxes, targetText) => {
-                    for (const checkbox of checkboxes) {
-                        if (checkbox.textContent.includes(targetText)) {
-                            const input = checkbox.querySelector('input[type="checkbox"]');
-                            if (input) {
-                                input.click();
-                                return { success: true, message: '点击成功' };
-                            }
-                            return { success: false, message: '找到元素但没有input' };
-                        }
-                    }
-                    return { success: false, message: '未找到包含目标文本的元素' };
-                }, '30秒自动刷新');
+                    // 点击自动刷新复选框
+                    // console.log('准备点击自动刷新复选框...');
+                    // try {
+                    //     // 等待复选框容器出现
+                    //     await page.waitForSelector('.el-checkbox.margin-left-10', { timeout: 10000 });
 
-                console.log('点击结果:', result);
+                    //     // 打印所有匹配的元素信息
+                    //     const checkboxesInfo = await page.$$eval('.el-checkbox.margin-left-10', (elements) => {
+                    //         return elements.map(el => ({
+                    //             text: el.textContent,
+                    //             html: el.outerHTML,
+                    //             hasInput: !!el.querySelector('input[type="checkbox"]'),
+                    //             inputType: el.querySelector('input') ? el.querySelector('input').type : 'none'
+                    //         }));
+                    //     });
 
-                if (!result.success) {
-                    // 如果点击失败，获取更多调试信息
-                    const pageContent = await page.content();
-                    console.log('页面内容:', pageContent);
-                }
-            } catch (error) {
-                console.error('点击自动刷新复选框失败:', error);
-                // 获取错误时的页面状态
-                try {
-                    const pageContent = await page.content();
-                    console.log('错误时的页面内容:', pageContent);
-                } catch (e) {
-                    console.error('获取页面内容失败:', e);
-                }
-            }
+                    //     // 尝试直接点击包含目标文本的复选框
+                    //     const result = await page.$$eval('.el-checkbox.margin-left-10', (checkboxes, targetText) => {
+                    //         for (const checkbox of checkboxes) {
+                    //             if (checkbox.textContent.includes(targetText)) {
+                    //                 const input = checkbox.querySelector('input[type="checkbox"]');
+                    //                 if (input) {
+                    //                     input.click();
+                    //                     return { success: true, message: '点击成功' };
+                    //                 }
+                    //                 return { success: false, message: '找到元素但没有input' };
+                    //             }
+                    //         }
+                    //         return { success: false, message: '未找到包含目标文本的元素' };
+                    //     }, '30秒自动刷新');
 
-            await delay(60000);
-            
-            // 等待数据库入库
-            await delay(10000)
-        } else {
-            console.warn('The first button is not the "登录" button.');
+                    //     console.log('点击结果:', result);
+
+                    //     if (!result.success) {
+                    //         // 如果点击失败，获取更多调试信息
+                    //         const pageContent = await page.content();
+                    //     }
+                    // } catch (error) {
+                    //     console.error('点击自动刷新复选框失败:', error);
+                    //     // 获取错误时的页面状态
+                    //     try {
+                    //         const pageContent = await page.content();
+                    //     } catch (e) {
+                    //         console.error('获取页面内容失败:', e);
+                    //     }
+                    // }
+                    // 等待数据库入库
+                    // await delay(24 * 60 * 60 * 1000)
+                    await delay(6000);
+
+                } else {
+                    console.warn('The first button is not the "登录" button.');
                 }
             } else {
                 console.info('No button found under ".not_login .el-button-group".');
+            }
+        } catch (error) {
+            console.info('出错了', error)
+            console.info(JSON.stringify(error));
         }
-    } catch (error) {
-        console.info('出错了', error)
-        console.info(JSON.stringify(error));
     }
-}
 
     // 检查登录状态
     try {
@@ -394,13 +391,13 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
             // 选择并点击第一个 button
             await page.click('.margin-top-20.text-align-center button:first-of-type');
             await page.waitForNetworkIdle();
-            
+
             // 点击自动刷新复选框
             console.log('准备点击自动刷新复选框...');
             try {
                 // 等待复选框容器出现
                 await page.waitForSelector('.el-checkbox.margin-left-10', { timeout: 10000 });
-                
+
                 // 打印所有匹配的元素信息
                 const checkboxesInfo = await page.$$eval('.el-checkbox.margin-left-10', (elements) => {
                     return elements.map(el => ({
@@ -566,7 +563,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         }
         return '';
     });
-    
+
     // 获取概念标签
     const concepts = await page.evaluate(() => {
         const conceptItems = document.querySelectorAll('.concept .list .item a');
@@ -575,7 +572,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
             href: item.getAttribute('href')
         }));
     });
-    
+
     // 获取价格信息
     const priceInfo = await page.evaluate(() => {
         const priceCell = document.querySelector('td.extitle');
@@ -587,7 +584,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
 
         const minPrice = parseFloat(priceCell.textContent.match(/最低价：([\d.]+)/)?.[1] || 0);
         const maxPrice = parseFloat(priceCell.textContent.match(/最高价：([\d.]+)/)?.[1] || 0);
-        
+
         return {
             minPrice,
             maxPrice,
@@ -595,12 +592,12 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
             maxPriceDate: maxPriceMatch ? maxPriceMatch[1].trim() : null
         };
     });
-    
+
     // 获取转股价调整历史
     const adjLogs = await page.evaluate(() => {
         const adjLogsElement = document.querySelector('#adj_logs');
         if (!adjLogsElement) return null;
-        
+
         return adjLogsElement ? adjLogsElement.outerHTML : null;
     });
 
@@ -608,14 +605,14 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
     const unadjLogs = await page.evaluate(() => {
         const unadjLogsElement = document.querySelector('#unadj_logs');
         if (!unadjLogsElement) return null;
-        
+
         return unadjLogsElement ? unadjLogsElement.outerHTML : null;
     });
-    
+
     // 输出调试信息
     // if (adjLogs === null) {
     //     log.error('未找到转股价调整历史元素');
-        
+
     //     // 保存页面内容以供调试
     //     await page.content().then(content => {
     //         log.debug('页面内容:', content);
@@ -632,7 +629,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
     if (adjLogs) {
         log.info(`债券 ${request.userData.bondId} 的转股价调整历史已获取`);
     }
-    
+
     // 调用 insertBoundCellData 保存数据
     try {
         await insertBoundCellData([{
