@@ -22,58 +22,81 @@ export const insertDataToDB = async (data) => {
   ];
 
   const sanitizeItem = item => {
-    return fields.map(field => {
-      let value = item[field] ?? null;
+    const values = [];
+    const updateFields = [];
+    const updateValues = [];
 
-      if (field === "t_flag" || field === "icons") {
-        value = JSON.stringify(value);
+    // 遍历所有字段，只处理存在的字段
+    fields.forEach(field => {
+      if (field in item) {
+        let value = item[field];
+
+        // 特殊字段处理
+        if (field === "t_flag" || field === "icons") {
+          value = JSON.stringify(value);
+        }
+
+        if (typeof value === "string") {
+          value = value.trim();
+        }
+
+        values.push(value);
+        updateFields.push(`${field} = ?`);
+        updateValues.push(value);
       }
-
-      if (typeof value === "string") {
-        value = value.trim();
-      }
-
-      return value;
     });
+
+    return { values, updateFields, updateValues };
   };
 
-  (async () => {
-    const connection = await mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '12345678',
-      database: 'kzz_datax'
-    });
+  const connection = await mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '12345678',
+    database: 'kzz_datax'
+  });
 
-    try {
-      console.log('Database connection established.');
-      const updateFields = fields.filter(field => field !== "bond_id")
-        .map(field => `${field} = VALUES(${field})`)
-        .join(", ");
+  try {
+    console.log('Database connection established.');
 
-      const query = `
-          INSERT INTO summary (
-              ${fields.join(", ")}
-          ) VALUES (
-              ${fields.map(() => "?").join(", ")}
-          )
-          ON DUPLICATE KEY UPDATE
-          ${updateFields}
-      `;
-
-      for (const item of data) {
-        const values = sanitizeItem(item);
-        await connection.execute(query, values);
+    for (const item of data) {
+      const { values, updateFields, updateValues } = sanitizeItem(item);
+      
+      if (!item.bond_id) {
+        console.error('跳过没有 bond_id 的数据');
+        continue;
       }
 
-      console.log('Data inserted or updated successfully.');
-    } catch (error) {
-      console.error('Error inserting or updating data:', error);
-    } finally {
-      await connection.end();
-      console.log('Database connection closed.');
+      // 检查记录是否存在
+      const [existingRows] = await connection.execute(
+        'SELECT bond_id FROM summary WHERE bond_id = ?',
+        [item.bond_id]
+      );
+
+      if (existingRows.length > 0) {
+        // 更新现有记录
+        if (updateFields.length > 0) {
+          const updateSQL = `UPDATE summary SET ${updateFields.join(', ')} WHERE bond_id = ?`;
+          await connection.execute(updateSQL, [...updateValues, item.bond_id]);
+        }
+      } else {
+        // 插入新记录
+        const insertFields = fields.filter(field => field in item);
+        const insertSQL = `
+          INSERT INTO summary (${insertFields.join(', ')})
+          VALUES (${Array(insertFields.length).fill('?').join(', ')})
+        `;
+        await connection.execute(insertSQL, values);
+      }
     }
-  })();
+
+    console.log('Data inserted or updated successfully.');
+  } catch (error) {
+    console.error('Error inserting or updating data:', error);
+  } finally {
+    await connection.end();
+    console.log('Database connection closed.');
+  }
 };
 
 export const checkCookieValidity = async (cookies) => {

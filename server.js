@@ -112,12 +112,11 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
       [bond_id]
     );
 
-    // 构建动态更新SQL
-    const updateFields = [];
-    const updateValues = [];
-    
-    
     if (existingRows.length > 0) {
+      // 构建动态更新SQL
+      const updateFields = [];
+      const updateValues = [];
+      
       if ('target_price' in updateData) {
         updateFields.push('target_price = ?');
         updateValues.push(updateData.target_price);
@@ -150,9 +149,8 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
 
       // 是否加入收藏
       if ('is_favorite' in updateData) {
-        fields.push('is_favorite');
-        values.push(updateData.is_favorite);
-        placeholders.push('?');
+        updateFields.push('is_favorite = ?');
+        updateValues.push(updateData.is_favorite);
       }
   
 
@@ -180,8 +178,8 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
       }
 
       if ('finance_data' in updateData) {
-        updateFields.push('finance_data = ?');
-        updateValues.push(updateData.finance_data);
+        fields.push('finance_data = ?');
+        values.push(updateData.finance_data);
       }
 
       if ('target_heavy_price' in updateData) {

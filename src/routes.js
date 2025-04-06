@@ -134,8 +134,8 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
             log.info(`Intercepted API response from: ${url}`);
             try {
                 const jsonData = await response.json(); // 获取 API 响应 JSON 数据
-                console.error('redeem_status', jsonData.data?.[0].bond_nm, jsonData.data?.[0].redeem_status)
-                if (jsonData.data?.length > 50 && jsonData.data?.[0]?.redeem_status) {
+                console.error('redeem_status', JSON.stringify(jsonData.data?.[0]), jsonData.data?.[0].bond_nm, jsonData.data?.[0].redeem_status)
+                if (jsonData.data?.length > 50) {
                     // 获取到对应的数据入库
                     console.log('入库成功')
                     await insertDataToDB(jsonData.data)
@@ -273,19 +273,71 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
                     // 选择并点击第一个 button
                     await page.click('.margin-top-20.text-align-center button:first-of-type');
                     await page.waitForNetworkIdle();
-                    // 等待数据库入库
-                    await delay(10000)
-                } else {
-                    console.warn('The first button is not the "登录" button.');
+            
+            // 点击自动刷新复选框
+            console.log('准备点击自动刷新复选框...');
+            try {
+                // 等待复选框容器出现
+                await page.waitForSelector('.el-checkbox.margin-left-10', { timeout: 10000 });
+                
+                // 打印所有匹配的元素信息
+                const checkboxesInfo = await page.$$eval('.el-checkbox.margin-left-10', (elements) => {
+                    return elements.map(el => ({
+                        text: el.textContent,
+                        html: el.outerHTML,
+                        hasInput: !!el.querySelector('input[type="checkbox"]'),
+                        inputType: el.querySelector('input') ? el.querySelector('input').type : 'none'
+                    }));
+                });
+
+                // 尝试直接点击包含目标文本的复选框
+                const result = await page.$$eval('.el-checkbox.margin-left-10', (checkboxes, targetText) => {
+                    for (const checkbox of checkboxes) {
+                        if (checkbox.textContent.includes(targetText)) {
+                            const input = checkbox.querySelector('input[type="checkbox"]');
+                            if (input) {
+                                input.click();
+                                return { success: true, message: '点击成功' };
+                            }
+                            return { success: false, message: '找到元素但没有input' };
+                        }
+                    }
+                    return { success: false, message: '未找到包含目标文本的元素' };
+                }, '30秒自动刷新');
+
+                console.log('点击结果:', result);
+
+                if (!result.success) {
+                    // 如果点击失败，获取更多调试信息
+                    const pageContent = await page.content();
+                    console.log('页面内容:', pageContent);
+                }
+            } catch (error) {
+                console.error('点击自动刷新复选框失败:', error);
+                // 获取错误时的页面状态
+                try {
+                    const pageContent = await page.content();
+                    console.log('错误时的页面内容:', pageContent);
+                } catch (e) {
+                    console.error('获取页面内容失败:', e);
+                }
+            }
+
+            await delay(60000);
+            
+            // 等待数据库入库
+            await delay(10000)
+        } else {
+            console.warn('The first button is not the "登录" button.');
                 }
             } else {
                 console.info('No button found under ".not_login .el-button-group".');
-            }
-        } catch (error) {
-            console.info('出错了', error)
-            console.info(JSON.stringify(error));
         }
+    } catch (error) {
+        console.info('出错了', error)
+        console.info(JSON.stringify(error));
     }
+}
 
     // 检查登录状态
     try {
@@ -342,7 +394,59 @@ router.addDefaultHandler(async ({ session, page, request, browserController }) =
             // 选择并点击第一个 button
             await page.click('.margin-top-20.text-align-center button:first-of-type');
             await page.waitForNetworkIdle();
-            await delay(60000)
+            
+            // 点击自动刷新复选框
+            console.log('准备点击自动刷新复选框...');
+            try {
+                // 等待复选框容器出现
+                await page.waitForSelector('.el-checkbox.margin-left-10', { timeout: 10000 });
+                
+                // 打印所有匹配的元素信息
+                const checkboxesInfo = await page.$$eval('.el-checkbox.margin-left-10', (elements) => {
+                    return elements.map(el => ({
+                        text: el.textContent,
+                        html: el.outerHTML,
+                        hasInput: !!el.querySelector('input[type="checkbox"]'),
+                        inputType: el.querySelector('input') ? el.querySelector('input').type : 'none'
+                    }));
+                });
+                console.log('找到的复选框信息:', JSON.stringify(checkboxesInfo, null, 2));
+
+                // 尝试直接点击包含目标文本的复选框
+                const result = await page.$$eval('.el-checkbox.margin-left-10', (checkboxes, targetText) => {
+                    for (const checkbox of checkboxes) {
+                        if (checkbox.textContent.includes(targetText)) {
+                            const input = checkbox.querySelector('input[type="checkbox"]');
+                            if (input) {
+                                input.click();
+                                return { success: true, message: '点击成功' };
+                            }
+                            return { success: false, message: '找到元素但没有input' };
+                        }
+                    }
+                    return { success: false, message: '未找到包含目标文本的元素' };
+                }, '30秒自动刷新');
+
+                console.log('点击结果:', result);
+
+                if (!result.success) {
+                    // 如果点击失败，获取更多调试信息
+                    const pageContent = await page.content();
+                    console.log('页面内容:', pageContent);
+                }
+            } catch (error) {
+                console.error('点击自动刷新复选框失败:', error);
+                // 获取错误时的页面状态
+                try {
+                    const pageContent = await page.content();
+                    console.log('错误时的页面内容:', pageContent);
+                } catch (e) {
+                    console.error('获取页面内容失败:', e);
+                }
+            }
+
+            await delay(60000);
+            // 这里点击自动刷新的复选框
         } else {
             throw (new Error("未登录"))
             await handleNoLogin();
