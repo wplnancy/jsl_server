@@ -25,6 +25,7 @@
     "start": "pm2 start ./server.js",
     "debug": "node ./server.js",
     "start:prod": "node dist/main.js",
+    "pa": "node src/iwencai.js",
     "start:dev": "tsx src/main.ts",
     "build": "tsc",
     "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
