@@ -334,7 +334,7 @@ router.get('/api/summary', async (ctx) => {
 
 // API 路由 - 批量更新 summary 数据
 router.post('/api/summary/batch-update', async (ctx) => {
-  console.error('收到请求更新数据', ctx.request.body?.[0]);
+  console.error('收到请求更新数据',  ctx.request.body?.[0]?.bond_id, ctx.request.body?.[0]?.price);
   try {
     const data = ctx.request.body;
     
@@ -443,6 +443,59 @@ router.get('/api/refresh-with-cooldown', async (ctx) => {
     } finally {
         isRefreshing = false;
     }
+});
+
+// 更新 bound_index 表中的 median_price 字段
+async function updateBoundIndexMedianPrice(medianPrice) {
+  const connection = await mysql.createConnection(dbConfig);
+  
+  try {
+    const query = `
+      UPDATE bound_index 
+      SET median_price = ? 
+      WHERE id = 1
+    `;
+    
+    await connection.execute(query, [medianPrice]);
+    return true;
+  } catch (error) {
+    console.error('Error updating bound_index median_price:', error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
+}
+
+// API 路由 - 更新 bound_index 的 median_price
+router.post('/api/bound_index/median_price', async (ctx) => {
+  try {
+    const { median_price } = ctx.request.body;
+    console.error('获取到中位数', median_price)
+    
+    if (typeof median_price !== 'number') {
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: 'median_price 必须是数字类型'
+      };
+      return;
+    }
+
+    await updateBoundIndexMedianPrice(median_price);
+    
+    ctx.body = {
+      success: true,
+      message: '中位数价格更新成功'
+    };
+  } catch (error) {
+    console.error('更新中位数价格失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新中位数价格失败',
+      error: error.message
+    };
+  }
 });
 
 // 注册路由

@@ -9,6 +9,26 @@ import { timeout } from 'puppeteer';
 // 在函数开始时获取 RequestQueue
 const requestQueue = await RequestQueue.open();
 
+function extractMidPriceWithRegex(text) {
+    // 匹配格式为 "价格中位数 115.000" 的文本
+    const regex = /价格中位数\s+(\d+\.\d+)/;
+    const match = text.match(regex);
+
+    if (match && match[1]) {
+        return match[1];
+    }
+
+    // 如果没有匹配到，尝试直接匹配数字格式
+    const numberRegex = /(\d+\.\d+)/;
+    const numberMatch = text.match(numberRegex);
+
+    if (numberMatch && numberMatch[1]) {
+        return numberMatch[1];
+    }
+
+    return null;
+}
+
 const ACCOUNT = {
     dongtian: {
         user_name: '13166911205',
@@ -47,7 +67,7 @@ const addBoundIndex = async (page) => {
     const boundInfo = {
         id: 1,
         bond_index: bondIndex,
-        median_price: medianPrice,
+        median_price: extractMidPriceWithRegex(medianPrice),
         median_premium_rate: medianPremiumRate,
         yield_to_maturity: yieldToMaturity,
         created_at: dayjs().toDate()
