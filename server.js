@@ -7,6 +7,7 @@ import cron from 'node-cron';
 import { crawler } from './src/main.js'
 import dayjs from 'dayjs';
 import { PlaywrightCrawler, RequestQueue } from 'crawlee';
+import { insertDataToDB } from './src/utils.js'
 
 import {isMarketOpen} from './src/date.js'
 
@@ -327,6 +328,40 @@ router.get('/api/summary', async (ctx) => {
       success: false,
       message: 'Failed to fetch data',
       error: error.message,
+    };
+  }
+});
+
+// API 路由 - 批量更新 summary 数据
+router.post('/api/summary/batch-update', async (ctx) => {
+  console.error('收到请求更新数据', ctx.request.body?.[0]);
+  try {
+    const data = ctx.request.body;
+    
+    if (!Array.isArray(data)) {
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: '请求数据必须是数组格式'
+      };
+      return;
+    }
+
+    // 使用 insertDataToDB 函数处理数据更新
+    await insertDataToDB(data);
+
+    ctx.body = {
+      success: true,
+      message: '数据更新成功',
+      count: data.length
+    };
+  } catch (error) {
+    console.error('更新 summary 数据失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新数据失败',
+      error: error.message
     };
   }
 });
