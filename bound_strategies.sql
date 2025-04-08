@@ -17,3 +17,14 @@ AFTER target_price;
 ALTER TABLE bond_strategies
 ADD COLUMN heavy_position_price DECIMAL(10, 2) COMMENT '重仓价格' 
 AFTER target_price; 
+
+
+ALTER TABLE bond_cells
+ADD COLUMN heavy_position_price DECIMAL(10, 2) COMMENT '重仓价格' 
+AFTER target_price; 
+
+
+ALTER TABLE bond_cells
+ADD COLUMN asset_data TEXT COMMENT '资产数据',
+ADD COLUMN debt_data TEXT COMMENT '负债数据',
+ADD COLUMN cash_flow_data TEXT COMMENT '现金流数据';

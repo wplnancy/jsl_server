@@ -334,7 +334,7 @@ router.get('/api/summary', async (ctx) => {
 
 // API 路由 - 批量更新 summary 数据
 router.post('/api/summary/batch-update', async (ctx) => {
-  console.error('收到请求更新数据',  ctx.request.body?.[0]?.bond_id, ctx.request.body?.[0]?.price);
+  // console.error('收到请求更新数据',  ctx.request.body?.[0]?.bond_id, ctx.request.body?.[0]?.price);
   try {
     const data = ctx.request.body;
     
@@ -498,6 +498,188 @@ router.post('/api/bound_index/median_price', async (ctx) => {
   }
 });
 
+// 更新或创建 bond_cells 记录
+async function updateOrCreateBondCell(stock_nm, updateData = {}) {
+  const connection = await mysql.createConnection(dbConfig);
+  
+  try {
+    // 先从 summary 表中获取 bond_id，使用 stock_nm 字段查询
+    const [bondRows] = await connection.execute(
+      'SELECT bond_id FROM summary WHERE stock_nm = ?',
+      [stock_nm]
+    );
+
+    if (bondRows.length === 0) {
+      throw new Error(`未找到股票名称为 ${stock_nm} 的记录`);
+    }
+
+    const bond_id = bondRows[0].bond_id;
+    console.log('找到对应的 bond_id:', bond_id);
+
+    // 检查 bond_cells 记录是否存在
+    const [existingRows] = await connection.execute(
+      'SELECT bond_id FROM bond_cells WHERE bond_id = ?',
+      [bond_id]
+    );
+
+    if (existingRows.length > 0) {
+      // 构建动态更新SQL
+      const updateFields = [];
+      const updateValues = [];
+      
+      // 资产数据
+      if ('asset_data' in updateData) {
+        updateFields.push('asset_data = ?');
+        updateValues.push(updateData.asset_data);
+      }
+
+      // 负债数据
+      if ('debt_data' in updateData) {
+        updateFields.push('debt_data = ?');
+        updateValues.push(updateData.debt_data);
+      }
+
+      // 现金流数据
+      if ('cash_flow_data' in updateData) {
+        updateFields.push('cash_flow_data = ?');
+        updateValues.push(updateData.cash_flow_data);
+      }
+
+      // 行业信息
+      if ('industry' in updateData) {
+        updateFields.push('industry = ?');
+        updateValues.push(updateData.industry);
+      }
+
+      // 概念信息
+      if ('concept' in updateData) {
+        updateFields.push('concept = ?');
+        updateValues.push(updateData.concept);
+      }
+
+      // 最高历史价格
+      if ('max_history_price' in updateData) {
+        updateFields.push('max_history_price = ?');
+        updateValues.push(updateData.max_history_price);
+      }
+
+      // 最低历史价格
+      if ('min_history_price' in updateData) {
+        updateFields.push('min_history_price = ?');
+        updateValues.push(updateData.min_history_price);
+      }
+
+      if (updateFields.length > 0) {
+        const updateSQL = `UPDATE bond_cells SET ${updateFields.join(', ')} WHERE bond_id = ?`;
+        updateValues.push(bond_id);
+        await connection.execute(updateSQL, updateValues);
+      }
+    } else {
+      // 构建插入字段和值
+      const insertFields = ['bond_id'];
+      const insertValues = [bond_id];
+      const placeholders = ['?'];
+
+      // 资产数据
+      if ('asset_data' in updateData) {
+        insertFields.push('asset_data');
+        insertValues.push(updateData.asset_data);
+        placeholders.push('?');
+      }
+
+      // 负债数据
+      if ('debt_data' in updateData) {
+        insertFields.push('debt_data');
+        insertValues.push(updateData.debt_data);
+        placeholders.push('?');
+      }
+
+      // 现金流数据
+      if ('cash_flow_data' in updateData) {
+        insertFields.push('cash_flow_data');
+        insertValues.push(updateData.cash_flow_data);
+        placeholders.push('?');
+      }
+
+      // 行业信息
+      if ('industry' in updateData) {
+        insertFields.push('industry');
+        insertValues.push(updateData.industry);
+        placeholders.push('?');
+      }
+
+      // 概念信息
+      if ('concept' in updateData) {
+        insertFields.push('concept');
+        insertValues.push(updateData.concept);
+        placeholders.push('?');
+      }
+
+      // 最高历史价格
+      if ('max_history_price' in updateData) {
+        insertFields.push('max_history_price');
+        insertValues.push(updateData.max_history_price);
+        placeholders.push('?');
+      }
+
+      // 最低历史价格
+      if ('min_history_price' in updateData) {
+        insertFields.push('min_history_price');
+        insertValues.push(updateData.min_history_price);
+        placeholders.push('?');
+      }
+
+      const insertSQL = `INSERT INTO bond_cells (${insertFields.join(', ')}) VALUES (${placeholders.join(', ')})`;
+      console.log('执行插入 SQL:', insertSQL);
+      console.log('插入值:', insertValues);
+      await connection.execute(insertSQL, insertValues);
+    }
+    
+    return { success: true, bond_id };
+  } catch (error) {
+    console.error('更新或创建 bond_cells 记录失败:', error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
+}
+
+// API 路由 - 更新 bond_cells 数据
+router.post('/api/bond_cells/update', async (ctx) => {
+  try {
+    const { stock_nm, ...updateData } = ctx.request.body;
+    console.log('获取到的数据:', {
+      stock_nm,
+      updateData
+    });
+    
+    if (!stock_nm) {
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: 'stock_nm (股票名称) 是必需的'
+      };
+      return;
+    }
+
+    const result = await updateOrCreateBondCell(stock_nm, updateData);
+    
+    ctx.body = {
+      success: true,
+      message: '数据更新成功',
+      bond_id: result.bond_id
+    };
+  } catch (error) {
+    console.error('更新数据失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新数据失败',
+      error: error.message
+    };
+  }
+});
+
 // 注册路由
 app.use(router.routes()).use(router.allowedMethods());
 
@@ -537,24 +719,24 @@ const runCrawlerTask = async ({ ignoreMarketOpen = false } = {}) => {
 
 // 启动时立即执行一次
 const count = 0; // 记录第几次执行
-runCrawlerTask();
+// runCrawlerTask();
 
 // 开市时期，每间隔 1h 获取一次最新数据
-cron.schedule(`0 * * * *`, async () => {
-  runCrawlerTask();
-});
+// cron.schedule(`0 * * * *`, async () => {
+//   runCrawlerTask();
+// });
 
 // ---- 确保盘后更新 -----
 // 每天 13:16 执行任务，只有在是交易日的情况下
-cron.schedule(`10 13 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
-  console.error('启动 13:10 定时更新器')
-  runCrawlerTask({ ignoreMarketOpen: true });
-});
+// cron.schedule(`10 13 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
+//   console.error('启动 13:10 定时更新器')
+//   runCrawlerTask({ ignoreMarketOpen: true });
+// });
 
 // 每天的 3 点 16 分执行一次任务，只有在是交易日的情况下
-cron.schedule(`10 15 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
-  console.error('启动 15:10 定时更新器')
-  runCrawlerTask({ ignoreMarketOpen: true });
-});
+// cron.schedule(`10 15 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
+//   console.error('启动 15:10 定时更新器')
+//   runCrawlerTask({ ignoreMarketOpen: true });
+// });
 
 console.log('Scheduler is running...');

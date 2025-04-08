@@ -76,7 +76,7 @@ const crawler = new PuppeteerCrawler({
             });
 
             // 保存结构化数据到 JSON 文件
-            await fs.writeFile('iwencai_data.json', JSON.stringify(data, null, 2));
+            // await fs.writeFile('iwencai_data.json', JSON.stringify(data, null, 2));
             log.info('数据已保存到 iwencai_data.json');
 
         } catch (error) {
