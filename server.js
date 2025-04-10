@@ -680,6 +680,52 @@ router.post('/api/bond_cells/update', async (ctx) => {
   }
 });
 
+// 查询没有资产数据的可转债列表
+async function fetchBondsWithoutAssetData() {
+  const connection = await mysql.createConnection(dbConfig);
+  
+  try {
+    const query = `
+      SELECT bond_nm, stock_nm, price
+      FROM summary 
+      WHERE bond_id NOT IN (
+        SELECT bond_id 
+        FROM bond_cells 
+        WHERE asset_data IS NOT NULL
+        AND cash_flow_data is not NULL AND debt_data is not NULL
+      ) and price >= 90 and price <= 140 order by price asc
+    `;
+    
+    const [rows] = await connection.execute(query);
+    return rows;
+  } catch (error) {
+    console.error('查询没有资产数据的可转债失败:', error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
+}
+
+// API 路由 - 获取没有资产数据的可转债列表
+router.get('/api/bond_cells/without_asset_data', async (ctx) => {
+  try {
+    const data = await fetchBondsWithoutAssetData();
+    
+    ctx.body = {
+      success: true,
+      data
+    };
+  } catch (error) {
+    console.error('获取没有资产数据的可转债列表失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '获取数据失败',
+      error: error.message
+    };
+  }
+});
+
 // 注册路由
 app.use(router.routes()).use(router.allowedMethods());
 
