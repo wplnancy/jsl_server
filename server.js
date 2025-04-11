@@ -179,8 +179,9 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
       }
 
       if ('finance_data' in updateData) {
-        fields.push('finance_data = ?');
+        fields.push('finance_data');
         values.push(updateData.finance_data);
+        placeholders.push('?');
       }
 
       if ('target_heavy_price' in updateData) {
@@ -236,8 +237,7 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
 
 // 优化：API路由 - 更新或创建可转债策略
 router.post('/api/bond_strategies', async (ctx) => {
-  const { bond_id, ...updateData } = ctx.request.body;
-  
+  const { bond_id, ...updateData } = ctx.request.body;  
   // 验证必要参数
   if (!bond_id) {
     ctx.status = 400;

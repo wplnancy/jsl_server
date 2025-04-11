@@ -666,8 +666,7 @@ router.addHandler('DETAIL', async ({ session, page, request, log }) => {
         log.info(`债券 ${request.userData.bondId} 的数据已保存到数据库`);
         log.info(`最高价时间: ${priceInfo?.maxPriceDate}, 最低价时间: ${priceInfo?.minPriceDate}`);
     } catch (error) {
-        log.error(`保存数据失败: ${error.message}`);
-        log.debug(error.stack);
+        log.error(`处理详情页面失败: ${error.message}`);
     }
 });
 

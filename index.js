@@ -5,11 +5,14 @@ import mysql from 'mysql2/promise';
 import koaBody from 'koa-body';
 import cron from 'node-cron';
 import { crawler } from './src/main.js'
-import { RequestQueue } from 'crawlee';
+import { RequestQueue, Configuration } from 'crawlee';
 import { log } from 'crawlee';
 
 // 设置日志级别为DEBUG，帮助调试
 log.setLevel(log.LEVELS.DEBUG);
+
+// 设置存储目录
+Configuration.set('STORAGE_DIR', './storage');
 
 const count = 1;
 
