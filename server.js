@@ -75,7 +75,15 @@ async function fetchBoundIndexData(limit = 100) {
 
 async function fetchBoundCellData(bond_id) {
   const connection = await mysql.createConnection(dbConfig);
-  const [rows] = await connection.execute('SELECT * FROM bond_cells where bond_id = ?', [bond_id]);
+  const query = `
+    SELECT 
+      bc.*,
+      s.finance_data
+    FROM bond_cells bc
+    LEFT JOIN bond_strategies s ON bc.bond_id = s.bond_id
+    WHERE bc.bond_id = ?
+  `;
+  const [rows] = await connection.execute(query, [bond_id]);
   await connection.end();
   return rows;
 }
