@@ -78,7 +78,14 @@ async function fetchBoundCellData(bond_id) {
   const query = `
     SELECT 
       bc.*,
-      s.finance_data
+      s.finance_data,
+      s.target_price,
+      s.profit_strategy,
+      s.target_heavy_price,
+      s.level,
+      s.is_analyzed,
+      s.is_state_owned,
+      s.is_favorite
     FROM bond_cells bc
     LEFT JOIN bond_strategies s ON bc.bond_id = s.bond_id
     WHERE bc.bond_id = ?
@@ -507,27 +514,36 @@ router.post('/api/bound_index/median_price', async (ctx) => {
 });
 
 // 更新或创建 bond_cells 记录
-async function updateOrCreateBondCell(stock_nm, updateData = {}) {
+async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {}) {
   const connection = await mysql.createConnection(dbConfig);
   
   try {
-    // 先从 summary 表中获取 bond_id，使用 stock_nm 字段查询
-    const [bondRows] = await connection.execute(
-      'SELECT bond_id FROM summary WHERE stock_nm = ?',
-      [stock_nm]
-    );
+    let finalBondId = bond_id;
+    
+    // 如果没有传入 bond_id，则通过 stock_nm 查询
+    if (!finalBondId && stock_nm) {
+      const [bondRows] = await connection.execute(
+        'SELECT bond_id FROM summary WHERE stock_nm = ?',
+        [stock_nm]
+      );
 
-    if (bondRows.length === 0) {
-      throw new Error(`未找到股票名称为 ${stock_nm} 的记录`);
+      if (bondRows.length === 0) {
+        throw new Error(`未找到股票名称为 ${stock_nm} 的记录`);
+      }
+
+      finalBondId = bondRows[0].bond_id;
     }
 
-    const bond_id = bondRows[0].bond_id;
-    console.log('找到对应的 bond_id:', bond_id);
+    if (!finalBondId) {
+      throw new Error('必须提供 bond_id 或 stock_nm');
+    }
+
+    console.log('使用的 bond_id:', finalBondId);
 
     // 检查 bond_cells 记录是否存在
     const [existingRows] = await connection.execute(
       'SELECT bond_id FROM bond_cells WHERE bond_id = ?',
-      [bond_id]
+      [finalBondId]
     );
 
     if (existingRows.length > 0) {
@@ -559,6 +575,18 @@ async function updateOrCreateBondCell(stock_nm, updateData = {}) {
         updateValues.push(updateData.industry);
       }
 
+      // 历史数据信息
+      if ('info' in updateData) {
+        updateFields.push('info = ?');
+        updateValues.push(updateData.info);
+      }
+
+      // 调整条款信息
+      if ('adjust_tc' in updateData) {
+        updateFields.push('adjust_tc = ?');
+        updateValues.push(updateData.adjust_tc);
+      }
+
       // 概念信息
       if ('concept' in updateData) {
         updateFields.push('concept = ?');
@@ -579,13 +607,13 @@ async function updateOrCreateBondCell(stock_nm, updateData = {}) {
 
       if (updateFields.length > 0) {
         const updateSQL = `UPDATE bond_cells SET ${updateFields.join(', ')} WHERE bond_id = ?`;
-        updateValues.push(bond_id);
+        updateValues.push(finalBondId);
         await connection.execute(updateSQL, updateValues);
       }
     } else {
       // 构建插入字段和值
       const insertFields = ['bond_id'];
-      const insertValues = [bond_id];
+      const insertValues = [finalBondId];
       const placeholders = ['?'];
 
       // 资产数据
@@ -616,6 +644,20 @@ async function updateOrCreateBondCell(stock_nm, updateData = {}) {
         placeholders.push('?');
       }
 
+       // 历史价格信息
+       if ('info' in updateData) {
+        insertFields.push('info');
+        insertValues.push(updateData.info);
+        placeholders.push('?');
+      }
+
+      // 调整条款信息
+      if ('adjust_tc' in updateData) {
+        insertFields.push('adjust_tc');
+        insertValues.push(updateData.adjust_tc);
+        placeholders.push('?');
+      }
+
       // 概念信息
       if ('concept' in updateData) {
         insertFields.push('concept');
@@ -643,7 +685,7 @@ async function updateOrCreateBondCell(stock_nm, updateData = {}) {
       await connection.execute(insertSQL, insertValues);
     }
     
-    return { success: true, bond_id };
+    return { success: true, bond_id: finalBondId };
   } catch (error) {
     console.error('更新或创建 bond_cells 记录失败:', error);
     throw error;
@@ -655,22 +697,23 @@ async function updateOrCreateBondCell(stock_nm, updateData = {}) {
 // API 路由 - 更新 bond_cells 数据
 router.post('/api/bond_cells/update', async (ctx) => {
   try {
-    const { stock_nm, ...updateData } = ctx.request.body;
+    const { stock_nm, bond_id, ...updateData } = ctx.request.body;
     console.log('获取到的数据:', {
       stock_nm,
+      bond_id,
       updateData
     });
     
-    if (!stock_nm) {
+    if (!stock_nm && !bond_id) {
       ctx.status = 400;
       ctx.body = {
         success: false,
-        message: 'stock_nm (股票名称) 是必需的'
+        message: '必须提供 stock_nm (股票名称) 或 bond_id'
       };
       return;
     }
 
-    const result = await updateOrCreateBondCell(stock_nm, updateData);
+    const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
     
     ctx.body = {
       success: true,
@@ -725,6 +768,55 @@ router.get('/api/bond_cells/without_asset_data', async (ctx) => {
     };
   } catch (error) {
     console.error('获取没有资产数据的可转债列表失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '获取数据失败',
+      error: error.message
+    };
+  }
+});
+
+// 查询没有下修条款的可转债列表
+async function fetchBondsWithoutAdjustTC() {
+  const connection = await mysql.createConnection(dbConfig);
+  
+  try {
+    const query = `
+      SELECT 
+        bc.*,
+        s.bond_nm,
+        s.stock_nm,
+        s.price,
+        s.convert_price,
+        s.premium_rt
+      FROM bond_cells bc
+      LEFT JOIN summary s ON bc.bond_id = s.bond_id
+      WHERE bc.adjust_tc is NULL
+      ORDER BY s.price ASC
+    `;
+    
+    const [rows] = await connection.execute(query);
+    return rows;
+  } catch (error) {
+    console.error('查询没有下修条款的可转债失败:', error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
+}
+
+// API 路由 - 获取没有下修条款的可转债列表
+router.get('/api/bond_cells/without_adjust_tc', async (ctx) => {
+  try {
+    const data = await fetchBondsWithoutAdjustTC();
+    
+    ctx.body = {
+      success: true,
+      data
+    };
+  } catch (error) {
+    console.error('获取没有下修条款的可转债列表失败:', error);
     ctx.status = 500;
     ctx.body = {
       success: false,
