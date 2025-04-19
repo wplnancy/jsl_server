@@ -101,16 +101,16 @@ function parseCashFlowData(cashFlowStr) {
     if (colonIndex === -1) return null;
 
     const profitsStr = netProfitLine.slice(colonIndex + 1);
-    // 匹配数字（包括小数）后面跟着"亿"的模式
-    const profitMatches = profitsStr.match(/(\d+\.?\d*)(?=亿)/g);
+    // 匹配数字（包括负数和小数）后面跟着"亿"的模式
+    const profitMatches = profitsStr.match(/([-]?\d+\.?\d*)(?=亿)/g);
     
     if (!profitMatches) return null;
 
     // 转换为数字数组
     const profits = profitMatches.map(num => parseFloat(num));
     
-    // 返回最近三年的净利润数据（不包括预估值）和总和
-    const last3YearsProfits = profits.slice(0, 3);
+    // 取最后三年的净利润数据（包括最后一个值）
+    const last3YearsProfits = profits.slice(-3);
     const totalProfit = Number(last3YearsProfits.reduce((sum, profit) => sum + profit, 0).toFixed(2));
     
     return {
@@ -183,12 +183,12 @@ async function fetchSummaryData(limit = 100, filters = {}) {
         }
           const profitData = parseCashFlowData(row.cash_flow_data);
           if (profitData) {
-            // 添加净利润数据
-            // row.net_profits = profitData.profits;
+          // 添加净利润数据
+          row.net_profits = profitData.profits;
           row.total_profit = profitData.total;
           
           // 计算最近三年净利润总和与转债剩余规模的差值（转债规模单位是万元，需要转换为亿元）
-          row.profit_bond_gap = Number((profitData.total - row.curr_iss_amt).toFixed(2));
+          row.profit_bond_gap = Number((row.curr_iss_amt - profitData.total ).toFixed(2));
         }
       }
       
