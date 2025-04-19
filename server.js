@@ -64,7 +64,7 @@ function parseAdjustData(htmlStr) {
         
         // 构建记录对象
         const record = {
-          // meeting_date: cells[0] || null,  // 股东大会日期
+          meeting_date: cells[0] || null,  // 股东大会日期
           effective_date: cells[1],        // 生效日期
           new_price: newPrice,             // 新转股价
           old_price: parseFloat(cells[3]), // 原转股价
