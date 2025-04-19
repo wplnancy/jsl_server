@@ -86,6 +86,43 @@ function parseAdjustData(htmlStr) {
   }
 }
 
+// 添加解析现金流数据的函数
+function parseCashFlowData(cashFlowStr) {
+  try {
+    if (!cashFlowStr) return null;
+
+    const lines = cashFlowStr.split('\n');
+    const netProfitLine = lines.find(line => line.includes('净利润'));
+    
+    if (!netProfitLine) return null;
+
+    // 提取冒号后的净利润数据
+    const colonIndex = netProfitLine.indexOf(':');
+    if (colonIndex === -1) return null;
+
+    const profitsStr = netProfitLine.slice(colonIndex + 1);
+    // 匹配数字（包括小数）后面跟着"亿"的模式
+    const profitMatches = profitsStr.match(/(\d+\.?\d*)(?=亿)/g);
+    
+    if (!profitMatches) return null;
+
+    // 转换为数字数组
+    const profits = profitMatches.map(num => parseFloat(num));
+    
+    // 返回最近三年的净利润数据（不包括预估值）和总和
+    const last3YearsProfits = profits.slice(0, 3);
+    const totalProfit = Number(last3YearsProfits.reduce((sum, profit) => sum + profit, 0).toFixed(2));
+    
+    return {
+      profits: last3YearsProfits,
+      total: totalProfit
+    };
+  } catch (error) {
+    console.error('解析现金流数据失败:', error);
+    return null;
+  }
+}
+
 // 数据库查询函数
 async function fetchSummaryData(limit = 100, filters = {}) {
   const connection = await mysql.createConnection(dbConfig);
@@ -104,7 +141,8 @@ async function fetchSummaryData(limit = 100, filters = {}) {
       bs.level,
       IFNULL(bs.is_analyzed, 0) as is_analyzed,
       IFNULL(bs.is_favorite, 0) as is_favorite,
-      bc.adj_logs
+      bc.adj_logs,
+      bc.cash_flow_data
     FROM summary s
     LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
     LEFT JOIN bond_cells bc ON s.bond_id = bc.bond_id
@@ -114,34 +152,48 @@ async function fetchSummaryData(limit = 100, filters = {}) {
   const whereConditions = [];
   const queryParams = [];
   
-  // 添加 is_blacklisted 过滤
   if (filters.is_blacklisted !== undefined) {
     whereConditions.push('bs.is_blacklisted = ?');
     queryParams.push(parseInt(filters.is_blacklisted));
   }
   
-  // 如果有过滤条件，添加 WHERE 子句
   if (whereConditions.length > 0) {
     query += ` WHERE ${whereConditions.join(' AND ')}`;
   }
   
-  // 添加 LIMIT 子句
   query += ` LIMIT ?`;
   queryParams.push(limit);
   
   try {
     const [rows] = await connection.execute(query, queryParams);
     
-    // 处理每一行数据，添加 adj_records 字段
+    // 处理每一行数据
     for (const row of rows) {
+      // 处理下修记录
       if (row.adj_logs) {
-        // 解析调整记录并添加到结果中
         row.adj_records = parseAdjustData(row.adj_logs);
       } else {
         row.adj_records = [];
       }
-
+      
+      // 处理现金流数据
+      if (row.cash_flow_data) {
+        if (row.bond_id === '123076') {
+          console.log(1)  
+        }
+          const profitData = parseCashFlowData(row.cash_flow_data);
+          if (profitData) {
+            // 添加净利润数据
+            // row.net_profits = profitData.profits;
+          row.total_profit = profitData.total;
+          
+          // 计算最近三年净利润总和与转债剩余规模的差值（转债规模单位是万元，需要转换为亿元）
+          row.profit_bond_gap = Number((profitData.total - row.curr_iss_amt).toFixed(2));
+        }
+      }
+      
       delete row.adj_logs;
+      delete row.cash_flow_data;
     }
     
     return rows;
