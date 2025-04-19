@@ -46,6 +46,8 @@ async function fetchSummaryData(limit = 100) {
       bs.is_state_owned,
       bs.profit_strategy,
       bs.finance_data,
+      bs.is_blacklisted,
+      bs.sell_price,
       bs.level,
       IFNULL(bs.is_analyzed, 0) as is_analyzed,
       IFNULL(bs.is_favorite, 0) as is_favorite
@@ -169,11 +171,22 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         updateValues.push(updateData.is_favorite);
       }
   
-
       // 添加 profit_strategy 字段的更新
       if ('profit_strategy' in updateData) {
         updateFields.push('profit_strategy = ?');
         updateValues.push(updateData.profit_strategy);
+      }
+
+      // 添加 is_blacklisted 字段的更新
+      if ('is_blacklisted' in updateData) {
+        updateFields.push('is_blacklisted = ?');
+        updateValues.push(updateData.is_blacklisted);
+      }
+
+      // 添加 sell_price 字段的更新
+      if ('sell_price' in updateData) {
+        updateFields.push('sell_price = ?');
+        updateValues.push(updateData.sell_price);
       }
       
       if (updateFields.length > 0) {
@@ -234,6 +247,20 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
       if ('profit_strategy' in updateData) {
         fields.push('profit_strategy');
         values.push(updateData.profit_strategy);
+        placeholders.push('?');
+      }
+
+      // 添加 is_blacklisted 字段的插入
+      if ('is_blacklisted' in updateData) {
+        fields.push('is_blacklisted');
+        values.push(updateData.is_blacklisted);
+        placeholders.push('?');
+      }
+
+      // 添加 sell_price 字段的插入
+      if ('sell_price' in updateData) {
+        fields.push('sell_price');
+        values.push(updateData.sell_price);
         placeholders.push('?');
       }
 
