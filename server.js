@@ -36,9 +36,11 @@ app.use(
 app.use(koaBody.default());
 
 // 数据库查询函数
-async function fetchSummaryData(limit = 100) {
+async function fetchSummaryData(limit = 100, filters = {}) {
   const connection = await mysql.createConnection(dbConfig);
-  const query = `
+  
+  // 构建基础查询
+  let query = `
     SELECT 
       s.*,
       bs.target_price,
@@ -53,11 +55,29 @@ async function fetchSummaryData(limit = 100) {
       IFNULL(bs.is_favorite, 0) as is_favorite
     FROM summary s
     LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
-    LIMIT ?
   `;
   
+  // 添加过滤条件
+  const whereConditions = [];
+  const queryParams = [];
+  
+  // 添加 is_blacklisted 过滤
+  if (filters.is_blacklisted !== undefined) {
+    whereConditions.push('bs.is_blacklisted = ?');
+    queryParams.push(parseInt(filters.is_blacklisted));
+  }
+  
+  // 如果有过滤条件，添加 WHERE 子句
+  if (whereConditions.length > 0) {
+    query += ` WHERE ${whereConditions.join(' AND ')}`;
+  }
+  
+  // 添加 LIMIT 子句
+  query += ` LIMIT ?`;
+  queryParams.push(limit);
+  
   try {
-    const [rows] = await connection.execute(query, [limit]);
+    const [rows] = await connection.execute(query, queryParams);
     return rows;
   } catch (error) {
     console.error('Error fetching summary data:', error);
@@ -87,7 +107,9 @@ async function fetchBoundCellData(bond_id) {
       s.level,
       s.is_analyzed,
       s.is_state_owned,
-      s.is_favorite
+      s.is_favorite,
+      s.is_blacklisted,
+      s.sell_price
     FROM bond_cells bc
     LEFT JOIN bond_strategies s ON bc.bond_id = s.bond_id
     WHERE bc.bond_id = ?
@@ -339,9 +361,15 @@ router.get('/api/bond_cell', async (ctx) => {
 
 // API 路由 - 获取 summary 数据
 router.get('/api/summary', async (ctx) => {
-  const { limit = 1000 } = ctx.query;
+  const { limit = 1000, is_blacklisted } = ctx.query;
   try {
-    const data = await fetchSummaryData(parseInt(limit));
+    // 构建过滤条件对象
+    const filters = {};
+    if (is_blacklisted !== undefined) {
+      filters.is_blacklisted = is_blacklisted;
+    }
+    
+    const data = await fetchSummaryData(parseInt(limit), filters);
     // 等权指数
     const bond_index = await fetchBoundIndexData(parseInt(limit));
     for (let item of data) {
@@ -450,7 +478,7 @@ router.get('/api/refresh-with-cooldown', async (ctx) => {
         lastRefreshTime = Date.now();
         
         // 获取最新的 summary 数据
-        const data = await fetchSummaryData(1000); // 使用默认限制 1000 条
+        const data = await fetchSummaryData(1000, {}); // 传递空过滤对象
         
         // 处理数据格式，与 summary 接口保持一致
         for (let item of data) {
