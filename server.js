@@ -1052,10 +1052,10 @@ const count = 0; // 记录第几次执行
 //   runCrawlerTask({ ignoreMarketOpen: true });
 // });
 
-// 每天的 3 点 16 分执行一次任务，只有在是交易日的情况下
-// cron.schedule(`10 15 * * 1-5`, async () => {  // 每天 3:10 PM 执行（周一至周五）
-//   console.error('启动 15:10 定时更新器')
-//   runCrawlerTask({ ignoreMarketOpen: true });
-// });
+// 每天晚上 10 点执行一次任务
+cron.schedule(`30 21 * * *`, async () => {  // 每天 22:00 执行
+  console.error('启动晚上 10 点定时更新器')
+  runCrawlerTask({ ignoreMarketOpen: true });
+});
 
 console.log('Scheduler is running...');
