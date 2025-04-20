@@ -999,6 +999,101 @@ router.get('/api/bond_cells/without_adjust_tc', async (ctx) => {
   }
 });
 
+// 批量更新或插入指数历史数据
+async function updateIndexHistory(dataArray) {
+  const connection = await mysql.createConnection(dbConfig);
+  
+  try {
+    // 使用事务确保数据一致性
+    await connection.beginTransaction();
+    
+    for (const item of dataArray) {
+      const { price_dt, mid_price } = item;
+      
+      if (!price_dt || mid_price === undefined || mid_price === null) {
+        console.error('数据格式错误:', item);
+        continue;
+      }
+
+      // 使用 ON DUPLICATE KEY UPDATE 实现更新或插入
+      const query = `
+        INSERT INTO index_history (price_dt, mid_price)
+        VALUES (?, ?)
+        ON DUPLICATE KEY UPDATE
+        mid_price = VALUES(mid_price)
+      `;
+      
+      await connection.execute(query, [price_dt, mid_price]);
+    }
+    
+    // 提交事务
+    await connection.commit();
+    return true;
+  } catch (error) {
+    // 发生错误时回滚事务
+    await connection.rollback();
+    console.error('更新指数历史数据失败:', error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
+}
+
+// API 路由 - 批量更新指数历史数据
+router.post('/api/index_history/batch', async (ctx) => {
+  try {
+    const dataArray = ctx.request.body;
+    
+    if (!Array.isArray(dataArray)) {
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: '请求数据必须是数组格式'
+      };
+      return;
+    }
+
+    await updateIndexHistory(dataArray);
+    
+    ctx.body = {
+      success: true,
+      message: '数据更新成功',
+      count: dataArray.length
+    };
+  } catch (error) {
+    console.error('批量更新指数历史数据失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新数据失败',
+      error: error.message
+    };
+  }
+});
+
+// 获取指数历史数据
+router.get('/api/index_history', async (ctx) => {
+  const connection = await mysql.createConnection(dbConfig);
+  try {
+    const [rows] = await connection.execute('SELECT price_dt, mid_price FROM index_history ORDER BY price_dt DESC');
+    
+    ctx.body = {
+      success: true,
+      data: rows
+    };
+  } catch (error) {
+    console.error('获取指数历史数据失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '获取数据失败',
+      error: error.message
+    };
+  } finally {
+    await connection.end();
+  }
+});
+
 // 注册路由
 app.use(router.routes()).use(router.allowedMethods());
 
