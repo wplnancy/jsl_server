@@ -8,6 +8,7 @@ import { crawler } from './src/main.js';
 import dayjs from 'dayjs';
 import { PlaywrightCrawler, RequestQueue } from 'crawlee';
 import { insertDataToDB } from './src/utils.js';
+import { pool } from './src/db.js';
 
 import { isMarketOpen } from './src/date.js';
 
@@ -127,47 +128,54 @@ function parseCashFlowData(cashFlowStr) {
 
 // 数据库查询函数
 async function fetchSummaryData(limit = 100, filters = {}) {
-  const connection = await mysql.createConnection(dbConfig);
-
-  // 构建基础查询，添加 bond_cells 表连接
-  let query = `
-    SELECT 
-      s.*,
-      bs.target_price,
-      bs.target_heavy_price,
-      bs.is_state_owned,
-      bs.profit_strategy,
-      bs.finance_data,
-      bs.is_blacklisted,
-      bs.sell_price,
-      bs.level,
-      IFNULL(bs.is_analyzed, 0) as is_analyzed,
-      IFNULL(bs.is_favorite, 0) as is_favorite,
-      bc.adj_logs,
-      bc.cash_flow_data
-    FROM summary s
-    LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
-    LEFT JOIN bond_cells bc ON s.bond_id = bc.bond_id
-  `;
-
-  // 添加过滤条件
-  const whereConditions = [];
-  const queryParams = [];
-
-  if (filters.is_blacklisted !== undefined) {
-    whereConditions.push('bs.is_blacklisted = ?');
-    queryParams.push(parseInt(filters.is_blacklisted));
-  }
-
-  if (whereConditions.length > 0) {
-    query += ` WHERE ${whereConditions.join(' AND ')}`;
-  }
-
-  query += ` LIMIT ?`;
-  queryParams.push(limit);
-
+  let conn;
   try {
-    const [rows] = await connection.execute(query, queryParams);
+    conn = await pool.getConnection();
+
+    // 构建基础查询，添加 bond_cells 表连接
+    let query = `
+      SELECT 
+        s.*,
+        bs.target_price,
+        bs.target_heavy_price,
+        bs.is_state_owned,
+        bs.profit_strategy,
+        bs.finance_data,
+        bs.is_blacklisted,
+        bs.sell_price,
+        bs.level,
+        IFNULL(bs.is_analyzed, 0) as is_analyzed,
+        IFNULL(bs.is_favorite, 0) as is_favorite,
+        bc.adj_logs,
+        bc.cash_flow_data
+      FROM summary s
+      LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
+      LEFT JOIN bond_cells bc ON s.bond_id = bc.bond_id
+    `;
+
+    // 添加过滤条件
+    const whereConditions = [];
+    const queryParams = [];
+
+    if (filters.is_blacklisted !== undefined) {
+      whereConditions.push('bs.is_blacklisted = ?');
+      queryParams.push(Number(filters.is_blacklisted));
+    }
+
+    if (whereConditions.length > 0) {
+      query += ` WHERE ${whereConditions.join(' AND ')}`;
+    }
+
+    // 直接将 limit 值添加到查询字符串中
+    const safeLimit = Math.max(1, Math.min(1000, parseInt(limit) || 100));
+    query += ` LIMIT ${safeLimit}`;
+
+    console.log('Executing summary query:', query); // 添加调试日志
+    const [rows] =
+      whereConditions.length > 0
+        ? await conn.execute(query, queryParams)
+        : await conn.execute(query);
+    console.log('Summary query result rows:', rows.length); // 添加调试日志
 
     // 处理每一行数据
     for (const row of rows) {
@@ -180,16 +188,11 @@ async function fetchSummaryData(limit = 100, filters = {}) {
 
       // 处理现金流数据
       if (row.cash_flow_data) {
-        if (row.bond_id === '123076') {
-          console.log(1);
-        }
         const profitData = parseCashFlowData(row.cash_flow_data);
         if (profitData) {
           // 添加净利润数据
           row.net_profits = profitData.profits;
           row.total_profit = profitData.total;
-
-          // 计算最近三年净利润总和与转债剩余规模的差值（转债规模单位是万元，需要转换为亿元）
           row.profit_bond_gap = Number((row.curr_iss_amt - profitData.total).toFixed(2));
         }
       }
@@ -201,18 +204,36 @@ async function fetchSummaryData(limit = 100, filters = {}) {
     return rows;
   } catch (error) {
     console.error('Error fetching summary data:', error);
+    console.error('Error details:', error.message, error.code, error.sqlMessage); // 添加详细错误信息
     throw error;
   } finally {
-    await connection.end();
+    if (conn) {
+      conn.release();
+    }
   }
 }
 
 // 新增：获取 bound_index 表的数据
 async function fetchBoundIndexData(limit = 100) {
-  const connection = await mysql.createConnection(dbConfig);
-  const [rows] = await connection.execute('SELECT * FROM bound_index LIMIT ?', [limit]);
-  await connection.end();
-  return rows;
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    // 直接将 limit 值添加到查询字符串中
+    const safeLimit = Math.max(1, Math.min(1000, parseInt(limit) || 100));
+    const query = `SELECT * FROM bound_index LIMIT ${safeLimit}`;
+    console.log('Executing query:', query); // 添加调试日志
+    const [rows] = await conn.execute(query);
+    console.log('Query result rows:', rows.length); // 添加调试日志
+    return rows;
+  } catch (error) {
+    console.error('Error fetching bound_index data:', error);
+    console.error('Error details:', error.message, error.code, error.sqlMessage); // 添加详细错误信息
+    throw error;
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
 }
 
 async function fetchBoundCellData(bond_id) {
