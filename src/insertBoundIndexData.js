@@ -2,12 +2,17 @@ import mysql from 'mysql2/promise';
 
 // 定义数据字段
 const fields = [
-  "id", "bond_index", "median_price", "median_premium_rate", "yield_to_maturity", "created_at"
+  'id',
+  'bond_index',
+  'median_price',
+  'median_premium_rate',
+  'yield_to_maturity',
+  'created_at',
 ];
 
 // 数据类型处理函数
 const sanitizeItem = (item) => {
-  return fields.map(field => {
+  return fields.map((field) => {
     let value = item[field] ?? null;
 
     return value;
@@ -20,8 +25,8 @@ export const insertBoundIndexData = async (data) => {
   const connection = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '12345678',
-    database: 'kzz_datax'
+    password: '968716asD',
+    database: 'kzz_datax',
   });
 
   try {
@@ -30,14 +35,14 @@ export const insertBoundIndexData = async (data) => {
     // 动态生成插入和更新的 SQL 查询
     const updateFields = fields
       // .filter(field => field !== "id")  // 排除主键
-      .map(field => `${field} = VALUES(${field})`)  // 用于 ON DUPLICATE KEY UPDATE 子句
-      .join(", ");
+      .map((field) => `${field} = VALUES(${field})`) // 用于 ON DUPLICATE KEY UPDATE 子句
+      .join(', ');
 
     const query = `
       INSERT INTO bound_index (
-        ${fields.join(", ")}
+        ${fields.join(', ')}
       ) VALUES (
-        ${fields.map(() => "?").join(", ")}
+        ${fields.map(() => '?').join(', ')}
       )
       ON DUPLICATE KEY UPDATE
         ${updateFields}
@@ -46,7 +51,7 @@ export const insertBoundIndexData = async (data) => {
     // 遍历数据并插入到数据库
     for (const item of data) {
       const values = sanitizeItem(item);
-      
+
       // 如果你想调试查看每个值的插入情况，可以取消注释下面这一行
       // console.log("Executing Query with values:", values);
 
