@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { PlaywrightCrawler, RequestQueue } from 'crawlee';
 import { insertDataToDB } from './src/utils.js';
 import { pool } from './src/db.js';
+import { API_URLS } from './src/constants/api-urls.js';
 
 import { isMarketOpen } from './src/date.js';
 
@@ -260,8 +261,8 @@ async function fetchBoundCellData(bond_id) {
   return rows;
 }
 
-// 新增：API 路由 - 获取 bound_index 数据
-router.get('/api/bound_index', async (ctx) => {
+// API 路由 - 获取 bound_index 数据
+router.get(API_URLS.BOUND_INDEX, async (ctx) => {
   const { limit = 1000 } = ctx.query;
   try {
     const data = await fetchBoundIndexData(parseInt(limit));
@@ -471,7 +472,7 @@ router.post('/api/bond_strategies', async (ctx) => {
   }
 });
 
-router.get('/api/bond_cell', async (ctx) => {
+router.get(API_URLS.BOND_CELL, async (ctx) => {
   const { bond_id } = ctx.query;
 
   if (!bond_id) {
@@ -501,7 +502,7 @@ router.get('/api/bond_cell', async (ctx) => {
 });
 
 // API 路由 - 获取 summary 数据
-router.get('/api/summary', async (ctx) => {
+router.get(API_URLS.SUMMARY, async (ctx) => {
   const { limit = 1000, is_blacklisted } = ctx.query;
   try {
     // 构建过滤条件对象
@@ -544,8 +545,7 @@ router.get('/api/summary', async (ctx) => {
 });
 
 // API 路由 - 批量更新 summary 数据
-router.post('/api/summary/batch-update', async (ctx) => {
-  // console.error('收到请求更新数据',  ctx.request.body?.[0]?.bond_id, ctx.request.body?.[0]?.price);
+router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
   try {
     const data = ctx.request.body;
 
@@ -583,7 +583,7 @@ const REFRESH_COOLDOWN = 10 * 1000; // 10s 冷却时间
 let lastRefreshTime = 0;
 
 // 添加带有冷却时间的刷新接口
-router.get('/api/refresh-with-cooldown', async (ctx) => {
+router.get(API_URLS.REFRESH_WITH_COOLDOWN, async (ctx) => {
   const now = Date.now();
 
   // 检查是否在冷却时间内
@@ -680,7 +680,7 @@ async function updateBoundIndexMedianPrice(medianPrice) {
 }
 
 // API 路由 - 更新 bound_index 的 median_price
-router.post('/api/bound_index/median_price', async (ctx) => {
+router.post(API_URLS.BOUND_INDEX_MEDIAN_PRICE, async (ctx) => {
   try {
     const { median_price } = ctx.request.body;
     console.error('获取到中位数', median_price);
@@ -895,7 +895,7 @@ async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {}) {
 }
 
 // API 路由 - 更新 bond_cells 数据
-router.post('/api/bond_cells/update', async (ctx) => {
+router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
   try {
     const { stock_nm, bond_id, ...updateData } = ctx.request.body;
     console.log('获取到的数据:', {
@@ -958,7 +958,7 @@ async function fetchBondsWithoutAssetData() {
 }
 
 // API 路由 - 获取没有资产数据的可转债列表
-router.get('/api/bond_cells/without_asset_data', async (ctx) => {
+router.get(API_URLS.BOND_CELLS_WITHOUT_ASSET_DATA, async (ctx) => {
   try {
     const data = await fetchBondsWithoutAssetData();
 
@@ -1007,7 +1007,7 @@ async function fetchBondsWithoutAdjustTC() {
 }
 
 // API 路由 - 获取没有下修条款的可转债列表
-router.get('/api/bond_cells/without_adjust_tc', async (ctx) => {
+router.get(API_URLS.BOND_CELLS_WITHOUT_ADJUST_TC, async (ctx) => {
   try {
     const data = await fetchBondsWithoutAdjustTC();
 
@@ -1067,7 +1067,7 @@ async function updateIndexHistory(dataArray) {
 }
 
 // API 路由 - 批量更新指数历史数据
-router.post('/api/index_history/batch', async (ctx) => {
+router.post(API_URLS.INDEX_HISTORY_BATCH, async (ctx) => {
   try {
     const dataArray = ctx.request.body;
 
@@ -1099,7 +1099,7 @@ router.post('/api/index_history/batch', async (ctx) => {
 });
 
 // 获取指数历史数据
-router.get('/api/index_history', async (ctx) => {
+router.get(API_URLS.INDEX_HISTORY, async (ctx) => {
   const connection = await mysql.createConnection(dbConfig);
   try {
     const [rows] = await connection.execute(
