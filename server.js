@@ -936,16 +936,14 @@ async function fetchBondsWithoutAssetData() {
   const connection = await mysql.createConnection(dbConfig);
 
   try {
-    const query = `
-      SELECT bond_nm, stock_nm, price
-      FROM summary 
-      WHERE bond_id NOT IN (
-        SELECT bond_id 
-        FROM bond_cells 
-        WHERE asset_data IS NOT NULL
-        AND cash_flow_data is not NULL AND debt_data is not NULL
-      ) and price >= 90 and price <= 140 order by price asc
-    `;
+    const query = `SELECT 
+    s.*,
+    bc.cash_flow_data as cash_flow_data
+FROM bond_cells bc
+LEFT JOIN summary s ON bc.bond_id = s.bond_id 
+WHERE price >= 95 
+    AND price <= 140 
+    AND cash_flow_data LIKE '%预估%'`;
 
     const [rows] = await connection.execute(query);
     return rows;
@@ -990,8 +988,8 @@ async function fetchBondsWithoutAdjustTC() {
         s.price,
         s.convert_price,
         s.premium_rt
-      FROM bond_cells bc
-      LEFT JOIN summary s ON bc.bond_id = s.bond_id
+FROM bond_cells bc
+LEFT JOIN summary s ON bc.bond_id = s.bond_id 
       WHERE bc.adjust_tc is NULL
       ORDER BY s.price ASC
     `;
