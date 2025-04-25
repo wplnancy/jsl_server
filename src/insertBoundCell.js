@@ -1,4 +1,4 @@
-import { pool } from './db.js';
+import { pool } from './utils/pool.js';
 
 // 定义数据字段
 const fields = [

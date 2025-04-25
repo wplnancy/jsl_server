@@ -8,7 +8,7 @@ import { crawler } from './src/main.js';
 import dayjs from 'dayjs';
 import { PlaywrightCrawler, RequestQueue } from 'crawlee';
 import { insertDataToDB } from './src/utils.js';
-import { pool } from './src/db.js';
+import { pool } from './src/utils/pool.js';
 import { API_URLS } from './src/constants/api-urls.js';
 import { dbConfig } from './src/config/db.config.js';
 
