@@ -1,10 +1,8 @@
 import mysql from 'mysql2/promise';
+import { dbConfig } from './config/db.config.js';
 
 export const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '968716asD',
-  database: 'kzz_datax',
+  ...dbConfig,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

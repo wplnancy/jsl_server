@@ -10,6 +10,7 @@ import { PlaywrightCrawler, RequestQueue } from 'crawlee';
 import { insertDataToDB } from './src/utils.js';
 import { pool } from './src/db.js';
 import { API_URLS } from './src/constants/api-urls.js';
+import { dbConfig } from './src/config/db.config.js';
 
 import { isMarketOpen } from './src/date.js';
 
@@ -17,14 +18,6 @@ const app = new Koa();
 const router = new Router();
 
 const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
-
-// 数据库连接配置
-const dbConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: '968716asD',
-  database: 'kzz_datax',
-};
 
 // 使用 CORS 中间件，允许跨域
 app.use(
@@ -171,7 +164,7 @@ async function fetchSummaryData(limit = 100, filters = {}) {
     const safeLimit = Math.max(1, Math.min(1000, parseInt(limit) || 100));
     query += ` LIMIT ${safeLimit}`;
 
-    console.log('Executing summary query:', query); // 添加调试日志
+    // console.log('Executing summary query:', query); // 添加调试日志
     const [rows] =
       whereConditions.length > 0
         ? await conn.execute(query, queryParams)

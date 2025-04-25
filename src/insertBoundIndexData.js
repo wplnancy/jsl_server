@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+import { dbConfig } from './config/db.config.js';
 
 // 定义数据字段
 const fields = [
@@ -21,13 +22,8 @@ const sanitizeItem = (item) => {
 
 // 插入数据到数据库的函数
 export const insertBoundIndexData = async (data) => {
-  // 连接到数据库
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '968716asD',
-    database: 'kzz_datax',
-  });
+  // 使用统一的数据库配置
+  const connection = await mysql.createConnection(dbConfig);
 
   try {
     console.log('Database connection established.');
