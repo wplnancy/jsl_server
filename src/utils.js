@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+import { dbConfig } from './config/db.config.js';
 
 export const delay = async (time = 1000) => {
   await new Promise((resolve) => setTimeout(resolve, time)); // 等待指定时间
@@ -148,12 +149,7 @@ export const insertDataToDB = async (data) => {
     return { values, updateFields, updateValues };
   };
 
-  const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '968716asD',
-    database: 'kzz_datax',
-  });
+  const connection = await mysql.createConnection(dbConfig);
 
   try {
     console.log('Database connection established.');
