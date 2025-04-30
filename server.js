@@ -548,7 +548,6 @@ router.get(API_URLS.SUMMARY, async (ctx) => {
 router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
   try {
     const data = ctx.request.body;
-
     if (!Array.isArray(data)) {
       ctx.status = 400;
       ctx.body = {
@@ -803,6 +802,16 @@ async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {}) {
         updateValues.push(updateData.min_history_price);
       }
 
+      //
+      if ('adj_logs' in updateData) {
+        updateFields.push('adj_logs = ?');
+        updateValues.push(updateData.adj_logs);
+      }
+      if ('unadj_logs' in updateData) {
+        updateFields.push('unadj_logs = ?');
+        updateValues.push(updateData.unadj_logs);
+      }
+
       if (updateFields.length > 0) {
         const updateSQL = `UPDATE bond_cells SET ${updateFields.join(', ')} WHERE bond_id = ?`;
         updateValues.push(finalBondId);
@@ -863,6 +872,18 @@ async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {}) {
         placeholders.push('?');
       }
 
+      if ('adj_logs' in updateData) {
+        insertFields.push('adj_logs');
+        insertValues.push(updateData.adj_logs);
+        placeholders.push('?');
+      }
+
+      if ('unadj_logs' in updateData) {
+        insertFields.push('unadj_logs');
+        insertValues.push(updateData.unadj_logs);
+        placeholders.push('?');
+      }
+
       // 最高历史价格
       if ('max_history_price' in updateData) {
         insertFields.push('max_history_price');
@@ -898,12 +919,6 @@ async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {}) {
 router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
   try {
     const { stock_nm, bond_id, ...updateData } = ctx.request.body;
-    console.log('获取到的数据:', {
-      stock_nm,
-      bond_id,
-      updateData,
-    });
-
     if (!stock_nm && !bond_id) {
       ctx.status = 400;
       ctx.body = {
