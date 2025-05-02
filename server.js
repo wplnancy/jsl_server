@@ -14,6 +14,8 @@ import { updateMedianPrice } from './src/services/update-mid-price.service.js';
 import { updateIndexHistory } from './src/services/index-history.service.js';
 import { fetchBondsWithoutAssetData } from './src/services/fetchBonds-without-asset-data.service.js';
 import { logToFile } from './src/utils/logger.js';
+import { fetchBoundCellData } from './src/services/fetch-bound-cell.service.js';
+import { updateOrCreateBondCell } from './src/services/update-or-create-bond-cell.service.js';
 
 const app = new Koa();
 const router = new Router();
@@ -34,30 +36,6 @@ app.use(koaBody.default());
 // let isRefreshing = false;
 // const REFRESH_COOLDOWN = 10 * 1000; // 10s 冷却时间
 // let lastRefreshTime = 0;
-
-async function fetchBoundCellData(bond_id) {
-  const connection = await mysql.createConnection(dbConfig);
-  const query = `
-    SELECT 
-      bc.*,
-      s.finance_data,
-      s.target_price,
-      s.profit_strategy,
-      s.target_heavy_price,
-      s.level,
-      s.is_analyzed,
-      s.is_state_owned,
-      s.is_favorite,
-      s.is_blacklisted,
-      s.sell_price
-    FROM bond_cells bc
-    LEFT JOIN bond_strategies s ON bc.bond_id = s.bond_id
-    WHERE bc.bond_id = ?
-  `;
-  const [rows] = await connection.execute(query, [bond_id]);
-  await connection.end();
-  return rows;
-}
 
 // 优化：更新或创建可转债策略，支持部分字段更新
 async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
@@ -219,211 +197,6 @@ async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
   }
 }
 
-// 更新或创建 bond_cells 记录
-async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {}) {
-  const connection = await mysql.createConnection(dbConfig);
-
-  try {
-    let finalBondId = bond_id;
-
-    // 如果没有传入 bond_id，则通过 stock_nm 查询
-    if (!finalBondId && stock_nm) {
-      const [bondRows] = await connection.execute(
-        'SELECT bond_id FROM summary WHERE stock_nm = ?',
-        [stock_nm],
-      );
-
-      if (bondRows.length === 0) {
-        throw new Error(`未找到股票名称为 ${stock_nm} 的记录`);
-      }
-
-      finalBondId = bondRows[0].bond_id;
-    }
-
-    if (!finalBondId) {
-      throw new Error('必须提供 bond_id 或 stock_nm');
-    }
-
-    console.log('使用的 bond_id:', finalBondId);
-
-    // 检查 bond_cells 记录是否存在
-    const [existingRows] = await connection.execute(
-      'SELECT bond_id FROM bond_cells WHERE bond_id = ?',
-      [finalBondId],
-    );
-
-    if (existingRows.length > 0) {
-      // 构建动态更新SQL
-      const updateFields = [];
-      const updateValues = [];
-
-      // 资产数据
-      if ('asset_data' in updateData) {
-        updateFields.push('asset_data = ?');
-        updateValues.push(updateData.asset_data);
-      }
-
-      // 负债数据
-      if ('debt_data' in updateData) {
-        updateFields.push('debt_data = ?');
-        updateValues.push(updateData.debt_data);
-      }
-
-      // 现金流数据
-      if ('cash_flow_data' in updateData) {
-        updateFields.push('cash_flow_data = ?');
-        updateValues.push(updateData.cash_flow_data);
-      }
-
-      // 行业信息
-      if ('industry' in updateData) {
-        updateFields.push('industry = ?');
-        updateValues.push(updateData.industry);
-      }
-
-      // 历史数据信息
-      if ('info' in updateData) {
-        updateFields.push('info = ?');
-        updateValues.push(updateData.info);
-      }
-
-      // 调整条款信息
-      if ('adjust_tc' in updateData) {
-        updateFields.push('adjust_tc = ?');
-        updateValues.push(updateData.adjust_tc);
-      }
-
-      // 概念信息
-      if ('concept' in updateData) {
-        updateFields.push('concept = ?');
-        updateValues.push(updateData.concept);
-      }
-
-      // 最高历史价格
-      if ('max_history_price' in updateData) {
-        updateFields.push('max_history_price = ?');
-        updateValues.push(updateData.max_history_price);
-      }
-
-      // 最低历史价格
-      if ('min_history_price' in updateData) {
-        updateFields.push('min_history_price = ?');
-        updateValues.push(updateData.min_history_price);
-      }
-
-      //
-      if ('adj_logs' in updateData) {
-        updateFields.push('adj_logs = ?');
-        updateValues.push(updateData.adj_logs);
-      }
-      if ('unadj_logs' in updateData) {
-        updateFields.push('unadj_logs = ?');
-        updateValues.push(updateData.unadj_logs);
-      }
-
-      if (updateFields.length > 0) {
-        const updateSQL = `UPDATE bond_cells SET ${updateFields.join(', ')} WHERE bond_id = ?`;
-        updateValues.push(finalBondId);
-        await connection.execute(updateSQL, updateValues);
-      }
-    } else {
-      // 构建插入字段和值
-      const insertFields = ['bond_id'];
-      const insertValues = [finalBondId];
-      const placeholders = ['?'];
-
-      // 资产数据
-      if ('asset_data' in updateData) {
-        insertFields.push('asset_data');
-        insertValues.push(updateData.asset_data);
-        placeholders.push('?');
-      }
-
-      // 负债数据
-      if ('debt_data' in updateData) {
-        insertFields.push('debt_data');
-        insertValues.push(updateData.debt_data);
-        placeholders.push('?');
-      }
-
-      // 现金流数据
-      if ('cash_flow_data' in updateData) {
-        insertFields.push('cash_flow_data');
-        insertValues.push(updateData.cash_flow_data);
-        placeholders.push('?');
-      }
-
-      // 行业信息
-      if ('industry' in updateData) {
-        insertFields.push('industry');
-        insertValues.push(updateData.industry);
-        placeholders.push('?');
-      }
-
-      // 历史价格信息
-      if ('info' in updateData) {
-        insertFields.push('info');
-        insertValues.push(updateData.info);
-        placeholders.push('?');
-      }
-
-      // 调整条款信息
-      if ('adjust_tc' in updateData) {
-        insertFields.push('adjust_tc');
-        insertValues.push(updateData.adjust_tc);
-        placeholders.push('?');
-      }
-
-      // 概念信息
-      if ('concept' in updateData) {
-        insertFields.push('concept');
-        insertValues.push(updateData.concept);
-        placeholders.push('?');
-      }
-
-      if ('adj_logs' in updateData) {
-        insertFields.push('adj_logs');
-        insertValues.push(updateData.adj_logs);
-        placeholders.push('?');
-      }
-
-      if ('unadj_logs' in updateData) {
-        insertFields.push('unadj_logs');
-        insertValues.push(updateData.unadj_logs);
-        placeholders.push('?');
-      }
-
-      // 最高历史价格
-      if ('max_history_price' in updateData) {
-        insertFields.push('max_history_price');
-        insertValues.push(updateData.max_history_price);
-        placeholders.push('?');
-      }
-
-      // 最低历史价格
-      if ('min_history_price' in updateData) {
-        insertFields.push('min_history_price');
-        insertValues.push(updateData.min_history_price);
-        placeholders.push('?');
-      }
-
-      const insertSQL = `INSERT INTO bond_cells (${insertFields.join(
-        ', ',
-      )}) VALUES (${placeholders.join(', ')})`;
-      console.log('执行插入 SQL:', insertSQL);
-      console.log('插入值:', insertValues);
-      await connection.execute(insertSQL, insertValues);
-    }
-
-    return { success: true, bond_id: finalBondId };
-  } catch (error) {
-    console.error('更新或创建 bond_cells 记录失败:', error);
-    throw error;
-  } finally {
-    await connection.end();
-  }
-}
-
 // 优化：API路由 - 更新或创建可转债策略
 router.post('/api/bond_strategies', async (ctx) => {
   const { bond_id, ...updateData } = ctx.request.body;
@@ -459,6 +232,7 @@ router.get(API_URLS.BOND_CELL, async (ctx) => {
   const { bond_id } = ctx.query;
 
   if (!bond_id) {
+    logToFile(`${API_URLS.BOND_CELL} 没有传递过来bond_id ${bond_id}`);
     ctx.status = 400;
     ctx.body = {
       success: false,
@@ -475,10 +249,42 @@ router.get(API_URLS.BOND_CELL, async (ctx) => {
     };
   } catch (error) {
     console.error('Error fetching bond_cell data:', error);
+    logToFile(`${API_URLS.BOND_CELL}接口错误 ${error.message}`);
     ctx.status = 500;
     ctx.body = {
       success: false,
       message: 'Failed to fetch bond_cell data',
+      error: error.message,
+    };
+  }
+});
+
+// API 路由 - 更新 bond_cells 数据 浏览器插件调用的
+router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
+  try {
+    const { stock_nm, bond_id, ...updateData } = ctx.request.body;
+    if (!stock_nm && !bond_id) {
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: '必须提供 stock_nm (股票名称) 或 bond_id',
+      };
+      return;
+    }
+
+    const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
+
+    ctx.body = {
+      success: true,
+      message: `${bond_id}详情数据更新成功`,
+      bond_id: result.bond_id,
+    };
+  } catch (error) {
+    console.error('更新数据失败:', error);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新数据失败',
       error: error.message,
     };
   }
@@ -578,37 +384,6 @@ router.post(API_URLS.UPDATE_MEDIAN_PRICE, async (ctx) => {
     ctx.body = {
       success: false,
       message: '更新中位数价格失败',
-      error: error.message,
-    };
-  }
-});
-
-// API 路由 - 更新 bond_cells 数据
-router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
-  try {
-    const { stock_nm, bond_id, ...updateData } = ctx.request.body;
-    if (!stock_nm && !bond_id) {
-      ctx.status = 400;
-      ctx.body = {
-        success: false,
-        message: '必须提供 stock_nm (股票名称) 或 bond_id',
-      };
-      return;
-    }
-
-    const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
-
-    ctx.body = {
-      success: true,
-      message: '数据更新成功',
-      bond_id: result.bond_id,
-    };
-  } catch (error) {
-    console.error('更新数据失败:', error);
-    ctx.status = 500;
-    ctx.body = {
-      success: false,
-      message: '更新数据失败',
       error: error.message,
     };
   }
