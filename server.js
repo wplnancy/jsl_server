@@ -16,6 +16,7 @@ import { fetchBondsWithoutAssetData } from './src/services/fetchBonds-without-as
 import { logToFile } from './src/utils/logger.js';
 import { fetchBoundCellData } from './src/services/fetch-bound-cell.service.js';
 import { updateOrCreateBondCell } from './src/services/update-or-create-bond-cell.service.js';
+import { updateOrCreateBondStrategy } from './src/services/update-or-create-bond-strategy.service.js';
 
 const app = new Koa();
 const router = new Router();
@@ -37,168 +38,8 @@ app.use(koaBody.default());
 // const REFRESH_COOLDOWN = 10 * 1000; // 10s 冷却时间
 // let lastRefreshTime = 0;
 
-// 优化：更新或创建可转债策略，支持部分字段更新
-async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
-  const connection = await mysql.createConnection(dbConfig);
-
-  try {
-    // 检查记录是否存在
-    const [existingRows] = await connection.execute(
-      'SELECT id FROM bond_strategies WHERE bond_id = ?',
-      [bond_id],
-    );
-
-    if (existingRows.length > 0) {
-      // 构建动态更新SQL
-      const updateFields = [];
-      const updateValues = [];
-
-      if ('target_price' in updateData) {
-        updateFields.push('target_price = ?');
-        updateValues.push(updateData.target_price);
-      }
-
-      if ('finance_data' in updateData) {
-        updateFields.push('finance_data = ?');
-        updateValues.push(updateData.finance_data);
-      }
-
-      if ('target_heavy_price' in updateData) {
-        updateFields.push('target_heavy_price = ?');
-        updateValues.push(updateData.target_heavy_price);
-      }
-
-      if ('is_state_owned' in updateData) {
-        updateFields.push('is_state_owned = ?');
-        updateValues.push(updateData.is_state_owned);
-      }
-
-      if ('level' in updateData) {
-        updateFields.push('level = ?');
-        updateValues.push(updateData.level);
-      }
-
-      if ('is_analyzed' in updateData) {
-        updateFields.push('is_analyzed = ?');
-        updateValues.push(updateData.is_analyzed);
-      }
-
-      // 是否加入收藏
-      if ('is_favorite' in updateData) {
-        updateFields.push('is_favorite = ?');
-        updateValues.push(updateData.is_favorite);
-      }
-
-      // 添加 profit_strategy 字段的更新
-      if ('profit_strategy' in updateData) {
-        updateFields.push('profit_strategy = ?');
-        updateValues.push(updateData.profit_strategy);
-      }
-
-      // 添加 is_blacklisted 字段的更新
-      if ('is_blacklisted' in updateData) {
-        updateFields.push('is_blacklisted = ?');
-        updateValues.push(updateData.is_blacklisted);
-      }
-
-      // 添加 sell_price 字段的更新
-      if ('sell_price' in updateData) {
-        updateFields.push('sell_price = ?');
-        updateValues.push(updateData.sell_price);
-      }
-
-      if (updateFields.length > 0) {
-        const updateSQL = `UPDATE bond_strategies SET ${updateFields.join(', ')} WHERE bond_id = ?`;
-        updateValues.push(bond_id);
-        await connection.execute(updateSQL, updateValues);
-      }
-    } else {
-      const fields = ['bond_id'];
-      const values = [bond_id];
-      const placeholders = ['?'];
-
-      // 动态添加存在的字段
-      if ('target_price' in updateData) {
-        fields.push('target_price');
-        values.push(updateData.target_price);
-        placeholders.push('?');
-      }
-
-      if ('finance_data' in updateData) {
-        fields.push('finance_data');
-        values.push(updateData.finance_data);
-        placeholders.push('?');
-      }
-
-      if ('target_heavy_price' in updateData) {
-        fields.push('target_heavy_price');
-        values.push(updateData.target_heavy_price);
-        placeholders.push('?');
-      }
-
-      if ('is_state_owned' in updateData) {
-        fields.push('is_state_owned');
-        values.push(updateData.is_state_owned);
-        placeholders.push('?');
-      }
-
-      if ('level' in updateData) {
-        fields.push('level');
-        values.push(updateData.level);
-        placeholders.push('?');
-      }
-
-      if ('is_analyzed' in updateData) {
-        fields.push('is_analyzed');
-        values.push(updateData.is_analyzed);
-        placeholders.push('?');
-      }
-
-      // 是否加入收藏
-      if ('is_favorite' in updateData) {
-        fields.push('is_favorite');
-        values.push(updateData.is_favorite);
-        placeholders.push('?');
-      }
-
-      // 添加 profit_strategy 字段的插入
-      if ('profit_strategy' in updateData) {
-        fields.push('profit_strategy');
-        values.push(updateData.profit_strategy);
-        placeholders.push('?');
-      }
-
-      // 添加 is_blacklisted 字段的插入
-      if ('is_blacklisted' in updateData) {
-        fields.push('is_blacklisted');
-        values.push(updateData.is_blacklisted);
-        placeholders.push('?');
-      }
-
-      // 添加 sell_price 字段的插入
-      if ('sell_price' in updateData) {
-        fields.push('sell_price');
-        values.push(updateData.sell_price);
-        placeholders.push('?');
-      }
-
-      const insertSQL = `INSERT INTO bond_strategies (${fields.join(
-        ', ',
-      )}) VALUES (${placeholders.join(', ')})`;
-      await connection.execute(insertSQL, values);
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Error updating bond strategy:', error);
-    throw error;
-  } finally {
-    await connection.end();
-  }
-}
-
 // 优化：API路由 - 更新或创建可转债策略
-router.post('/api/bond_strategies', async (ctx) => {
+router.post(API_URLS.UPDATE_BOND_STRATEGIES, async (ctx) => {
   const { bond_id, ...updateData } = ctx.request.body;
   // 验证必要参数
   if (!bond_id) {
@@ -215,14 +56,15 @@ router.post('/api/bond_strategies', async (ctx) => {
 
     ctx.body = {
       success: true,
-      message: '可转债策略更新成功',
+      message: `更新${bond_id}转债详情策略成功`,
     };
   } catch (error) {
     console.error('Error in bond strategy API:', error);
+    logToFile(`更新${bond_id}转债策略失败 ${error.message}`);
     ctx.status = 500;
     ctx.body = {
       success: false,
-      message: '更新可转债策略失败',
+      message: '更新${bond_id}转债策略失败',
       error: error.message,
     };
   }
