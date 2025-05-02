@@ -59,6 +59,27 @@ export async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {})
         updateFields.push('industry = ?');
         updateValues.push(updateData.industry);
       }
+
+      if ('redeem_tc' in updateData) {
+        updateFields.push('redeem_tc = ?');
+        updateValues.push(updateData.redeem_tc);
+      }
+
+      if ('put_tc' in updateData) {
+        updateFields.push('put_tc = ?');
+        updateValues.push(updateData.put_tc);
+      }
+
+      if ('cpn_desc' in updateData) {
+        updateFields.push('cpn_desc = ?');
+        updateValues.push(updateData.cpn_desc);
+      }
+
+      if ('unredeem_logs' in updateData) {
+        updateFields.push('unredeem_logs = ?');
+        updateValues.push(updateData.unredeem_logs);
+      }
+
       if ('info' in updateData) {
         updateFields.push('info = ?');
         updateValues.push(updateData.info);
@@ -104,6 +125,31 @@ export async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {})
         insertValues.push(updateData.asset_data);
         placeholders.push('?');
       }
+
+      if ('redeem_tc' in updateData) {
+        insertFields.push('redeem_tc');
+        insertValues.push(updateData.redeem_tc);
+        placeholders.push('?');
+      }
+
+      if ('put_tc' in updateData) {
+        insertFields.push('put_tc');
+        insertValues.push(updateData.put_tc);
+        placeholders.push('?');
+      }
+
+      if ('cpn_desc' in updateData) {
+        insertFields.push('cpn_desc');
+        insertValues.push(updateData.cpn_desc);
+        placeholders.push('?');
+      }
+
+      if ('unredeem_logs' in updateData) {
+        insertFields.push('unredeem_logs');
+        insertValues.push(updateData.unredeem_logs);
+        placeholders.push('?');
+      }
+
       if ('debt_data' in updateData) {
         insertFields.push('debt_data');
         insertValues.push(updateData.debt_data);

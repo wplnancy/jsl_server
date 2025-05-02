@@ -25,6 +25,7 @@ export async function updateOrCreateBondStrategy(bond_id, updateData = {}) {
         updateFields.push('target_price = ?');
         updateValues.push(updateData.target_price);
       }
+
       if ('finance_data' in updateData) {
         updateFields.push('finance_data = ?');
         updateValues.push(updateData.finance_data);

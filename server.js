@@ -113,7 +113,7 @@ router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
       };
       return;
     }
-
+    console.log('updateData', updateData?.redeem_tc);
     const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
 
     ctx.body = {
