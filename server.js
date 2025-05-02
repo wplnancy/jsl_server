@@ -3,14 +3,11 @@ import Router from 'koa-router';
 import cors from 'koa2-cors';
 import mysql from 'mysql2/promise';
 import koaBody from 'koa-body';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 import { insertDataToDB } from './src/utils.js';
-import { pool } from './src/utils/pool.js';
 import { API_URLS } from './src/constants/api-urls.js';
 import { dbConfig } from './src/config/db.config.js';
-import { initScheduler } from './src/scheduler.js';
-import { parseAdjustData } from './src/utils/parser.js';
-import { parseCashFlowData } from './src/utils/cash-flow-parser.js';
+// import { initScheduler } from './src/scheduler.js';
 import { fetchSummaryData } from './src/services/summary.service.js';
 import { fetchMidPrice } from './src/services/fetch-mid-price.service.js';
 import { updateMedianPrice } from './src/services/update-mid-price.service.js';
@@ -21,7 +18,7 @@ import { logToFile } from './src/utils/logger.js';
 const app = new Koa();
 const router = new Router();
 
-const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
+// const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
 // 使用 CORS 中间件，允许跨域
 app.use(
@@ -34,9 +31,9 @@ app.use(
 // 解析 JSON 请求体
 app.use(koaBody.default());
 // 防止重复请求的简单实现
-let isRefreshing = false;
-const REFRESH_COOLDOWN = 10 * 1000; // 10s 冷却时间
-let lastRefreshTime = 0;
+// let isRefreshing = false;
+// const REFRESH_COOLDOWN = 10 * 1000; // 10s 冷却时间
+// let lastRefreshTime = 0;
 
 async function fetchBoundCellData(bond_id) {
   const connection = await mysql.createConnection(dbConfig);
@@ -531,7 +528,7 @@ router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
       };
       return;
     }
-
+    console.log('summary批量更新字段数量', Object.keys(data[0])?.length);
     // 使用 insertDataToDB 函数处理数据更新
     await insertDataToDB(data);
 
@@ -549,82 +546,6 @@ router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
       message: '更新数据失败',
       error: error.message,
     };
-  }
-});
-
-// 添加带有冷却时间的刷新接口
-router.get(API_URLS.REFRESH_WITH_COOLDOWN, async (ctx) => {
-  const now = Date.now();
-
-  // 检查是否在冷却时间内
-  if (now - lastRefreshTime < REFRESH_COOLDOWN) {
-    ctx.status = 429; // Too Many Requests
-    ctx.body = {
-      code: 429,
-      message: `请求过于频繁，请在 ${Math.ceil(
-        (REFRESH_COOLDOWN - (now - lastRefreshTime)) / 1000,
-      )} 秒后重试`,
-      success: false,
-    };
-    return;
-  }
-
-  // 检查是否有正在进行的刷新操作
-  if (isRefreshing) {
-    ctx.status = 409; // Conflict
-    ctx.body = {
-      code: 409,
-      message: '另一个刷新操作正在进行中',
-      success: false,
-    };
-    return;
-  }
-
-  try {
-    isRefreshing = true;
-    console.log('开始刷新数据...');
-
-    // 执行爬虫任务
-    await crawler.run(startUrls);
-
-    // 更新最后刷新时间
-    lastRefreshTime = Date.now();
-
-    // 获取最新的 summary 数据
-    const data = await fetchSummaryData(1000, {}); // 传递空过滤对象
-
-    // 处理数据格式，与 summary 接口保持一致
-    for (let item of data) {
-      // 处理日期格式
-      if (item.maturity_dt) {
-        item.maturity_dt = dayjs(item.maturity_dt).format('YYYY-MM-DD');
-      }
-
-      // 确保is_analyzed为数字类型，并设置默认值
-      item.is_analyzed = item.is_analyzed ? 1 : 0;
-
-      // 确保target_price和level有默认值
-      item.target_price = item.target_price || null;
-      item.level = item.level || '';
-      item.is_state_owned = item.is_state_owned ? 1 : 0;
-    }
-
-    ctx.body = {
-      code: 200,
-      message: '刷新成功',
-      success: true,
-      data: data,
-    };
-  } catch (error) {
-    console.error('刷新失败:', error);
-    ctx.status = 500;
-    ctx.body = {
-      code: 500,
-      message: '刷新失败: ' + error.message,
-      success: false,
-    };
-  } finally {
-    isRefreshing = false;
   }
 });
 
@@ -784,5 +705,5 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// 导入并初始化调度器
-initScheduler();
+// 导入并初始化调度器  不再需要调度器了,通过浏览器插件实现了
+// initScheduler();
