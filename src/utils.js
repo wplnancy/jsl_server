@@ -5,6 +5,14 @@ export const delay = async (time = 1000) => {
   await new Promise((resolve) => setTimeout(resolve, time)); // 等待指定时间
 };
 
+const getCurrentDateTime = () => {
+  const now = new Date();
+  const pad = (n) => n.toString().padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(
+    now.getHours(),
+  )}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+};
+
 export const insertDataToDB = async (data) => {
   const fields = [
     'bond_id',
@@ -119,6 +127,7 @@ export const insertDataToDB = async (data) => {
     'blocked',
     'debt_rate',
     'putting',
+    'updated_at',
   ];
 
   const sanitizeItem = (item) => {
@@ -126,25 +135,32 @@ export const insertDataToDB = async (data) => {
     const updateFields = [];
     const updateValues = [];
 
-    // 遍历所有字段，只处理存在的字段
+    // 强制更新时间
+    item.updated_at = getCurrentDateTime();
+
     fields.forEach((field) => {
       if (field in item) {
         let value = item[field];
-
-        // 特殊字段处理
         if (field === 't_flag' || field === 'icons') {
           value = JSON.stringify(value);
         }
-
         if (typeof value === 'string') {
           value = value.trim();
         }
-
         values.push(value);
         updateFields.push(`${field} = ?`);
         updateValues.push(value);
       }
     });
+
+    // 保证updated_at一定在updateFields和updateValues里
+    if (!updateFields.includes('updated_at = ?')) {
+      updateFields.push('updated_at = ?');
+      updateValues.push(item.updated_at);
+    }
+    if (!fields.includes('updated_at')) {
+      values.push(item.updated_at);
+    }
 
     return { values, updateFields, updateValues };
   };
@@ -169,14 +185,17 @@ export const insertDataToDB = async (data) => {
       );
 
       if (existingRows.length > 0) {
-        // 更新现有记录
+        // 更新现有记录，强制更新时间
         if (updateFields.length > 0) {
           const updateSQL = `UPDATE summary SET ${updateFields.join(', ')} WHERE bond_id = ?`;
           await connection.execute(updateSQL, [...updateValues, item.bond_id]);
         }
       } else {
-        // 插入新记录
+        // 插入新记录，强制更新时间
         const insertFields = fields.filter((field) => field in item);
+        if (!insertFields.includes('updated_at')) {
+          insertFields.push('updated_at');
+        }
         const insertSQL = `
           INSERT INTO summary (${insertFields.join(', ')})
           VALUES (${Array(insertFields.length).fill('?').join(', ')})
