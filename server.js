@@ -1,12 +1,11 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import cors from 'koa2-cors';
-import mysql from 'mysql2/promise';
+import { pool } from './src/utils/pool.js';
 import koaBody from 'koa-body';
 // import dayjs from 'dayjs';
 import { insertDataToDB } from './src/utils.js';
 import { API_URLS } from './src/constants/api-urls.js';
-import { dbConfig } from './src/config/db.config.js';
 // import { initScheduler } from './src/scheduler.js';
 import { fetchSummaryData } from './src/services/summary.service.js';
 import { fetchMidPrice } from './src/services/fetch-mid-price.service.js';
@@ -113,7 +112,7 @@ router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
       };
       return;
     }
-    console.log('updateData', updateData?.redeem_tc);
+    console.log('updateData', Object.keys(updateData));
     const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
 
     ctx.body = {
@@ -289,8 +288,8 @@ router.post(API_URLS.INDEX_HISTORY_BATCH, async (ctx) => {
 
 // 获取中位数历史数据
 router.get(API_URLS.INDEX_HISTORY, async (ctx) => {
-  const connection = await mysql.createConnection(dbConfig);
   try {
+    const connection = await pool.getConnection();
     const [rows] = await connection.execute(
       'SELECT price_dt, mid_price FROM index_history ORDER BY price_dt DESC',
     );
