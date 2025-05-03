@@ -7,7 +7,8 @@ import koaBody from 'koa-body';
 import { insertDataToDB } from './src/utils.js';
 import { API_URLS } from './src/constants/api-urls.js';
 // import { initScheduler } from './src/scheduler.js';
-import { fetchSummaryData } from './src/services/summary.service.js';
+import { fetchSummaryData } from './src/services/fetch-summary.service.js';
+import { fetchMailData } from './src/services/send-mail.service.js';
 import { fetchMidPrice } from './src/services/fetch-mid-price.service.js';
 import { updateMedianPrice } from './src/services/update-mid-price.service.js';
 import { updateIndexHistory } from './src/services/index-history.service.js';
@@ -16,7 +17,8 @@ import { logToFile } from './src/utils/logger.js';
 import { fetchBoundCellData } from './src/services/fetch-bound-cell.service.js';
 import { updateOrCreateBondCell } from './src/services/update-or-create-bond-cell.service.js';
 import { updateOrCreateBondStrategy } from './src/services/update-or-create-bond-strategy.service.js';
-
+import checkIsSend from './src/notify/checkIsSend.js';
+import isTradingTime from './src/utils/isTradingTime.js';
 const app = new Koa();
 const router = new Router();
 
@@ -316,10 +318,35 @@ router.get(API_URLS.INDEX_HISTORY, async (ctx) => {
 // 注册路由
 app.use(router.routes()).use(router.allowedMethods());
 
+const sendNotify = async () => {
+  const data = await fetchMailData();
+  // 等权指数
+  const [{ median_price }] = await fetchMidPrice();
+  checkIsSend(data, median_price);
+};
+
+// 启动定时器
+const startTradingTimer = () => {
+  const timer = setInterval(async () => {
+    if (!isTradingTime()) {
+      try {
+        await sendNotify();
+      } catch (error) {
+        console.error('发送通知失败:', error);
+        logToFile(`发送通知失败: ${error.message}`);
+      }
+    }
+  }, 30 * 1000); // 每30秒执行一次
+
+  return timer;
+};
+
 // 启动服务器
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  // 启动交易时间定时器
+  startTradingTimer();
 });
 
 // 导入并初始化调度器  不再需要调度器了,通过浏览器插件实现了
