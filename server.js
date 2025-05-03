@@ -288,8 +288,9 @@ router.post(API_URLS.INDEX_HISTORY_BATCH, async (ctx) => {
 
 // 获取中位数历史数据
 router.get(API_URLS.INDEX_HISTORY, async (ctx) => {
+  let connection;
   try {
-    const connection = await pool.getConnection();
+    connection = await pool.getConnection();
     const [rows] = await connection.execute(
       'SELECT price_dt, mid_price FROM index_history ORDER BY price_dt DESC',
     );
@@ -308,7 +309,7 @@ router.get(API_URLS.INDEX_HISTORY, async (ctx) => {
       error: error.message,
     };
   } finally {
-    await connection.end();
+    await connection.release();
   }
 });
 
