@@ -17,7 +17,7 @@ import { logToFile } from './src/utils/logger.js';
 import { fetchBoundCellData } from './src/services/fetch-bound-cell.service.js';
 import { updateOrCreateBondCell } from './src/services/update-or-create-bond-cell.service.js';
 import { updateOrCreateBondStrategy } from './src/services/update-or-create-bond-strategy.service.js';
-import checkIsSend from './src/notify/checkIsSend.js';
+import sendNotifyFn from './src/notify/sendNotify.js';
 import isTradingTime from './src/utils/isTradingTime.js';
 const app = new Koa();
 const router = new Router();
@@ -318,25 +318,65 @@ router.get(API_URLS.INDEX_HISTORY, async (ctx) => {
 // 注册路由
 app.use(router.routes()).use(router.allowedMethods());
 
+let lastBondList = null; // 存储上一次的查询结果
+let timer = null; // 存储定时器引用
+let currentInterval = 40 * 1000; // 初始间隔30秒
+const MAX_INTERVAL = 5 * 60 * 1000; // 最大间隔60秒
+const MIN_INTERVAL = 40 * 1000; // 最小间隔30秒
+
 const sendNotify = async () => {
   const data = await fetchMailData();
+  const currentBondList = data?.map((item) => item.bond_nm) || [];
+
+  // 如果结果相同，增加查询间隔
+  if (lastBondList === null) {
+    // 第一次执行，直接发送通知
+    console.log('首次执行，发送通知');
+  } else if (JSON.stringify(currentBondList) === JSON.stringify(lastBondList)) {
+    // 如果结果相同，增加间隔时间
+    currentInterval = Math.min(currentInterval + 20 * 1000, MAX_INTERVAL);
+    console.log(`转债列表未变化，增加查询间隔至${currentInterval / 1000}秒`);
+    // 重新设置定时器
+    startTradingTimer();
+  } else {
+    // 如果结果不同，重置为最小间隔
+    currentInterval = MIN_INTERVAL;
+    console.log('转债列表发生变化，重置查询间隔为30秒');
+  }
+
   // 等权指数
   const [{ median_price }] = await fetchMidPrice();
-  checkIsSend(data, median_price);
+  sendNotifyFn(data, median_price);
+  lastBondList = currentBondList;
 };
 
 // 启动定时器
 const startTradingTimer = () => {
-  const timer = setInterval(async () => {
-    if (isTradingTime()) {
+  // 清理已存在的定时器
+  if (timer) {
+    clearInterval(timer);
+  }
+
+  // 创建新的定时器
+  timer = setInterval(async () => {
+    if (!isTradingTime()) {
       try {
         await sendNotify();
       } catch (error) {
         console.error('发送通知失败:', error);
         logToFile(`发送通知失败: ${error.message}`);
+
+        // 如果是数据库连接错误，尝试重新连接
+        if (error.code === 'ECONNRESET' || error.code === 'ESOCKET') {
+          console.log('数据库连接断开，尝试重新连接...');
+          // 等待5秒后重新启动定时器
+          setTimeout(() => {
+            startTradingTimer();
+          }, 5000);
+        }
       }
     }
-  }, 30 * 1000); // 每30秒执行一次
+  }, currentInterval);
 
   return timer;
 };
@@ -347,6 +387,44 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   // 启动交易时间定时器
   startTradingTimer();
+});
+
+// 在程序退出时清理定时器
+process.on('SIGINT', () => {
+  if (timer) {
+    clearInterval(timer);
+  }
+  process.exit();
+});
+
+// 处理未捕获的异常
+process.on('uncaughtException', (error) => {
+  console.error('未捕获的异常:', error);
+  logToFile(`未捕获的异常: ${error.message}`);
+
+  // 如果是数据库连接错误，尝试重新连接
+  if (error.code === 'ECONNRESET' || error.code === 'ESOCKET') {
+    console.log('数据库连接断开，尝试重新连接...');
+    // 等待5秒后重新启动定时器
+    setTimeout(() => {
+      startTradingTimer();
+    }, 5000);
+  }
+});
+
+// 处理未处理的Promise拒绝
+process.on('unhandledRejection', (error) => {
+  console.error('未处理的Promise拒绝:', error);
+  logToFile(`未处理的Promise拒绝: ${error.message}`);
+
+  // 如果是数据库连接错误，尝试重新连接
+  if (error.code === 'ECONNRESET' || error.code === 'ESOCKET') {
+    console.log('数据库连接断开，尝试重新连接...');
+    // 等待5秒后重新启动定时器
+    setTimeout(() => {
+      startTradingTimer();
+    }, 5000);
+  }
 });
 
 // 导入并初始化调度器  不再需要调度器了,通过浏览器插件实现了
