@@ -359,7 +359,7 @@ const startTradingTimer = () => {
 
   // 创建新的定时器
   timer = setInterval(async () => {
-    if (!isTradingTime()) {
+    if (isTradingTime()) {
       try {
         await sendNotify();
       } catch (error) {
