@@ -1,0 +1,54 @@
+[2025年05月05日13时13分23秒] 未处理的Promise拒绝: Unexpected socket close
+[2025年05月06日09时41分15秒] 未处理的Promise拒绝: Unexpected socket close
+[2025年05月06日09时42分09秒] 未处理的Promise拒绝: read ECONNRESET
+[2025年05月06日10时37分52秒] 未处理的Promise拒绝: fetch failed
+[2025年05月06日10时54分52秒] 未处理的Promise拒绝: fetch failed
+[2025年05月06日13时41分53秒] 未处理的Promise拒绝: fetch failed
+[2025年05月06日14时50分11秒] 未处理的Promise拒绝: fetch failed
+[2025年05月06日14时56分51秒] 未处理的Promise拒绝: fetch failed
+[2025年05月06日16时04分12秒] 未捕获的异常: listen EADDRINUSE: address already in use :::3000
+[2025年05月06日16时53分58秒] 更新或创建财务数据失败: 未找到可转债 强力新材 对应的bond_id
+[2025年05月06日16时53分58秒] 更新或创建财务数据失败: 未找到可转债 强力新材 对应的bond_id
+[2025年05月06日16时59分46秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日16时59分46秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时00分13秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时00分13秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时03分44秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时03分44秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分09秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分09秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分10秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分10秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分11秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分11秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分19秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时04分19秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时05分36秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时05分36秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时07分50秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月06日17时07分50秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+[2025年05月08日09时45分25秒] 未处理的Promise拒绝: fetch failed
+[2025年05月08日10时30分05秒] 未处理的Promise拒绝: fetch failed
+[2025年05月08日11时24分45秒] 未处理的Promise拒绝: fetch failed
+[2025年05月08日14时59分46秒] 未处理的Promise拒绝: fetch failed
+[2025年05月09日09时36分51秒] 未处理的Promise拒绝: fetch failed
+[2025年05月09日13时21分09秒] 未处理的Promise拒绝: fetch failed
+[2025年05月09日13时39分54秒] 未处理的Promise拒绝: fetch failed
+[2025年05月10日12时20分02秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
+[2025年05月10日12时21分34秒] 获取可转债111003详情数据失败 fetchBoundCellData: Unknown column 's.issuanceScale' in 'field list'
+[2025年05月10日12时21分34秒] /api/bond_cell接口错误 Unknown column 's.issuanceScale' in 'field list'
+[2025年05月10日12时22分00秒] 获取可转债111003详情数据失败 fetchBoundCellData: Unknown column 's.issuanceScale' in 'field list'
+[2025年05月10日12时22分00秒] /api/bond_cell接口错误 Unknown column 's.issuanceScale' in 'field list'
+[2025年05月10日12时28分22秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
+[2025年05月10日12时30分10秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
+[2025年05月10日12时33分37秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
+[2025年05月10日18时55分04秒] 获取可转债摘要数据失败: item is not defined
+[2025年05月10日18时55分04秒] 获取更新列表数据失败: /api/update_list item is not defined
+[2025年05月10日18时55分52秒] 获取可转债摘要数据失败: row?.update_time?.split is not a function
+[2025年05月10日18时55分52秒] 获取更新列表数据失败: /api/update_list row?.update_time?.split is not a function
+[2025年05月10日21时06分01秒] 获取更新列表数据失败: /api/update_list item is not defined
+[2025年05月10日21时06分01秒] 获取可转债摘要数据失败: item is not defined
+[2025年05月10日21时06分02秒] 获取更新列表数据失败: /api/update_list item is not defined
+[2025年05月10日21时06分02秒] 获取可转债摘要数据失败: item is not defined
+[2025年05月10日21时06分02秒] 获取可转债摘要数据失败: item is not defined
+[2025年05月10日21时06分02秒] 获取更新列表数据失败: /api/update_list item is not defined

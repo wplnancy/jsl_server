@@ -5,6 +5,7 @@ export const API_URLS = {
   BOND_CELL: '/api/bond_cell',
   BOND_STRATEGIES: '/api/bond_strategies',
   SUMMARY: '/api/summary', // 获取summary列表
+  UPDATE_LIST: '/api/update_list', // 获取summary列表
   SUMMARY_BATCH_UPDATE: '/api/summary/batch-update', // 批量更新summary
   REFRESH_WITH_COOLDOWN: '/api/refresh-with-cooldown', // 暂时不需要了
   BOND_CELLS_UPDATE: '/api/bond_cells/update',

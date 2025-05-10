@@ -8,6 +8,7 @@ import { insertDataToDB } from './src/utils.js';
 import { API_URLS } from './src/constants/api-urls.js';
 // import { initScheduler } from './src/scheduler.js';
 import { fetchSummaryData } from './src/services/fetch-summary.service.js';
+import { fetchUpdateListData } from './src/services/fetch-update-list.service.js';
 import { fetchMailData } from './src/services/send-mail.service.js';
 import { fetchMidPrice } from './src/services/fetch-mid-price.service.js';
 import { updateMedianPrice } from './src/services/update-mid-price.service.js';
@@ -19,6 +20,7 @@ import { updateOrCreateBondCell } from './src/services/update-or-create-bond-cel
 import { updateOrCreateBondStrategy } from './src/services/update-or-create-bond-strategy.service.js';
 import sendNotifyFn from './src/notify/sendNotify.js';
 import isTradingTime from './src/utils/isTradingTime.js';
+import { updateOrCreateFinancialData } from './src/services/update-or-create-financial-data.service.js';
 const app = new Koa();
 const router = new Router();
 
@@ -115,6 +117,7 @@ router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
       return;
     }
     console.log('updateData', Object.keys(updateData));
+    console.log('lt_bps=', updateData.lt_bps);
     const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
 
     ctx.body = {
@@ -164,7 +167,38 @@ router.get(API_URLS.SUMMARY, async (ctx) => {
     };
   }
 });
+// API 路由 - 获取 更新详情列表 数据
+router.get(API_URLS.UPDATE_LIST, async (ctx) => {
+  const { limit = 1000, is_blacklisted } = ctx.query;
+  try {
+    // 构建过滤条件对象
+    const filters = {};
+    if (is_blacklisted !== undefined) {
+      filters.is_blacklisted = is_blacklisted;
+    }
 
+    const data = await fetchUpdateListData(parseInt(limit), filters);
+    // 等权指数
+    // const bond_index = await fetchMidPrice();
+
+    ctx.body = {
+      success: true,
+      data,
+      len: data.length,
+      // bond_index,
+    };
+  } catch (error) {
+    const errorMessage = `获取更新列表数据失败: ${API_URLS.UPDATE_LIST} ${error.message}`;
+    console.error(errorMessage);
+    logToFile(errorMessage);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: 'Failed to fetch data',
+      error: error.message,
+    };
+  }
+});
 // API 路由 - 批量更新 summary 数据
 router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
   try {
@@ -312,6 +346,39 @@ router.get(API_URLS.INDEX_HISTORY, async (ctx) => {
     };
   } finally {
     await connection.release();
+  }
+});
+
+// API 路由 - 更新或创建财务数据
+router.post('/api/financial-data', async (ctx) => {
+  try {
+    const data = ctx.request.body;
+
+    // 验证必要参数
+    if (!data.stock_nm) {
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: '缺少必要参数 stock_nm',
+      };
+      return;
+    }
+
+    const result = await updateOrCreateFinancialData(data);
+
+    ctx.body = {
+      success: true,
+      message: result.message,
+    };
+  } catch (error) {
+    console.error('更新或创建财务数据失败:', error);
+    logToFile(`更新或创建财务数据失败: ${error.message}`);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新或创建财务数据失败',
+      error: error.message,
+    };
   }
 });
 

@@ -70,6 +70,11 @@ export async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {})
         updateValues.push(updateData.put_tc);
       }
 
+      if ('lt_bps' in updateData) {
+        updateFields.push('lt_bps = ?');
+        updateValues.push(updateData.lt_bps);
+      }
+
       if ('cpn_desc' in updateData) {
         updateFields.push('cpn_desc = ?');
         updateValues.push(updateData.cpn_desc);
@@ -87,6 +92,11 @@ export async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {})
       if ('adjust_tc' in updateData) {
         updateFields.push('adjust_tc = ?');
         updateValues.push(updateData.adjust_tc);
+      }
+      // issuanceScale
+      if ('issuanceScale' in updateData) {
+        updateFields.push('issuanceScale = ?');
+        updateValues.push(updateData.issuanceScale);
       }
       if ('concept' in updateData) {
         updateFields.push('concept = ?');
@@ -132,12 +142,23 @@ export async function updateOrCreateBondCell(stock_nm, bond_id, updateData = {})
         placeholders.push('?');
       }
 
+      if ('lt_bps' in updateData) {
+        insertFields.push('lt_bps');
+        insertValues.push(updateData.lt_bps);
+        placeholders.push('?');
+      }
+
       if ('put_tc' in updateData) {
         insertFields.push('put_tc');
         insertValues.push(updateData.put_tc);
         placeholders.push('?');
       }
-
+      // 发行规模
+      if ('issuanceScale' in updateData) {
+        insertFields.push('issuanceScale');
+        insertValues.push(updateData.issuanceScale);
+        placeholders.push('?');
+      }
       if ('cpn_desc' in updateData) {
         insertFields.push('cpn_desc');
         insertValues.push(updateData.cpn_desc);

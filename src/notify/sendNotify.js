@@ -45,7 +45,7 @@ export default (targetBonds, medianPrice) => {
         .join('\n');
       const content = `[${currentTime}] 当前中位数: ${medianPrice}\n${emailContent}`;
       if (content?.length > 0) {
-        sendMail(content);
+        // sendMail(content);
         sendMessage(content);
       }
     }

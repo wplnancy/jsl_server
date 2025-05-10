@@ -46,7 +46,6 @@ export async function fetchMailData() {
         AND s.market_cd != 'sb'
         AND s.btype != 'E'
         AND s.maturity_dt > CURDATE()
-        AND bs.is_favorite = '1'
       `;
 
       const [rows] = await conn.execute(query);
