@@ -73,7 +73,6 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
           row.maturity_dt < today ||
           row.market_cd === 'sb' ||
           row.btype === 'E'
-          // row.btype === 'E'
           // dayjs(row.update_time).format('YYYY-MM-DD') === today
         ) {
           continue;
@@ -81,9 +80,9 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
       }
 
       if (
-        parseFloat(row.price) > 95 &&
-        parseFloat(row.price) <= 135 &&
-        // row.is_favorite === 1(row?.lt_bps === null || row?.lt_bps === '') &&
+        parseFloat(row.price) < 140 &&
+        parseFloat(row.price) > 94 &&
+        // (row?.lt_bps === null || row?.lt_bps === '') &&
         row.is_blacklisted !== 1 &&
         !(
           row?.redeem_status === '已公告强赎' ||
@@ -92,11 +91,6 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
       ) {
         validRows.push(row);
       }
-      // if (parseInt(row.is_favorite) === 1) {
-      //   validRows.push(row);
-      // }
-      // 将有效的数据添加到结果数组
-      // validRows.push(row);
     }
     console.log('validRows', validRows.length);
     return validRows;
