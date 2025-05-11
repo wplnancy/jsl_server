@@ -109,6 +109,7 @@ router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
   try {
     const { stock_nm, bond_id, ...updateData } = ctx.request.body;
     if (!stock_nm && !bond_id) {
+      logToFile('必须提供 stock_nm (股票名称) 或 bond_id');
       ctx.status = 400;
       ctx.body = {
         success: false,
@@ -116,9 +117,19 @@ router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
       };
       return;
     }
-    console.log('updateData', Object.keys(updateData));
-    console.log('lt_bps=', updateData.lt_bps);
-    const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
+    if (stock_nm && bond_id) {
+      logToFile('bond_id和stock_nm只能提供一个');
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: 'bond_id和stock_nm只能提供一个',
+      };
+      return;
+    }
+    // console.log('updateData', Object.keys(updateData));
+    // console.log('lt_bps=', updateData.lt_bps);
+    // const result = await updateOrCreateBondCell(stock_nm, bond_id, updateData);
+    const result = await updateOrCreateBondCell({ stock_nm, bond_id, updateData });
 
     ctx.body = {
       success: true,
