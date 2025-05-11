@@ -18,7 +18,6 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
       const [bondRows] = await conn.execute('SELECT bond_id FROM summary WHERE stock_nm = ?', [
         stock_nm,
       ]);
-      console.log('bondRows', bondRows?.length);
       if (bondRows.length === 0) {
         logToFile(`updateOrCreateBondCell 未找到股票名称为 ${stock_nm} 的记录`);
         throw new Error(`未找到股票名称为 ${stock_nm} 的记录`);
@@ -35,7 +34,6 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
       throw new Error('必须提供 bond_id 或 stock_nm');
     }
     const updateBondData = async (finalBondId) => {
-      console.log('bond_id', finalBondId);
       const [existingRows] = await conn.execute(
         'SELECT bond_id FROM bond_cells WHERE bond_id = ?',
         [finalBondId],

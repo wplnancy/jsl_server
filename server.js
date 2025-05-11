@@ -189,14 +189,10 @@ router.get(API_URLS.UPDATE_LIST, async (ctx) => {
     }
 
     const data = await fetchUpdateListData(parseInt(limit), filters);
-    // 等权指数
-    // const bond_index = await fetchMidPrice();
-
     ctx.body = {
       success: true,
       data,
       len: data.length,
-      // bond_index,
     };
   } catch (error) {
     const errorMessage = `获取更新列表数据失败: ${API_URLS.UPDATE_LIST} ${error.message}`;
