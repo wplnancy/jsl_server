@@ -40,7 +40,7 @@ export async function fetchMailData() {
           (bs.target_price IS NOT NULL AND s.price <= bs.target_price) OR
           (bs.target_heavy_price IS NOT NULL AND s.price <= bs.target_heavy_price) OR
           (bs.sell_price IS NOT NULL AND s.price >= bs.sell_price) OR
-          (bs.target_price IS NOT NULL AND (s.increase_rt >= 3 OR s.increase_rt <= -2))
+          (bs.target_price IS NOT NULL AND (s.increase_rt >= 3 OR s.increase_rt <= -3))
         )
         AND (
           bs.target_price IS NOT NULL OR 
@@ -61,7 +61,7 @@ export async function fetchMailData() {
         if (
           row?.redeem_status === '已公告强赎' ||
           row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/) ||
-          row?.is_favorite !== '1' ||
+          // row?.is_favorite !== '1' ||
           row?.is_blacklisted === 1
         ) {
           continue;
