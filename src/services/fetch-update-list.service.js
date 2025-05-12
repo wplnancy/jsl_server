@@ -1,7 +1,5 @@
 import { pool } from '../utils/pool.js';
 import dayjs from 'dayjs';
-import { parseAdjustData } from '../utils/parser.js';
-import { parseCashFlowData } from '../utils/cash-flow-parser.js';
 import { logToFile } from '../utils/logger.js';
 
 /**
@@ -61,8 +59,6 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
     // 获取当前日期
     const today = dayjs().format('YYYY-MM-DD');
     const validRows = [];
-    console.log('result1:', rows.filter((item) => parseInt(item.is_favorite) === 1)?.length);
-    console.log('result2:', rows.filter((item) => parseInt(item.is_favorite) !== 1)?.length);
     // 处理每一行数据
     for (const row of rows) {
       // 处理日期格式 maturity_dt到期时间
@@ -72,8 +68,8 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
         if (
           row.maturity_dt < today ||
           row.market_cd === 'sb' ||
-          row.btype === 'E'
-          // dayjs(row.update_time).format('YYYY-MM-DD') === today
+          row.btype === 'E' ||
+          dayjs(row.update_time).format('YYYY-MM-DD') === today
         ) {
           continue;
         }
@@ -82,6 +78,7 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
       if (
         parseFloat(row.price) < 140 &&
         parseFloat(row.price) > 94 &&
+        // parseInt(row.is_favorite) !== 1 &&
         // (row?.lt_bps === null || row?.lt_bps === '') &&
         row.is_blacklisted !== 1 &&
         !(

@@ -52,3 +52,5 @@
 [2025年05月10日21时06分02秒] 获取可转债摘要数据失败: item is not defined
 [2025年05月10日21时06分02秒] 获取可转债摘要数据失败: item is not defined
 [2025年05月10日21时06分02秒] 获取更新列表数据失败: /api/update_list item is not defined
+[2025年05月12日10时36分32秒] 未处理的Promise拒绝: fetch failed
+[2025年05月12日11时28分15秒] 未处理的Promise拒绝: fetch failed
