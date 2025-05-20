@@ -68,16 +68,17 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
         if (
           row.maturity_dt < today ||
           row.market_cd === 'sb' ||
-          row.btype === 'E' ||
-          dayjs(row.update_time).format('YYYY-MM-DD') === today
+          row.btype === 'E'
+          //  ||
+          // dayjs(row.update_time).format('YYYY-MM-DD') === today
         ) {
           continue;
         }
       }
 
       if (
-        parseFloat(row.price) < 140 &&
-        parseFloat(row.price) > 94 &&
+        parseFloat(row.price) < 135 &&
+        parseFloat(row.price) >= 94 &&
         // parseInt(row.is_favorite) !== 1 &&
         // (row?.lt_bps === null || row?.lt_bps === '') &&
         row.is_blacklisted !== 1 &&

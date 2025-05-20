@@ -10,9 +10,9 @@ import { logToFile } from '../utils/logger.js';
  */
 export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {} }) {
   let conn;
+  let bond_ids = [];
   try {
     conn = await pool.getConnection();
-    let bond_ids = [];
     // 如果没有传入 bond_id，则通过 stock_nm 查询
     if (!bond_id && stock_nm) {
       const [bondRows] = await conn.execute('SELECT bond_id FROM summary WHERE stock_nm = ?', [
@@ -124,7 +124,7 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
           const updateSQL = `UPDATE bond_cells SET ${updateFields.join(', ')} WHERE bond_id = ?`;
           updateValues.push(finalBondId);
           await conn.execute(updateSQL, updateValues);
-          console.log(`更新${finalBondId}成功`);
+          console.log(`更新${finalBondId}成功`, Object.keys(updateData));
         }
       } else {
         // 构建插入字段和值
@@ -241,7 +241,8 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
     return { success: true, bond_id: bond_ids.toString() };
   } catch (error) {
     console.error('更新或创建 bond_cells 记录失败:', error);
-    logToFile(`更新或创建 bond_cells 记录失败: ${error.message}`);
+    const failedBondId = bond_id || (bond_ids.length > 0 ? bond_ids.toString() : 'unknown');
+    logToFile(`更新或创建 bond_cells 记录失败: bond_id=${failedBondId}, error=${error.message}`);
     throw error;
   } finally {
     if (conn) conn.release();
