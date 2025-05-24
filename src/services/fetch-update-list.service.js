@@ -49,7 +49,7 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
     }
 
     // 直接将 limit 值添加到查询字符串中
-    const safeLimit = Math.max(1, Math.min(1000, parseInt(limit) || 100));
+    const safeLimit = Math.max(1, Math.min(2000, parseInt(limit) || 3000));
     query += ` LIMIT ${safeLimit}`;
     const [rows] =
       whereConditions.length > 0
@@ -61,24 +61,21 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
     const validRows = [];
     // 处理每一行数据
     for (const row of rows) {
+      const update_time = dayjs(row.update_time).format('YYYY-MM-DD');
+      let requireUpdate = update_time !== '2025-05-23' && update_time !== '2025-05-24';
       // 处理日期格式 maturity_dt到期时间
       if (row.maturity_dt) {
         row.maturity_dt = dayjs(row.maturity_dt).format('YYYY-MM-DD');
         // 过滤掉已到期的可转债 三板的 eb可交债
-        if (
-          row.maturity_dt < today ||
-          row.market_cd === 'sb' ||
-          row.btype === 'E'
-          //  ||
-          // dayjs(row.update_time).format('YYYY-MM-DD') === today
-        ) {
+        if (row.maturity_dt < today || row.market_cd === 'sb' || row.btype === 'E') {
           continue;
         }
       }
 
       if (
-        parseFloat(row.price) < 135 &&
-        parseFloat(row.price) >= 94 &&
+        parseFloat(row.price) <= 180 &&
+        parseFloat(row.price) >= 90 &&
+        requireUpdate &&
         // parseInt(row.is_favorite) !== 1 &&
         // (row?.lt_bps === null || row?.lt_bps === '') &&
         row.is_blacklisted !== 1 &&

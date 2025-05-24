@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { parseAdjustData } from '../utils/parser.js';
 import { parseCashFlowData } from '../utils/cash-flow-parser.js';
 import { logToFile } from '../utils/logger.js';
-
 /**
  * 获取可转债摘要数据
  * @param {number} limit - 返回记录数量限制
@@ -108,8 +107,10 @@ export async function fetchSummaryData(limit = 100, filters = {}) {
       // 将有效的数据添加到结果数组
       validRows.push(row);
     }
+    let favList = validRows.filter((item) => parseInt(item.is_favorite) === 1);
+    let notFavList = validRows.filter((item) => parseInt(item.is_favorite) !== 1);
 
-    return validRows;
+    return [...favList, ...notFavList];
   } catch (error) {
     const errorMessage = `获取可转债摘要数据失败: ${error.message}`;
     console.error(errorMessage);

@@ -261,3 +261,21 @@
 [2025年05月20日02时14分06秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
 [2025年05月20日07时51分06秒] 获取可转债摘要数据失败: row.update_time.startsWith is not a function
 [2025年05月20日07时51分06秒] 获取更新列表数据失败: /api/update_list row.update_time.startsWith is not a function
+[2025年05月20日11时28分35秒] 未处理的Promise拒绝: fetch failed
+[2025年05月20日13时23分24秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日09时42分06秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日09时52分10秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日09时53分10秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日13时34分05秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日13时50分47秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日13时52分07秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日14时29分27秒] 未处理的Promise拒绝: fetch failed
+[2025年05月21日14时44分47秒] 未处理的Promise拒绝: fetch failed
+[2025年05月22日09时33分46秒] 未处理的Promise拒绝: fetch failed
+[2025年05月22日10时02分06秒] 未处理的Promise拒绝: fetch failed
+[2025年05月22日11时29分27秒] 未处理的Promise拒绝: fetch failed
+[2025年05月22日13时17分07秒] 未处理的Promise拒绝: fetch failed
+[2025年05月22日15时09分10秒] 未处理的Promise拒绝: fetch failed
+[2025年05月23日11时00分43秒] 未处理的Promise拒绝: fetch failed
+[2025年05月24日09时37分10秒] 获取可转债摘要数据失败: row is not defined
+[2025年05月24日09时37分10秒] 获取更新列表数据失败: /api/update_list row is not defined
