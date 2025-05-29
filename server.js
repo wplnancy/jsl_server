@@ -8,6 +8,7 @@ import { insertDataToDB } from './src/utils.js';
 import { API_URLS } from './src/constants/api-urls.js';
 // import { initScheduler } from './src/scheduler.js';
 import { fetchSummaryData } from './src/services/fetch-summary.service.js';
+import { fetchStrategyViewData } from './src/services/fetch-strategy-view.service.js';
 import { fetchUpdateListData } from './src/services/fetch-update-list.service.js';
 import { fetchMailData } from './src/services/send-mail.service.js';
 import { fetchMidPrice } from './src/services/fetch-mid-price.service.js';
@@ -168,6 +169,37 @@ router.get(API_URLS.SUMMARY, async (ctx) => {
     };
   } catch (error) {
     const errorMessage = `获取可转债摘要数据失败: ${API_URLS.SUMMARY} ${error.message}`;
+    console.error(errorMessage);
+    logToFile(errorMessage);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: 'Failed to fetch data',
+      error: error.message,
+    };
+  }
+});
+// 获取策略视图数据
+router.get(API_URLS.STRATEGY_VIEW, async (ctx) => {
+  const { limit = 1000, is_blacklisted } = ctx.query;
+  try {
+    // 构建过滤条件对象
+    const filters = {};
+    if (is_blacklisted !== undefined) {
+      filters.is_blacklisted = is_blacklisted;
+    }
+
+    const data = await fetchStrategyViewData(parseInt(limit), filters);
+    // 等权指数
+    const bond_index = await fetchMidPrice();
+
+    ctx.body = {
+      success: true,
+      data,
+      bond_index,
+    };
+  } catch (error) {
+    const errorMessage = `获取策略视图数据失败: ${API_URLS.STRATEGY_VIEW} ${error.message}`;
     console.error(errorMessage);
     logToFile(errorMessage);
     ctx.status = 500;

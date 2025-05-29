@@ -40,7 +40,7 @@ export async function fetchMailData() {
           (bs.target_price IS NOT NULL AND s.price <= bs.target_price) OR
           (bs.target_heavy_price IS NOT NULL AND s.price <= bs.target_heavy_price) OR
           (bs.sell_price IS NOT NULL AND s.price >= bs.sell_price) OR
-          (bs.target_price IS NOT NULL AND (s.increase_rt >= 2 OR s.increase_rt <= -2))
+          (bs.target_price IS NOT NULL AND (s.increase_rt >= 2.6 OR s.increase_rt <= -2))
         )
         AND (
           bs.target_price IS NOT NULL OR 

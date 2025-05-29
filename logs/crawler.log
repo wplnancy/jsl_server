@@ -1,281 +1,37 @@
-[2025年05月05日13时13分23秒] 未处理的Promise拒绝: Unexpected socket close
-[2025年05月06日09时41分15秒] 未处理的Promise拒绝: Unexpected socket close
-[2025年05月06日09时42分09秒] 未处理的Promise拒绝: read ECONNRESET
-[2025年05月06日10时37分52秒] 未处理的Promise拒绝: fetch failed
-[2025年05月06日10时54分52秒] 未处理的Promise拒绝: fetch failed
-[2025年05月06日13时41分53秒] 未处理的Promise拒绝: fetch failed
-[2025年05月06日14时50分11秒] 未处理的Promise拒绝: fetch failed
-[2025年05月06日14时56分51秒] 未处理的Promise拒绝: fetch failed
-[2025年05月06日16时04分12秒] 未捕获的异常: listen EADDRINUSE: address already in use :::3000
-[2025年05月06日16时53分58秒] 更新或创建财务数据失败: 未找到可转债 强力新材 对应的bond_id
-[2025年05月06日16时53分58秒] 更新或创建财务数据失败: 未找到可转债 强力新材 对应的bond_id
-[2025年05月06日16时59分46秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日16时59分46秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时00分13秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时00分13秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时03分44秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时03分44秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分09秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分09秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分10秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分10秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分11秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分11秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分19秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时04分19秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时05分36秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时05分36秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时07分50秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月06日17时07分50秒] 更新或创建财务数据失败: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
-[2025年05月08日09时45分25秒] 未处理的Promise拒绝: fetch failed
-[2025年05月08日10时30分05秒] 未处理的Promise拒绝: fetch failed
-[2025年05月08日11时24分45秒] 未处理的Promise拒绝: fetch failed
-[2025年05月08日14时59分46秒] 未处理的Promise拒绝: fetch failed
-[2025年05月09日09时36分51秒] 未处理的Promise拒绝: fetch failed
-[2025年05月09日13时21分09秒] 未处理的Promise拒绝: fetch failed
-[2025年05月09日13时39分54秒] 未处理的Promise拒绝: fetch failed
-[2025年05月10日12时20分02秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
-[2025年05月10日12时21分34秒] 获取可转债111003详情数据失败 fetchBoundCellData: Unknown column 's.issuanceScale' in 'field list'
-[2025年05月10日12时21分34秒] /api/bond_cell接口错误 Unknown column 's.issuanceScale' in 'field list'
-[2025年05月10日12时22分00秒] 获取可转债111003详情数据失败 fetchBoundCellData: Unknown column 's.issuanceScale' in 'field list'
-[2025年05月10日12时22分00秒] /api/bond_cell接口错误 Unknown column 's.issuanceScale' in 'field list'
-[2025年05月10日12时28分22秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
-[2025年05月10日12时30分10秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
-[2025年05月10日12时33分37秒] 更新或创建 bond_cells 记录失败: Data too long for column 'issuanceScale' at row 1
-[2025年05月10日18时55分04秒] 获取可转债摘要数据失败: item is not defined
-[2025年05月10日18时55分04秒] 获取更新列表数据失败: /api/update_list item is not defined
-[2025年05月10日18时55分52秒] 获取可转债摘要数据失败: row?.update_time?.split is not a function
-[2025年05月10日18时55分52秒] 获取更新列表数据失败: /api/update_list row?.update_time?.split is not a function
-[2025年05月10日21时06分01秒] 获取更新列表数据失败: /api/update_list item is not defined
-[2025年05月10日21时06分01秒] 获取可转债摘要数据失败: item is not defined
-[2025年05月10日21时06分02秒] 获取更新列表数据失败: /api/update_list item is not defined
-[2025年05月10日21时06分02秒] 获取可转债摘要数据失败: item is not defined
-[2025年05月10日21时06分02秒] 获取可转债摘要数据失败: item is not defined
-[2025年05月10日21时06分02秒] 获取更新列表数据失败: /api/update_list item is not defined
-[2025年05月12日10时36分32秒] 未处理的Promise拒绝: fetch failed
-[2025年05月12日11时28分15秒] 未处理的Promise拒绝: fetch failed
-[2025年05月13日13时33分18秒] 未处理的Promise拒绝: fetch failed
-[2025年05月14日09时30分51秒] 未处理的Promise拒绝: fetch failed
-[2025年05月14日14时41分52秒] 未处理的Promise拒绝: fetch failed
-[2025年05月15日09时57分16秒] 未处理的Promise拒绝: fetch failed
-[2025年05月15日10时54分56秒] 未处理的Promise拒绝: fetch failed
-[2025年05月15日13时28分16秒] 未处理的Promise拒绝: fetch failed
-[2025年05月16日09时36分32秒] 未处理的Promise拒绝: fetch failed
-[2025年05月16日09时51分12秒] 未处理的Promise拒绝: fetch failed
-[2025年05月16日10时18分52秒] 未处理的Promise拒绝: fetch failed
-[2025年05月16日13时29分13秒] 未处理的Promise拒绝: fetch failed
-[2025年05月16日14时17分15秒] 未处理的Promise拒绝: fetch failed
-[2025年05月16日14时35分35秒] 未处理的Promise拒绝: fetch failed
-[2025年05月19日22时18分43秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时19分26秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时20分14秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时23分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时25分09秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时25分51秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时26分31秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时27分21秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时32分21秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时33分10秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时34分11秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时35分11秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时36分12秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时37分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时37分55秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时41分34秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时42分16秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时43分06秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时45分20秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时46分52秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时47分34秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时49分09秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时49分51秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时50分59秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时51分48秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时53分19秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时53分59秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时56分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时56分55秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日22时58分03秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时00分32秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时01分21秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时02分01秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时02分42秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时03分29秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时04分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时05分01秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时06分12秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时06分53秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时07分43秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时08分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时09分16秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时09分58秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时10分43秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时11分48秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时12分35秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时13分16秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时14分04秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时14分50秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时15分55秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时16分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时17分41秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时18分26秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时19分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时20分00秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时21分07秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时21分51秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时23分01秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时23分45秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时24分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时26分45秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时27分34秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时28分19秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时29分07秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时29分49秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时30分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时31分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时32分58秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时33分45秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时34分54秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时35分37秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时36分39秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时37分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时38分18秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时40分29秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时41分10秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时42分20秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时43分04秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时43分55秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时44分35秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时45分23秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时47分54秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时48分44秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时49分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时50分11秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时50分51秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时51分59秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时52分48秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时53分36秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时54分23秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时55分32秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时56分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月19日23时58分27秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时01分19秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时02分09秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时02分58秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时04分31秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时05分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时05分56秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时07分31秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时08分11秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时09分42秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时11分52秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时12分33秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时14分03秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时14分53秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时15分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时16分21秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时17分23秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时18分03秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时18分48秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时19分34秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时20分44秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时21分27秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时22分09秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时23分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时24分20秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时25分09秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时26分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时27分43秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时30分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时31分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时33分02秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时34分05秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时34分54秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时35分37秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时36分43秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时38分19秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时39分07秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时41分16秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时42分46秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时43分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时44分12秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时44分58秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时47分10秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时48分16秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时49分04秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时50分07秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时51分36秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时52分19秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时53分06秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时53分55秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时54分35秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时55分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时55分58秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日00时58分56秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时01分07秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时02分17秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时04分33秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时05分35秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时06分26秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时07分34秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时08分16秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时08分57秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时09分39秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时10分20秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时11分00秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时11分50秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时12分55秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时13分37秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时14分22秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时15分03秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时15分53秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时17分04秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时17分50秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时19分20秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时35分49秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时36分35秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时38分45秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时54分56秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时55分40秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时56分24秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时57分09秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时58分15秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时59分01秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日01时59分46秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时00分51秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时01分36秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时02分18秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时03分05秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时03分51秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时04分34秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时05分24秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时06分14秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时07分43秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时08分33秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时09分14秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时09分57秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时10分38秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时11分28秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时12分17秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时13分20秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日02时14分06秒] 更新或创建 bond_cells 记录失败: Data too long for column 'lt_bps' at row 1
-[2025年05月20日07时51分06秒] 获取可转债摘要数据失败: row.update_time.startsWith is not a function
-[2025年05月20日07时51分06秒] 获取更新列表数据失败: /api/update_list row.update_time.startsWith is not a function
-[2025年05月20日11时28分35秒] 未处理的Promise拒绝: fetch failed
-[2025年05月20日13时23分24秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日09时42分06秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日09时52分10秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日09时53分10秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日13时34分05秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日13时50分47秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日13时52分07秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日14时29分27秒] 未处理的Promise拒绝: fetch failed
-[2025年05月21日14时44分47秒] 未处理的Promise拒绝: fetch failed
-[2025年05月22日09时33分46秒] 未处理的Promise拒绝: fetch failed
-[2025年05月22日10时02分06秒] 未处理的Promise拒绝: fetch failed
-[2025年05月22日11时29分27秒] 未处理的Promise拒绝: fetch failed
-[2025年05月22日13时17分07秒] 未处理的Promise拒绝: fetch failed
-[2025年05月22日15时09分10秒] 未处理的Promise拒绝: fetch failed
-[2025年05月23日11时00分43秒] 未处理的Promise拒绝: fetch failed
-[2025年05月24日09时37分10秒] 获取可转债摘要数据失败: row is not defined
-[2025年05月24日09时37分10秒] 获取更新列表数据失败: /api/update_list row is not defined
+[2025年05月28日19时53分09秒] 获取可转债摘要数据失败: Cannot read properties of undefined (reading 'price')
+[2025年05月28日19时53分09秒] 获取更新列表数据失败: /api/update_list Cannot read properties of undefined (reading 'price')
+[2025年05月28日19时55分08秒] 获取可转债摘要数据失败: Cannot read properties of undefined (reading 'price')
+[2025年05月28日19时55分08秒] 获取更新列表数据失败: /api/update_list Cannot read properties of undefined (reading 'price')
+[2025年05月28日19时59分58秒] 获取可转债摘要数据失败: Cannot read properties of undefined (reading 'price')
+[2025年05月28日19时59分58秒] 获取更新列表数据失败: /api/update_list Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时01分22秒] 获取更新列表数据失败: /api/update_list Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时01分22秒] 获取可转债摘要数据失败: Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时01分23秒] 获取可转债摘要数据失败: Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时01分23秒] 获取更新列表数据失败: /api/update_list Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时02分45秒] 获取可转债摘要数据失败: Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时02分45秒] 获取更新列表数据失败: /api/update_list Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时02分46秒] 获取可转债摘要数据失败: Cannot read properties of undefined (reading 'price')
+[2025年05月28日20时02分46秒] 获取更新列表数据失败: /api/update_list Cannot read properties of undefined (reading 'price')
+[2025年05月29日09时35分18秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日10时15分38秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日10时34分18秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日13时00分39秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日13时13分59秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日13时15分19秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日13时38分59秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日14时19分39秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日14时26分39秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日14时29分39秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日14时36分39秒] 未处理的Promise拒绝: fetch failed
+[2025年05月29日17时29分24秒] 获取可转债策略视图数据失败: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM summary s
+      LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
+    ' at line 12
+[2025年05月29日17时29分24秒] 获取策略视图数据失败: /api/strategy_view You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM summary s
+      LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
+    ' at line 12
+[2025年05月29日17时29分28秒] 获取可转债策略视图数据失败: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM summary s
+      LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
+    ' at line 12
+[2025年05月29日17时29分28秒] 获取策略视图数据失败: /api/strategy_view You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM summary s
+      LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
+    ' at line 12

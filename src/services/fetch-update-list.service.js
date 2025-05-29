@@ -58,36 +58,66 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
 
     // 获取当前日期
     const today = dayjs().format('YYYY-MM-DD');
+    console.log('items', rows?.length, rows.filter((item) => item.price?.length > 0)?.length);
     const validRows = [];
     // 处理每一行数据
     for (const row of rows) {
       const update_time = dayjs(row.update_time).format('YYYY-MM-DD');
-      let requireUpdate = update_time !== '2025-05-23' && update_time !== '2025-05-24';
+      // let requireUpdate =
+      //   update_time !== today && update_time !== '2025-05-26' && parseInt(row.is_favorite) !== 1;
+      let requireUpdate =
+        update_time !== 'Invalid Date' &&
+        parseInt(row.is_favorite || 0) === 1 &&
+        update_time !== today;
+
       // 处理日期格式 maturity_dt到期时间
-      if (row.maturity_dt) {
-        row.maturity_dt = dayjs(row.maturity_dt).format('YYYY-MM-DD');
-        // 过滤掉已到期的可转债 三板的 eb可交债
-        if (row.maturity_dt < today || row.market_cd === 'sb' || row.btype === 'E') {
-          continue;
+      try {
+        if (row.maturity_dt) {
+          row.maturity_dt = dayjs(row.maturity_dt).format('YYYY-MM-DD');
+          // 过滤掉已到期的可转债 三板的 eb可交债
+          if (row?.maturity_dt < today || row?.market_cd === 'sb' || row?.btype === 'E') {
+            continue;
+          }
         }
+      } catch (e) {
+        console.error('maturity_dt 格式错误', row.bond_nm, row.maturity_dt);
       }
 
-      if (
-        parseFloat(row.price) <= 180 &&
-        parseFloat(row.price) >= 90 &&
-        requireUpdate &&
-        // parseInt(row.is_favorite) !== 1 &&
-        // (row?.lt_bps === null || row?.lt_bps === '') &&
-        row.is_blacklisted !== 1 &&
-        !(
-          row?.redeem_status === '已公告强赎' ||
-          row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)
-        )
-      ) {
-        validRows.push(row);
+      try {
+        if (
+          row?.price &&
+          parseFloat(row?.price) <= 150 &&
+          parseFloat(row?.price) >= 94 &&
+          requireUpdate &&
+          row?.is_blacklisted !== 1 &&
+          !(
+            row?.redeem_status === '已公告强赎' ||
+            row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)
+          )
+        ) {
+          // if (update_time === 'Invalid Date') {
+          //   console.log(
+          //     'update_time',
+          //     update_time,
+          //     row.is_favorite,
+          //     row.bond_nm,
+          //     dayjs(row.maturity_dt).format('YYYY-MM-DD'),
+          //     // row?.market_cd,
+          //     // row?.btype,
+          //     row.price,
+          //     row.bond_id,
+          //   );
+          // }
+          validRows.push(row);
+        }
+      } catch (e) {
+        console.error('过滤失败', row.bond_nm, row.price);
       }
     }
     console.log('validRows', validRows.length);
+    // console.log('validRows', validRows[0].price, validRows[0].bond_nm);
+    // 按价格从小到大排序
+    validRows.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
     return validRows;
   } catch (error) {
     const errorMessage = `获取可转债摘要数据失败: ${error.message}`;
