@@ -113,15 +113,17 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
         console.log('requireUpdate', row.bond_nm);
       }
       if (
-        row?.info &&
-        row?.info?.rows &&
-        lastItem &&
-        secondItem &&
-        requireUpdate &&
-        lastItem.id === row.bond_id &&
-        secondItem.id === row.bond_id &&
-        (lastItem?.cell?.last_chg_dt !== update_time_date ||
-          secondItem?.cell?.last_chg_dt !== second_time_date)
+        requireUpdate
+        // row?.info &&
+        // row?.info?.rows &&
+        // lastItem &&
+        // secondItem &&
+        // requireUpdate &&
+        // lastItem.id === row.bond_id &&
+        // secondItem.id === row.bond_id
+        // &&
+        // (lastItem?.cell?.last_chg_dt !== update_time_date ||
+        //   secondItem?.cell?.last_chg_dt !== second_time_date)
       ) {
         validRows.push({ ...row, info: {} });
       }

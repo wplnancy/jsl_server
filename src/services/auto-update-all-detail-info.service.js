@@ -72,8 +72,9 @@ export async function fetchDetailListData() {
         secondItem &&
         lastItem.id === row.bond_id &&
         secondItem.id === row.bond_id &&
-        (lastItem?.cell?.last_chg_dt !== update_time_date ||
-          secondItem?.cell?.last_chg_dt !== second_time_date)
+        lastItem?.cell?.last_chg_dt !== update_time_date
+        // (lastItem?.cell?.last_chg_dt !== update_time_date ||
+        //   secondItem?.cell?.last_chg_dt !== second_time_date)
       ) {
         validRows.push(row);
       }
