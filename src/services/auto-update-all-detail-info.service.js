@@ -40,7 +40,7 @@ export async function fetchDetailListData() {
     // 获取当前日期
     const today = dayjs().format('YYYY-MM-DD');
     const validRows = [];
-
+    console.log('rows', rows.length);
     // 处理每一行数据
     for (const row of rows) {
       // 处理日期格式 maturity_dt到期时间
@@ -51,6 +51,7 @@ export async function fetchDetailListData() {
           if (
             row?.maturity_dt < today ||
             row?.market_cd === 'sb' ||
+            parseFloat(row?.price) > 180 ||
             row?.btype === 'E' ||
             parseInt(row?.is_blacklisted) === 1 ||
             row?.redeem_status === '已公告强赎' ||
@@ -65,6 +66,8 @@ export async function fetchDetailListData() {
       let lastItem = row?.info?.rows?.[0];
       let secondItem = row?.info?.rows?.[1];
       if (
+        row?.info &&
+        row?.info?.rows &&
         lastItem &&
         secondItem &&
         lastItem.id === row.bond_id &&
@@ -75,6 +78,7 @@ export async function fetchDetailListData() {
         validRows.push(row);
       }
     }
+    console.log('validRows', validRows.length);
     const updateBondData = async (bond_id, updateData = {}) => {
       const [existingRows] = await conn.execute(
         'SELECT bond_id FROM bond_cells WHERE bond_id = ?',
@@ -204,7 +208,7 @@ export async function fetchDetailListData() {
         max_price_date,
       });
     }
-    return validRows;
+    return validRows?.length;
   } catch (error) {
     const errorMessage = `更新info数据失败: ${error.message}`;
     console.error(errorMessage);

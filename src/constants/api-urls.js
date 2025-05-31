@@ -11,7 +11,7 @@ export const API_URLS = {
   REFRESH_WITH_COOLDOWN: '/api/refresh-with-cooldown', // 暂时不需要了
   BOND_CELLS_UPDATE: '/api/bond_cells/update',
   UPDATE_BOND_STRATEGIES: '/api/bond_strategies',
-
+  UPDATE_INFOS: '/api/update-info',
   BOND_CELLS_WITHOUT_ASSET_DATA: '/api/bond_cells/without_asset_data',
   // 获取中位数历史数据
   INDEX_HISTORY: '/api/index_history',

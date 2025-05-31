@@ -422,12 +422,11 @@ router.post('/api/financial-data', async (ctx) => {
     };
   }
 });
-router.get('/api/update-info', async (ctx) => {
-  const data = await fetchDetailListData();
-  console.log('data', data?.length);
+router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
+  const len = await fetchDetailListData();
   ctx.body = {
     success: true,
-    length: data?.length || 0,
+    length: len || 0,
     message: '更新成功',
   };
 });

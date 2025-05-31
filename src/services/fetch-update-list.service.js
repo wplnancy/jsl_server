@@ -72,6 +72,7 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
             row?.maturity_dt < today ||
             row?.market_cd === 'sb' ||
             row?.btype === 'E' ||
+            parseFloat(row?.price) > 180 ||
             row?.redeem_status === '已公告强赎' ||
             parseInt(row?.is_blacklisted) === 1 ||
             row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)
@@ -92,7 +93,7 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
         const firstNum = parseInt(matches1[1]); // "5"
         const secondNum = parseInt(matches1[2]); // "15"
         if (secondNum - 2 === firstNum) {
-          console.log('isValid', isValid1, matches1, adjust_condition, row.bond_nm);
+          // console.log('isValid', isValid1, matches1, adjust_condition, row.bond_nm);
           requireUpdate = true;
         }
       }
@@ -102,21 +103,25 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
         const firstNum = parseInt(matches2[1]); // "5"
         const secondNum = parseInt(matches2[2]); // "15"
         if (secondNum - 2 === firstNum) {
-          console.log('isValid', isValid2, matches2, redeem_status, row.bond_nm);
+          // console.log('isValid', isValid2, matches2, redeem_status, row.bond_nm);
           requireUpdate = true;
         }
       }
       let lastItem = row?.info?.rows?.[0];
       let secondItem = row?.info?.rows?.[1];
-
+      if (requireUpdate) {
+        console.log('requireUpdate', row.bond_nm);
+      }
       if (
-        (lastItem &&
-          secondItem &&
-          // requireUpdate &&
-          lastItem.id === row.bond_id &&
-          secondItem.id === row.bond_id &&
-          lastItem?.cell?.last_chg_dt !== update_time_date) ||
-        secondItem?.cell?.last_chg_dt !== second_time_date
+        row?.info &&
+        row?.info?.rows &&
+        lastItem &&
+        secondItem &&
+        requireUpdate &&
+        lastItem.id === row.bond_id &&
+        secondItem.id === row.bond_id &&
+        (lastItem?.cell?.last_chg_dt !== update_time_date ||
+          secondItem?.cell?.last_chg_dt !== second_time_date)
       ) {
         validRows.push({ ...row, info: {} });
       }
