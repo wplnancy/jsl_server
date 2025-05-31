@@ -35,3 +35,72 @@
 [2025年05月29日17时29分28秒] 获取策略视图数据失败: /api/strategy_view You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM summary s
       LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
     ' at line 12
+[2025年05月30日09时37分13秒] 未处理的Promise拒绝: fetch failed
+[2025年05月30日11时21分06秒] 未处理的Promise拒绝: fetch failed
+[2025年05月30日21时47分31秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时47分47秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时49分37秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时49分53秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时50分09秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时50分11秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时50分21秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时50分21秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时50分22秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时50分33秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时52分20秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时52分43秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时53分02秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时53分03秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时53分46秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时54分13秒] 未处理的Promise拒绝: limit is not defined
+[2025年05月30日21时54分17秒] 获取可转债摘要数据失败: Unknown column 'bs.is_analyzed' in 'field list'
+[2025年05月30日21时54分17秒] 未处理的Promise拒绝: Unknown column 'bs.is_analyzed' in 'field list'
+[2025年05月30日21时54分36秒] 获取可转债摘要数据失败: Unknown column 'bs.is_analyzed' in 'field list'
+[2025年05月30日21时54分36秒] 未处理的Promise拒绝: Unknown column 'bs.is_analyzed' in 'field list'
+[2025年05月30日21时57分53秒] 获取可转债摘要数据失败: "[object Object]" is not valid JSON
+[2025年05月30日21时57分53秒] 未处理的Promise拒绝: "[object Object]" is not valid JSON
+[2025年05月30日21时58分19秒] 获取可转债摘要数据失败: "[object Object]" is not valid JSON
+[2025年05月30日21时58分19秒] 未处理的Promise拒绝: "[object Object]" is not valid JSON
+[2025年05月30日22时00分05秒] 获取可转债摘要数据失败: "[object Object]" is not valid JSON
+[2025年05月30日22时00分05秒] 未处理的Promise拒绝: "[object Object]" is not valid JSON
+[2025年05月30日22时00分14秒] 获取可转债摘要数据失败: "[object Object]" is not valid JSON
+[2025年05月30日22时00分14秒] 未处理的Promise拒绝: "[object Object]" is not valid JSON
+[2025年05月30日22时01分05秒] 获取可转债摘要数据失败: "[object Object]" is not valid JSON
+[2025年05月30日22时01分05秒] 未处理的Promise拒绝: "[object Object]" is not valid JSON
+[2025年05月30日22时01分19秒] 获取可转债摘要数据失败: "[object Object]" is not valid JSON
+[2025年05月30日22时01分19秒] 未处理的Promise拒绝: "[object Object]" is not valid JSON
+[2025年05月30日22时21分49秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时21分49秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时24分31秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时24分31秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时24分56秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时24分56秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时25分06秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时25分06秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时25分07秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时25分07秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时25分52秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时25分52秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时26分47秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时26分47秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时28分12秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时28分12秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时28分26秒] 获取可转债摘要数据失败: bond_ids is not defined
+[2025年05月30日22时28分26秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时28分45秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时28分45秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时29分37秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时29分37秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时30分03秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时30分03秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时31分02秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时31分02秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时31分30秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时31分30秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时33分00秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时33分00秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时33分26秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时33分26秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月30日22时33分35秒] 更新info数据失败: bond_ids is not defined
+[2025年05月30日22时33分35秒] 未处理的Promise拒绝: bond_ids is not defined
+[2025年05月31日11时14分46秒] 更新info数据失败: Incorrect date value: '2025-05-29T16:00:00.000Z' for column 'min_price_date' at row 1

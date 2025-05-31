@@ -8,6 +8,7 @@ import { insertDataToDB } from './src/utils.js';
 import { API_URLS } from './src/constants/api-urls.js';
 // import { initScheduler } from './src/scheduler.js';
 import { fetchSummaryData } from './src/services/fetch-summary.service.js';
+import { fetchDetailListData } from './src/services/auto-update-all-detail-info.service.js';
 import { fetchStrategyViewData } from './src/services/fetch-strategy-view.service.js';
 import { fetchUpdateListData } from './src/services/fetch-update-list.service.js';
 import { fetchMailData } from './src/services/send-mail.service.js';
@@ -181,6 +182,7 @@ router.get(API_URLS.SUMMARY, async (ctx) => {
 });
 // 获取策略视图数据
 router.get(API_URLS.STRATEGY_VIEW, async (ctx) => {
+  console.log('获取策略视图数据');
   const { limit = 1000, is_blacklisted } = ctx.query;
   try {
     // 构建过滤条件对象
@@ -420,7 +422,15 @@ router.post('/api/financial-data', async (ctx) => {
     };
   }
 });
-
+router.get('/api/update-info', async (ctx) => {
+  const data = await fetchDetailListData();
+  console.log('data', data?.length);
+  ctx.body = {
+    success: true,
+    length: data?.length || 0,
+    message: '更新成功',
+  };
+});
 // 注册路由
 app.use(router.routes()).use(router.allowedMethods());
 
@@ -487,12 +497,23 @@ const startTradingTimer = () => {
   return timer;
 };
 
+// 自动更新数据
+const autoUpdateDetailData = async () => {
+  const data = await fetchDetailListData();
+  console.log('data', data?.length);
+  ctx.body = {
+    success: true,
+    length: data?.length || 0,
+    message: '更新成功',
+  };
+};
 // 启动服务器
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   // 启动交易时间定时器
   startTradingTimer();
+  // autoUpdateDetailData();
 });
 
 // 在程序退出时清理定时器

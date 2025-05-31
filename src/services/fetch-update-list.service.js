@@ -1,7 +1,8 @@
 import { pool } from '../utils/pool.js';
 import dayjs from 'dayjs';
 import { logToFile } from '../utils/logger.js';
-
+const update_time_date = '2025-05-30';
+const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
 /**
  * 获取可转债摘要数据
  * @param {number} limit - 返回记录数量限制
@@ -29,6 +30,7 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
         bc.adj_logs,
         bc.update_time,
         bc.lt_bps,
+        bc.info,
         bc.cash_flow_data
       FROM summary s
       LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
@@ -58,64 +60,67 @@ export async function fetchUpdateListData(limit = 100, filters = {}) {
 
     // 获取当前日期
     const today = dayjs().format('YYYY-MM-DD');
-    console.log('items', rows?.length, rows.filter((item) => item.price?.length > 0)?.length);
     const validRows = [];
     // 处理每一行数据
     for (const row of rows) {
-      const update_time = dayjs(row.update_time).format('YYYY-MM-DD');
-      // let requireUpdate =
-      //   update_time !== today && update_time !== '2025-05-26' && parseInt(row.is_favorite) !== 1;
-      let requireUpdate =
-        update_time !== 'Invalid Date' &&
-        parseInt(row.is_favorite || 0) === 1 &&
-        update_time !== today;
-
       // 处理日期格式 maturity_dt到期时间
       try {
         if (row.maturity_dt) {
           row.maturity_dt = dayjs(row.maturity_dt).format('YYYY-MM-DD');
           // 过滤掉已到期的可转债 三板的 eb可交债
-          if (row?.maturity_dt < today || row?.market_cd === 'sb' || row?.btype === 'E') {
+          if (
+            row?.maturity_dt < today ||
+            row?.market_cd === 'sb' ||
+            row?.btype === 'E' ||
+            row?.redeem_status === '已公告强赎' ||
+            parseInt(row?.is_blacklisted) === 1 ||
+            row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)
+          ) {
             continue;
           }
         }
       } catch (e) {
         console.error('maturity_dt 格式错误', row.bond_nm, row.maturity_dt);
       }
-
-      try {
-        if (
-          row?.price &&
-          parseFloat(row?.price) <= 150 &&
-          parseFloat(row?.price) >= 94 &&
-          requireUpdate &&
-          row?.is_blacklisted !== 1 &&
-          !(
-            row?.redeem_status === '已公告强赎' ||
-            row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)
-          )
-        ) {
-          // if (update_time === 'Invalid Date') {
-          //   console.log(
-          //     'update_time',
-          //     update_time,
-          //     row.is_favorite,
-          //     row.bond_nm,
-          //     dayjs(row.maturity_dt).format('YYYY-MM-DD'),
-          //     // row?.market_cd,
-          //     // row?.btype,
-          //     row.price,
-          //     row.bond_id,
-          //   );
-          // }
-          validRows.push(row);
+      let requireUpdate = false;
+      let adjust_condition = row.adjust_condition;
+      let redeem_status = row.redeem_status;
+      const pattern = /^\d+\/\d+\s*\|\s*\d+$/;
+      const isValid1 = pattern.test(adjust_condition);
+      const matches1 = adjust_condition.match(/(\d+)\/(\d+)/);
+      if (isValid1 && matches1) {
+        const firstNum = parseInt(matches1[1]); // "5"
+        const secondNum = parseInt(matches1[2]); // "15"
+        if (secondNum - 2 === firstNum) {
+          console.log('isValid', isValid1, matches1, adjust_condition, row.bond_nm);
+          requireUpdate = true;
         }
-      } catch (e) {
-        console.error('过滤失败', row.bond_nm, row.price);
+      }
+      const isValid2 = pattern.test(redeem_status);
+      const matches2 = redeem_status.match(/(\d+)\/(\d+)/);
+      if (isValid2 && matches2) {
+        const firstNum = parseInt(matches2[1]); // "5"
+        const secondNum = parseInt(matches2[2]); // "15"
+        if (secondNum - 2 === firstNum) {
+          console.log('isValid', isValid2, matches2, redeem_status, row.bond_nm);
+          requireUpdate = true;
+        }
+      }
+      let lastItem = row?.info?.rows?.[0];
+      let secondItem = row?.info?.rows?.[1];
+
+      if (
+        (lastItem &&
+          secondItem &&
+          // requireUpdate &&
+          lastItem.id === row.bond_id &&
+          secondItem.id === row.bond_id &&
+          lastItem?.cell?.last_chg_dt !== update_time_date) ||
+        secondItem?.cell?.last_chg_dt !== second_time_date
+      ) {
+        validRows.push({ ...row, info: {} });
       }
     }
-    console.log('validRows', validRows.length);
-    // console.log('validRows', validRows[0].price, validRows[0].bond_nm);
     // 按价格从小到大排序
     validRows.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
     return validRows;
