@@ -1,15 +1,13 @@
 import { pool } from '../utils/pool.js';
 import dayjs from 'dayjs';
 import { logToFile } from '../utils/logger.js';
-const update_time_date = '2025-05-30';
-const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
 /**
  * 获取可转债摘要数据
  * @param {number} limit - 返回记录数量限制
  * @param {Object} filters - 过滤条件
  * @returns {Promise<Array>} 可转债摘要数据数组
  */
-export async function fetchDetailListData(updateFinishData) {
+export async function fetchDetailListData(updateFinishData, update_time_date, second_time_date) {
   let conn;
   try {
     conn = await pool.getConnection();

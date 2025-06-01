@@ -3,7 +3,7 @@ import Router from 'koa-router';
 import cors from 'koa2-cors';
 import { pool } from './src/utils/pool.js';
 import koaBody from 'koa-body';
-// import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { insertDataToDB } from './src/utils.js';
 import { API_URLS } from './src/constants/api-urls.js';
 // import { initScheduler } from './src/scheduler.js';
@@ -22,9 +22,14 @@ import { updateOrCreateBondCell } from './src/services/update-or-create-bond-cel
 import { updateOrCreateBondStrategy } from './src/services/update-or-create-bond-strategy.service.js';
 import sendNotifyFn from './src/notify/sendNotify.js';
 import isTradingTime from './src/utils/isTradingTime.js';
+import isUpdateTime from './src/utils/isUpdateTime.js';
 import { updateOrCreateFinancialData } from './src/services/update-or-create-financial-data.service.js';
 const app = new Koa();
 const router = new Router();
+const update_time_date = '2025-05-30';
+const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
+console.log('second_time_date', second_time_date);
+console.log('update_time_date', update_time_date);
 
 // const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
@@ -216,7 +221,7 @@ router.get(API_URLS.STRATEGY_VIEW, async (ctx) => {
 router.get(API_URLS.UPDATE_LIST, async (ctx) => {
   try {
     // 构建过滤条件对象
-    const data = await fetchUpdateListData();
+    const data = await fetchUpdateListData(update_time_date, second_time_date);
     ctx.body = {
       success: true,
       data,
@@ -419,11 +424,32 @@ router.post('/api/financial-data', async (ctx) => {
 router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
   let len = 0;
   try {
-    const updateFinishData = await fetchUpdateListData();
+    // 检查是否在交易时间（下午3点后到晚上12点）
+    if (isUpdateTime()) {
+      ctx.status = 403;
+      ctx.body = {
+        success: false,
+        message: '当前不是交易时间，请在交易日下午3点后到晚上11点之间执行',
+      };
+      return;
+    }
+
+    const updateFinishData = await fetchUpdateListData(update_time_date, second_time_date);
     // console.log('data', updateFinishData);
-    len = await fetchDetailListData(updateFinishData.map((item) => item.bond_id));
+    len = await fetchDetailListData(
+      updateFinishData.map((item) => item.bond_id),
+      update_time_date,
+      second_time_date,
+    );
   } catch (err) {
     console.error('更新info失败:', err);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新info失败',
+      error: err.message,
+    };
+    return;
   }
   ctx.body = {
     success: true,
