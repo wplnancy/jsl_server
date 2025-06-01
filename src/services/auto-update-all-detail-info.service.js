@@ -9,7 +9,7 @@ const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY
  * @param {Object} filters - 过滤条件
  * @returns {Promise<Array>} 可转债摘要数据数组
  */
-export async function fetchDetailListData() {
+export async function fetchDetailListData(updateFinishData) {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -40,7 +40,6 @@ export async function fetchDetailListData() {
     // 获取当前日期
     const today = dayjs().format('YYYY-MM-DD');
     const validRows = [];
-    console.log('rows', rows.length);
     // 处理每一行数据
     for (const row of rows) {
       // 处理日期格式 maturity_dt到期时间
@@ -79,7 +78,6 @@ export async function fetchDetailListData() {
         validRows.push(row);
       }
     }
-    console.log('validRows', validRows.length);
     const updateBondData = async (bond_id, updateData = {}) => {
       const [existingRows] = await conn.execute(
         'SELECT bond_id FROM bond_cells WHERE bond_id = ?',
@@ -164,8 +162,12 @@ export async function fetchDetailListData() {
         console.log(`插入${bond_id}成功`);
       }
     };
-    for (let i = 0; i < validRows?.length; i++) {
-      let item = validRows[i];
+    console.log('validRows', validRows?.length);
+    console.log('updateFinishData', updateFinishData?.length);
+    let updateList = validRows.filter((item) => !updateFinishData.includes(item.bond_id));
+    console.log('updateList', updateList?.length);
+    for (let i = 0; i < updateList?.length; i++) {
+      let item = updateList[i];
       let info = item?.info;
       let rows = info?.rows;
       let total = info?.total;
@@ -201,7 +203,7 @@ export async function fetchDetailListData() {
         });
       }
       item.total = total + 1;
-      await updateBondData(validRows[i]?.bond_id, {
+      await updateBondData(updateList[i]?.bond_id, {
         info,
         max_history_price,
         min_history_price,
@@ -209,7 +211,7 @@ export async function fetchDetailListData() {
         max_price_date,
       });
     }
-    return validRows?.length;
+    return updateList?.length;
   } catch (error) {
     const errorMessage = `更新info数据失败: ${error.message}`;
     console.error(errorMessage);

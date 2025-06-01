@@ -214,15 +214,9 @@ router.get(API_URLS.STRATEGY_VIEW, async (ctx) => {
 });
 // API 路由 - 获取 更新详情列表 数据
 router.get(API_URLS.UPDATE_LIST, async (ctx) => {
-  const { limit = 1000, is_blacklisted } = ctx.query;
   try {
     // 构建过滤条件对象
-    const filters = {};
-    if (is_blacklisted !== undefined) {
-      filters.is_blacklisted = is_blacklisted;
-    }
-
-    const data = await fetchUpdateListData(parseInt(limit), filters);
+    const data = await fetchUpdateListData();
     ctx.body = {
       success: true,
       data,
@@ -423,11 +417,18 @@ router.post('/api/financial-data', async (ctx) => {
   }
 });
 router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
-  const len = await fetchDetailListData();
+  let len = 0;
+  try {
+    const updateFinishData = await fetchUpdateListData();
+    // console.log('data', updateFinishData);
+    len = await fetchDetailListData(updateFinishData.map((item) => item.bond_id));
+  } catch (err) {
+    console.error('更新info失败:', err);
+  }
   ctx.body = {
     success: true,
-    length: len || 0,
-    message: '更新成功',
+    length: len,
+    message: '更新info成功',
   };
 });
 // 注册路由
