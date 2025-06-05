@@ -26,7 +26,7 @@ import isUpdateTime from './src/utils/isUpdateTime.js';
 import { updateOrCreateFinancialData } from './src/services/update-or-create-financial-data.service.js';
 const app = new Koa();
 const router = new Router();
-const update_time_date = '2025-05-30';
+const update_time_date = '2025-06-05';
 const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
 console.log('second_time_date', second_time_date);
 console.log('update_time_date', update_time_date);
