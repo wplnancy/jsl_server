@@ -26,7 +26,7 @@ import isUpdateTime from './src/utils/isUpdateTime.js';
 import { updateOrCreateFinancialData } from './src/services/update-or-create-financial-data.service.js';
 const app = new Koa();
 const router = new Router();
-const update_time_date = '2025-06-05';
+const update_time_date = '2025-06-06';
 const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
 console.log('second_time_date', second_time_date);
 console.log('update_time_date', update_time_date);
@@ -425,7 +425,7 @@ router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
   let len = 0;
   try {
     // 检查是否在交易时间（下午3点后到晚上12点）
-    if (isUpdateTime()) {
+    if (!isUpdateTime()) {
       ctx.status = 403;
       ctx.body = {
         success: false,

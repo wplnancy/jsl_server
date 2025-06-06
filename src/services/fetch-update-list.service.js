@@ -95,15 +95,16 @@ export async function fetchUpdateListData(update_time_date, second_time_date) {
         console.log('requireUpdate', row.bond_nm);
       }
       if (
-        requireUpdate ||
-        (row?.info &&
-          row?.info?.rows &&
-          lastItem &&
-          secondItem &&
-          lastItem.id === row.bond_id &&
-          secondItem.id === row.bond_id &&
-          (lastItem?.cell?.last_chg_dt !== update_time_date ||
-            secondItem?.cell?.last_chg_dt !== second_time_date))
+        requireUpdate
+        // ||
+        // (row?.info &&
+        //   row?.info?.rows &&
+        //   lastItem &&
+        //   secondItem &&
+        //   lastItem.id === row.bond_id &&
+        //   secondItem.id === row.bond_id &&
+        //   (lastItem?.cell?.last_chg_dt !== update_time_date ||
+        //     secondItem?.cell?.last_chg_dt !== second_time_date))
       ) {
         validRows.push({ ...row, info: {} });
       }
