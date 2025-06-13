@@ -26,10 +26,9 @@ import isUpdateTime from './src/utils/isUpdateTime.js';
 import { updateOrCreateFinancialData } from './src/services/update-or-create-financial-data.service.js';
 const app = new Koa();
 const router = new Router();
-const update_time_date = '2025-06-06';
-const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
-console.log('second_time_date', second_time_date);
-console.log('update_time_date', update_time_date);
+const update_time_date = '2025-06-13';
+// const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
+const second_time_date = '2025-06-12';
 
 // const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 

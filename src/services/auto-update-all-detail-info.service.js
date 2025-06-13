@@ -14,7 +14,7 @@ export async function fetchDetailListData(updateFinishData, update_time_date, se
 
     // 构建基础查询，添加 bond_cells 表连接
     let query = `
-      SELECT 
+      SELECT
         s.*,
         bc.update_time,
         bc.min_price_date,
