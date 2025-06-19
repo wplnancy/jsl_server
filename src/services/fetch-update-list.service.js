@@ -107,7 +107,8 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
     }
     // 按价格从小到大排序
     validRows.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    return validRows.map((item) => {
+    let res = validRows.filter(item => parseInt(item.is_favorite) === 1).concat(validRows.filter(item => parseInt(item.is_favorite || 0) !== 1))
+    return res.map((item) => {
       return {
         bond_id: item.bond_id,
         bond_nm: item.bond_nm,
