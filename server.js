@@ -24,11 +24,15 @@ import sendNotifyFn from './src/notify/sendNotify.js';
 import isTradingTime from './src/utils/isTradingTime.js';
 import isUpdateTime from './src/utils/isUpdateTime.js';
 import { updateOrCreateFinancialData } from './src/services/update-or-create-financial-data.service.js';
+import { getTradingDatePair, isTradingDay } from './src/utils/tradingDate.js';
+
 const app = new Koa();
 const router = new Router();
-const update_time_date = '2025-06-13';
-// const second_time_date = dayjs(update_time_date).subtract(1, 'day').format('YYYY-MM-DD');
-const second_time_date = '2025-06-12';
+
+// currentRecentTradingDate 是最近的交易日 previousTradingDate是最近的交易日的上一个交易日
+const { currentRecentTradingDate, previousTradingDate } = getTradingDatePair();
+
+console.log(`当前交易日: ${currentRecentTradingDate}, 上一个交易日: ${previousTradingDate}`);
 
 // const startUrls = ['https://www.jisilu.cn/web/data/cb/list'];
 
@@ -219,8 +223,9 @@ router.get(API_URLS.STRATEGY_VIEW, async (ctx) => {
 // API 路由 - 获取 更新详情列表 数据
 router.get(API_URLS.UPDATE_LIST, async (ctx) => {
   try {
+    // 动态获取最新的交易日期
     // 构建过滤条件对象
-    const data = await fetchUpdateListData(update_time_date, second_time_date);
+    const data = await fetchUpdateListData(currentRecentTradingDate, previousTradingDate);
     ctx.body = {
       success: true,
       data,
@@ -423,6 +428,14 @@ router.post('/api/financial-data', async (ctx) => {
 router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
   let len = 0;
   try {
+
+    if (!isTradingDay) {
+      ctx.body = {
+        success: false,
+        message: '今天不是交易日，不能更新数据',
+      };
+      return;
+    }
     // 检查是否在交易时间（下午3点后到晚上12点）
     if (!isUpdateTime()) {
       ctx.status = 403;
@@ -433,12 +446,14 @@ router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
       return;
     }
 
-    const updateFinishData = await fetchUpdateListData(update_time_date, second_time_date);
+    // 动态获取最新的交易日期
+
+    const updateFinishData = await fetchUpdateListData(currentRecentTradingDate, previousTradingDate);
     // console.log('data', updateFinishData);
     len = await fetchDetailListData(
       updateFinishData.map((item) => item.bond_id),
-      update_time_date,
-      second_time_date,
+      currentRecentTradingDate,
+      previousTradingDate
     );
   } catch (err) {
     console.error('更新info失败:', err);
@@ -452,7 +467,7 @@ router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
   }
   ctx.body = {
     success: true,
-    length: len,
+    length: len || 0,
     message: '更新info成功',
   };
 });

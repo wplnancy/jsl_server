@@ -7,7 +7,7 @@ import { logToFile } from '../utils/logger.js';
  * @param {Object} filters - 过滤条件
  * @returns {Promise<Array>} 可转债摘要数据数组
  */
-export async function fetchDetailListData(updateFinishData, update_time_date, second_time_date) {
+export async function fetchDetailListData(updateFinishData, currentRecentTradingDate) {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -69,8 +69,8 @@ export async function fetchDetailListData(updateFinishData, update_time_date, se
         secondItem &&
         lastItem.id === row.bond_id &&
         secondItem.id === row.bond_id &&
-        lastItem?.cell?.last_chg_dt !== update_time_date
-        // (lastItem?.cell?.last_chg_dt !== update_time_date ||
+        lastItem?.cell?.last_chg_dt !== currentRecentTradingDate
+        // (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
         //   secondItem?.cell?.last_chg_dt !== second_time_date)
       ) {
         validRows.push(row);
@@ -176,11 +176,11 @@ export async function fetchDetailListData(updateFinishData, update_time_date, se
       // 确保日期格式正确
       if (parseFloat(item.price) < parseFloat(item.min_history_price)) {
         min_history_price = item.price;
-        min_price_date = update_time_date; // "2025-05-29T16:00:00.000Z"
+        min_price_date = currentRecentTradingDate; // "2025-05-29T16:00:00.000Z"
       }
       if (parseFloat(item.price) > parseFloat(item.max_history_price)) {
         max_history_price = item.price;
-        max_price_date = update_time_date;
+        max_price_date = currentRecentTradingDate;
       }
       if (rows && rows.length > 0) {
         rows.unshift({
@@ -192,7 +192,7 @@ export async function fetchDetailListData(updateFinishData, update_time_date, se
             ytm_rt: item.ytm_rt + '%',
             bond_id: item.bond_id,
             premium_rt: item.premium_rt + '%',
-            last_chg_dt: update_time_date,
+            last_chg_dt: currentRecentTradingDate,
             turnover_rt: item.turnover_rt + '%',
             curr_iss_amt: item.curr_iss_amt,
             stock_volume: item.stock_volume,

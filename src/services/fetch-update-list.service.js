@@ -7,14 +7,14 @@ import { logToFile } from '../utils/logger.js';
  * @param {Object} filters - 过滤条件
  * @returns {Promise<Array>} 可转债摘要数据数组
  */
-export async function fetchUpdateListData(update_time_date, second_time_date) {
+export async function fetchUpdateListData(currentRecentTradingDate, previousTradingDate) {
   let conn;
   try {
     conn = await pool.getConnection();
 
     // 构建基础查询，添加 bond_cells 表连接
     let query = `
-      SELECT 
+      SELECT
         s.*,
         bs.target_price,
         bs.target_heavy_price,
@@ -91,20 +91,16 @@ export async function fetchUpdateListData(update_time_date, second_time_date) {
       }
       let lastItem = row?.info?.rows?.[0];
       let secondItem = row?.info?.rows?.[1];
-      if (requireUpdate) {
-        console.log('requireUpdate', row.bond_nm);
-      }
       if (
-        requireUpdate
-        // ||
-        // (row?.info &&
-        //   row?.info?.rows &&
-        //   lastItem &&
-        //   secondItem &&
-        //   lastItem.id === row.bond_id &&
-        //   secondItem.id === row.bond_id &&
-        //   (lastItem?.cell?.last_chg_dt !== update_time_date ||
-        //     secondItem?.cell?.last_chg_dt !== second_time_date))
+        requireUpdate ||
+        (row?.info &&
+          row?.info?.rows &&
+          lastItem &&
+          secondItem &&
+          lastItem.id === row.bond_id &&
+          secondItem.id === row.bond_id &&
+          (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
+            secondItem?.cell?.last_chg_dt !== previousTradingDate))
       ) {
         validRows.push({ ...row, info: {} });
       }

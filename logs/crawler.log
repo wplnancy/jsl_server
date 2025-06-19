@@ -104,3 +104,4 @@
 [2025年05月30日22时33分35秒] 更新info数据失败: bond_ids is not defined
 [2025年05月30日22时33分35秒] 未处理的Promise拒绝: bond_ids is not defined
 [2025年05月31日11时14分46秒] 更新info数据失败: Incorrect date value: '2025-05-29T16:00:00.000Z' for column 'min_price_date' at row 1
+[2025年06月19日10时07分31秒] 未处理的Promise拒绝: fetch failed
