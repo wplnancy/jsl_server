@@ -92,15 +92,16 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
       let lastItem = row?.info?.rows?.[0];
       let secondItem = row?.info?.rows?.[1];
       if (
-        requireUpdate ||
-        (row?.info &&
-          row?.info?.rows &&
-          lastItem &&
-          secondItem &&
-          lastItem.id === row.bond_id &&
-          secondItem.id === row.bond_id &&
-          (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
-            secondItem?.cell?.last_chg_dt !== previousTradingDate))
+        requireUpdate
+        // ||
+        // (row?.info &&
+        //   row?.info?.rows &&
+        //   lastItem &&
+        //   secondItem &&
+        //   lastItem.id === row.bond_id &&
+        //   secondItem.id === row.bond_id &&
+        //   (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
+        //     secondItem?.cell?.last_chg_dt !== previousTradingDate))
       ) {
         validRows.push({ ...row, info: {} });
       }

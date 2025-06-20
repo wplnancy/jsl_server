@@ -53,8 +53,8 @@ export function getPreviousTradingDate(currentTradingDate) {
  * 获取交易日期对（当前交易日和上一个交易日）
  * @returns {Object} 包含 update_time_date 和 second_time_date 的对象
  */
-export function getTradingDatePair() {
-  const currentRecentTradingDate = getCurrentTradingDate();
+export function getTradingDatePair(defaultVal) {
+  const currentRecentTradingDate = defaultVal || getCurrentTradingDate();
   const previousTradingDate = getPreviousTradingDate(currentRecentTradingDate);
 
   return {
