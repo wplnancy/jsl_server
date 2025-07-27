@@ -437,14 +437,14 @@ router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
       return;
     }
     // 检查是否在交易时间（下午3点后到晚上12点）
-    if (!isUpdateTime()) {
-      ctx.status = 403;
-      ctx.body = {
-        success: false,
-        message: '当前不是交易时间，请在交易日下午3点后到晚上11点之间执行',
-      };
-      return;
-    }
+    // if (!isUpdateTime()) {
+    //   ctx.status = 403;
+    //   ctx.body = {
+    //     success: false,
+    //     message: '当前不是交易时间，请在交易日下午3点后到晚上11点之间执行',
+    //   };
+    //   return;
+    // }
 
     // 动态获取最新的交易日期
 

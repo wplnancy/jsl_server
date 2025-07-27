@@ -109,3 +109,15 @@
 [2025年06月19日10时08分38秒] 未捕获的异常: listen EADDRINUSE: address already in use :::3000
 [2025年06月19日10时08分46秒] 未捕获的异常: listen EADDRINUSE: address already in use :::3000
 [2025年06月19日10时34分14秒] 未处理的Promise拒绝: fetch failed
+[2025年07月27日07时28分47秒] 更新或创建 bond_cells 记录失败: bond_id=123229, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日07时29分44秒] 更新或创建 bond_cells 记录失败: bond_id=113575, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日07时30分21秒] 更新或创建 bond_cells 记录失败: bond_id=118018, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日07时30分59秒] 更新或创建 bond_cells 记录失败: bond_id=127083, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日07时31分36秒] 更新或创建 bond_cells 记录失败: bond_id=127108, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日07时32分13秒] 更新或创建 bond_cells 记录失败: bond_id=127046, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日07时32分51秒] 更新或创建 bond_cells 记录失败: bond_id=127062, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日07时33分28秒] 更新或创建 bond_cells 记录失败: bond_id=123156, error=Data too long for column 'lt_bps' at row 1
+[2025年07月27日09时10分00秒] 获取可转债摘要数据失败: testArr is not defined
+[2025年07月27日09时10分00秒] 获取更新列表数据失败: /api/update_list testArr is not defined
+[2025年07月27日09时25分39秒] 获取更新列表数据失败: /api/update_list consolelog is not defined
+[2025年07月27日09时25分39秒] 获取可转债摘要数据失败: consolelog is not defined

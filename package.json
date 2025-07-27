@@ -25,7 +25,14 @@
     "typescript": "~5.7.0"
   },
   "scripts": {
-    "start": "pm2 start ./server.js",
+    "start": "pm2 start ecosystem.config.cjs",
+    "stop": "pm2 stop app",
+    "restart": "pm2 restart app",
+    "reload": "pm2 reload app",
+    "delete": "pm2 delete app",
+    "logs": "pm2 logs app",
+    "status": "pm2 status",
+    "monit": "pm2 monit",
     "debug": "node ./server.js",
     "start:prod": "node dist/main.js",
     "pa": "node src/iwencai.js",

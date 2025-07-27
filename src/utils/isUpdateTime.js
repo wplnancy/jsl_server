@@ -7,7 +7,7 @@ export default () => {
 
   // 周一至周五
   if (day >= 1 && day <= 5) {
-    return time >= 1500 && time <= 2300;
+    return time >= 1500 && time <= 2400;
   }
   return false;
 };

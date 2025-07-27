@@ -42,6 +42,7 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
     // 获取当前日期
     const today = dayjs().format('YYYY-MM-DD');
     const validRows = [];
+    let testArr = [];
     // 处理每一行数据
     for (const row of rows) {
       // 处理日期格式 maturity_dt到期时间
@@ -91,21 +92,23 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
       }
       let lastItem = row?.info?.rows?.[0];
       let secondItem = row?.info?.rows?.[1];
+
       if (
-        requireUpdate
-        // ||
-        // (row?.info &&
-        //   row?.info?.rows &&
-        //   lastItem &&
-        //   secondItem &&
-        //   lastItem.id === row.bond_id &&
-        //   secondItem.id === row.bond_id &&
-        //   (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
-        //     secondItem?.cell?.last_chg_dt !== previousTradingDate))
+        requireUpdate||
+        (row?.info &&
+          row?.info?.rows &&
+          lastItem &&
+          secondItem &&
+          lastItem.id === row.bond_id &&
+          secondItem.id === row.bond_id &&
+          (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
+            secondItem?.cell?.last_chg_dt !== previousTradingDate))
       ) {
-        validRows.push({ ...row, info: {} });
+        validRows.push({ ...row, info: {} }); // 临时添加
       }
     }
+    console.log('testArr', validRows?.length, previousTradingDate)
+
     // 按价格从小到大排序
     validRows.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
     let res = validRows.filter(item => parseInt(item.is_favorite) === 1).concat(validRows.filter(item => parseInt(item.is_favorite || 0) !== 1))
