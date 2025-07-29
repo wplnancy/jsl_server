@@ -121,3 +121,5 @@
 [2025年07月27日09时10分00秒] 获取更新列表数据失败: /api/update_list testArr is not defined
 [2025年07月27日09时25分39秒] 获取更新列表数据失败: /api/update_list consolelog is not defined
 [2025年07月27日09时25分39秒] 获取可转债摘要数据失败: consolelog is not defined
+[2025年07月29日14时29分03秒] 未处理的Promise拒绝: fetch failed
+[2025年07月29日14时34分03秒] 未处理的Promise拒绝: fetch failed
