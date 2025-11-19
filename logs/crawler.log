@@ -123,3 +123,35 @@
 [2025年07月27日09时25分39秒] 获取可转债摘要数据失败: consolelog is not defined
 [2025年07月29日14时29分03秒] 未处理的Promise拒绝: fetch failed
 [2025年07月29日14时34分03秒] 未处理的Promise拒绝: fetch failed
+[2025年07月30日10时26分41秒] 未处理的Promise拒绝: fetch failed
+[2025年07月30日10时27分41秒] 未处理的Promise拒绝: fetch failed
+[2025年07月30日11时10分41秒] 未处理的Promise拒绝: fetch failed
+[2025年08月01日09时42分34秒] 未处理的Promise拒绝: fetch failed
+[2025年08月01日10时25分26秒] 未处理的Promise拒绝: fetch failed
+[2025年08月22日11时08分51秒] 未处理的Promise拒绝: fetch failed
+[2025年09月01日10时01分28秒] 获取可转债摘要数据失败: Cannot read properties of null (reading 'match')
+[2025年09月01日10时01分28秒] 获取更新列表数据失败: /api/update_list Cannot read properties of null (reading 'match')
+[2025年09月01日10时02分00秒] 获取可转债摘要数据失败: Cannot read properties of null (reading 'match')
+[2025年09月01日10时02分00秒] 获取更新列表数据失败: /api/update_list Cannot read properties of null (reading 'match')
+[2025年09月01日10时02分28秒] 获取可转债摘要数据失败: Cannot read properties of null (reading 'match')
+[2025年09月01日10时02分28秒] 获取更新列表数据失败: /api/update_list Cannot read properties of null (reading 'match')
+[2025年09月01日10时05分08秒] 获取可转债摘要数据失败: Cannot read properties of null (reading 'match')
+[2025年09月01日10时05分08秒] 获取更新列表数据失败: /api/update_list Cannot read properties of null (reading 'match')
+[2025年09月01日10时07分21秒] 获取可转债摘要数据失败: Cannot read properties of null (reading 'match')
+[2025年09月01日10时07分21秒] 获取更新列表数据失败: /api/update_list Cannot read properties of null (reading 'match')
+[2025年09月01日10时08分40秒] 获取可转债摘要数据失败22: Cannot read properties of null (reading 'match')
+[2025年09月01日10时08分40秒] 获取更新列表数据失败: /api/update_list Cannot read properties of null (reading 'match')
+[2025年09月01日10时10分15秒] 获取可转债摘要数据失败22: Cannot read properties of null (reading 'match')
+[2025年09月01日10时10分15秒] 获取更新列表数据失败: /api/update_list Cannot read properties of null (reading 'match')
+[2025年09月01日10时15分31秒] 获取可转债摘要数据失败22: row is not defined
+[2025年09月01日10时15分31秒] 获取更新列表数据失败: /api/update_list row is not defined
+[2025年09月01日10时15分48秒] 获取可转债摘要数据失败22: row is not defined
+[2025年09月01日10时15分48秒] 获取更新列表数据失败: /api/update_list row is not defined
+[2025年09月01日10时19分56秒] 获取可转债摘要数据失败22: row is not defined
+[2025年09月01日10时19分56秒] 获取更新列表数据失败: /api/update_list row is not defined
+[2025年09月01日10时20分59秒] 未捕获的异常: listen EADDRINUSE: address already in use :::3000
+[2025年09月05日11时09分17秒] 未处理的Promise拒绝: fetch failed
+[2025年09月05日13时19分37秒] 未处理的Promise拒绝: fetch failed
+[2025年09月05日14时04分38秒] 未处理的Promise拒绝: fetch failed
+[2025年09月10日22时33分40秒] 更新或创建 bond_cells 记录失败: bond_id=123138, error=Data too long for column 'lt_bps' at row 1
+[2025年10月01日09时59分05秒] 未处理的Promise拒绝: fetch failed

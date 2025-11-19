@@ -4,7 +4,7 @@ import cors from 'koa2-cors';
 import { pool } from './src/utils/pool.js';
 import koaBody from 'koa-body';
 import dayjs from 'dayjs';
-import { insertDataToDB } from './src/utils.js';
+import { insertDataToDB, update_summary_bond_cells } from './src/utils.js';
 import { API_URLS } from './src/constants/api-urls.js';
 // import { initScheduler } from './src/scheduler.js';
 import { fetchSummaryData } from './src/services/fetch-summary.service.js';
@@ -255,10 +255,10 @@ router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
       };
       return;
     }
-    console.log('summary批量更新字段数量', Object.keys(data[0])?.length);
+    console.log('summary批量更新字段数量', Object.keys(data[0])?.length, data.length);
     // 使用 insertDataToDB 函数处理数据更新
     await insertDataToDB(data);
-
+    // console.log(data[0]);
     ctx.body = {
       success: true,
       message: '列表数据更新成功',
@@ -271,6 +271,36 @@ router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
     ctx.body = {
       success: false,
       message: '更新数据失败',
+      error: error.message,
+    };
+  }
+});
+
+router.post(API_URLS.DELETE_EXPIRED_BONDS, async (ctx) => {
+  try {
+    const data = ctx.request.body;
+    if (!Array.isArray(data)) {
+      ctx.status = 400;
+      ctx.body = {
+        success: false,
+        message: '请求数据必须是数组格式',
+      };
+      return;
+    }
+    console.log('目前存量上市的转债数量', data.length);
+    await update_summary_bond_cells(data);
+    ctx.body = {
+      success: true,
+      message: '成功更新summary和bond_cells数据库表',
+      count: data.length,
+    };
+  } catch (error) {
+    console.error('更新summary和bond_cells数据库表失败:', error);
+    logToFile(`更新summary和bond_cells数据库表失败: ${error.message} ${API_URLS.SUMMARY_BATCH_UPDATE}`);
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: '更新summary和bond_cells数据库表失败',
       error: error.message,
     };
   }
@@ -428,7 +458,6 @@ router.post('/api/financial-data', async (ctx) => {
 router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
   let len = 0;
   try {
-
     if (!isTradingDay) {
       ctx.body = {
         success: false,
@@ -437,23 +466,26 @@ router.get(API_URLS.UPDATE_INFOS, async (ctx) => {
       return;
     }
     // 检查是否在交易时间（下午3点后到晚上12点）
-    // if (!isUpdateTime()) {
-    //   ctx.status = 403;
-    //   ctx.body = {
-    //     success: false,
-    //     message: '当前不是交易时间，请在交易日下午3点后到晚上11点之间执行',
-    //   };
-    //   return;
-    // }
+    if (!isUpdateTime()) {
+      ctx.status = 403;
+      ctx.body = {
+        success: false,
+        message: '当前不是交易时间，请在交易日下午3点后到晚上11点之间执行',
+      };
+      return;
+    }
 
     // 动态获取最新的交易日期
 
-    const updateFinishData = await fetchUpdateListData(currentRecentTradingDate, previousTradingDate);
+    const updateFinishData = await fetchUpdateListData(
+      currentRecentTradingDate,
+      previousTradingDate,
+    );
     // console.log('data', updateFinishData);
     len = await fetchDetailListData(
       updateFinishData.map((item) => item.bond_id),
       currentRecentTradingDate,
-      previousTradingDate
+      previousTradingDate,
     );
   } catch (err) {
     console.error('更新info失败:', err);

@@ -42,7 +42,6 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
     // 获取当前日期
     const today = dayjs().format('YYYY-MM-DD');
     const validRows = [];
-    let testArr = [];
     // 处理每一行数据
     for (const row of rows) {
       // 处理日期格式 maturity_dt到期时间
@@ -52,8 +51,8 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
           // 过滤掉已到期的可转债 三板的 eb可交债
           if (
             row?.maturity_dt < today ||
-            row?.market_cd === 'sb' ||
-            row?.btype === 'E' ||
+            row?.market_cd === 'sb' || // 三板上市的
+            row?.btype === 'E' || // EB的可交债
             parseFloat(row?.price) > 180 ||
             row?.redeem_status === '已公告强赎' ||
             parseInt(row?.is_blacklisted) === 1 ||
@@ -66,11 +65,14 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
         console.error('maturity_dt 格式错误', row.bond_nm, row.maturity_dt);
       }
       let requireUpdate = false;
-      let adjust_condition = row.adjust_condition;
-      let redeem_status = row.redeem_status;
+      let adjust_condition = row.adjust_condition || '';
+      let redeem_status = row?.redeem_status || '';
       const pattern = /^\d+\/\d+\s*\|\s*\d+$/;
+      // if (!adjust_condition?.length || !redeem_status?.length) {
+      //   console.log('row', row.bond_nm, adjust_condition, redeem_status);
+      // }
       const isValid1 = pattern.test(adjust_condition);
-      const matches1 = adjust_condition.match(/(\d+)\/(\d+)/);
+      const matches1 = adjust_condition?.match(/(\d+)\/(\d+)/);
       if (isValid1 && matches1) {
         const firstNum = parseInt(matches1[1]); // "5"
         const secondNum = parseInt(matches1[2]); // "15"
@@ -81,7 +83,7 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
         }
       }
       const isValid2 = pattern.test(redeem_status);
-      const matches2 = redeem_status.match(/(\d+)\/(\d+)/);
+      const matches2 = redeem_status?.match(/(\d+)\/(\d+)/);
       if (isValid2 && matches2) {
         const firstNum = parseInt(matches2[1]); // "5"
         const secondNum = parseInt(matches2[2]); // "15"
@@ -92,27 +94,32 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
       }
       let lastItem = row?.info?.rows?.[0];
       let secondItem = row?.info?.rows?.[1];
-
+      // console.log('currentRecentTradingDate', currentRecentTradingDate);
+      // console.log('previousTradingDate', previousTradingDate);
+      // console.log('secondItem', secondItem?.cell?.last_chg_dt);
+      // console.log('lastItem', lastItem?.cell?.last_chg_dt);
+      // validRows.push({ ...row, info: {} }); // 临时添加
       if (
-        requireUpdate
-        // ||
-        // (row?.info &&
-        //   row?.info?.rows &&
-        //   lastItem &&
-        //   secondItem &&
-        //   lastItem.id === row.bond_id &&
-        //   secondItem.id === row.bond_id &&
-        //   (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
-        //     secondItem?.cell?.last_chg_dt !== previousTradingDate))
+        requireUpdate 
+          // || (row?.info &&
+          //   row?.info?.rows &&
+          //   lastItem &&
+          //   secondItem &&
+          //   lastItem.id === row.bond_id &&
+          //   secondItem.id === row.bond_id &&
+          //   (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
+          //     secondItem?.cell?.last_chg_dt !== previousTradingDate))
       ) {
         validRows.push({ ...row, info: {} }); // 临时添加
       }
     }
-    console.log('testArr', validRows?.length, previousTradingDate)
 
+    // console.log('validRows', validRows?.length, previousTradingDate);
     // 按价格从小到大排序
     validRows.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    let res = validRows.filter(item => parseInt(item.is_favorite) === 1).concat(validRows.filter(item => parseInt(item.is_favorite || 0) !== 1))
+    let res = validRows
+      .filter((item) => parseInt(item.is_favorite) === 1)
+      .concat(validRows.filter((item) => parseInt(item.is_favorite || 0) !== 1));
     return res.map((item) => {
       return {
         bond_id: item.bond_id,
@@ -123,7 +130,7 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
       };
     });
   } catch (error) {
-    const errorMessage = `获取可转债摘要数据失败: ${error.message}`;
+    const errorMessage = `获取可转债摘要数据失败22: ${error.message}`;
     console.error(errorMessage);
     logToFile(errorMessage);
     throw error;

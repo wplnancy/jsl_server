@@ -9,6 +9,7 @@ export const API_URLS = {
   STRATEGY_VIEW: '/api/strategy_view', // 获取策略视图数据
   SUMMARY_BATCH_UPDATE: '/api/summary/batch-update', // 批量更新summary
   REFRESH_WITH_COOLDOWN: '/api/refresh-with-cooldown', // 暂时不需要了
+  DELETE_EXPIRED_BONDS: '/api/bond_cells_and_summary/delete-expired',
   BOND_CELLS_UPDATE: '/api/bond_cells/update',
   UPDATE_BOND_STRATEGIES: '/api/bond_strategies',
   UPDATE_INFOS: '/api/update-info',

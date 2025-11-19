@@ -16,7 +16,7 @@ export async function fetchSummaryData(limit = 100, filters = {}) {
 
     // 构建基础查询，添加 bond_cells 表连接
     let query = `
-      SELECT 
+      SELECT
         s.*,
         bs.target_price,
         bs.target_heavy_price,
@@ -53,6 +53,7 @@ export async function fetchSummaryData(limit = 100, filters = {}) {
     // 直接将 limit 值添加到查询字符串中
     const safeLimit = Math.max(1, Math.min(1000, parseInt(limit) || 100));
     query += ` LIMIT ${safeLimit}`;
+    console.log(whereConditions, queryParams, query);
     const [rows] =
       whereConditions.length > 0
         ? await conn.execute(query, queryParams)
