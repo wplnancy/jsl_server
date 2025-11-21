@@ -26,7 +26,7 @@ export const insertBoundIndexData = async (data) => {
   const connection = await mysql.createConnection(dbConfig);
 
   try {
-    console.log('Database connection established.');
+    // console.log('Database connection established.');
 
     // 动态生成插入和更新的 SQL 查询
     const updateFields = fields
@@ -54,7 +54,7 @@ export const insertBoundIndexData = async (data) => {
       await connection.execute(query, values);
     }
 
-    console.log('Data inserted or updated successfully.');
+    // console.log('Data inserted or updated successfully.');
   } catch (error) {
     console.error('Error inserting or updating data:', error);
   } finally {

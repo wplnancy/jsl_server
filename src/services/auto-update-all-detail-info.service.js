@@ -114,7 +114,7 @@ export async function fetchDetailListData(updateFinishData, currentRecentTrading
           const updateSQL = `UPDATE bond_cells SET ${updateFields.join(', ')} WHERE bond_id = ?`;
           updateValues.push(bond_id);
           await conn.execute(updateSQL, updateValues);
-          console.log(`更新${bond_id}成功`, Object.keys(updateData));
+          // console.log(`更新${bond_id}成功`, Object.keys(updateData));
         }
       } else {
         // 构建插入字段和值
@@ -154,16 +154,16 @@ export async function fetchDetailListData(updateFinishData, currentRecentTrading
         const insertSQL = `INSERT INTO bond_cells (${insertFields.join(
           ', ',
         )}) VALUES (${placeholders.join(', ')})`;
-        console.log('执行插入 SQL:', insertSQL);
-        console.log('插入值:', insertValues);
+        // console.log('执行插入 SQL:', insertSQL);
+        // console.log('插入值:', insertValues);
         await conn.execute(insertSQL, insertValues);
-        console.log(`插入${bond_id}成功`);
+        // console.log(`插入${bond_id}成功`);
       }
     };
-    console.log('validRows', validRows?.length);
-    console.log('updateFinishData', updateFinishData?.length);
+    // console.log('validRows', validRows?.length);
+    // console.log('updateFinishData', updateFinishData?.length);
     let updateList = validRows.filter((item) => !updateFinishData.includes(item.bond_id));
-    console.log('updateList', updateList?.length);
+    // console.log('updateList', updateList?.length);
     for (let i = 0; i < updateList?.length; i++) {
       let item = updateList[i];
       let info = item?.info;

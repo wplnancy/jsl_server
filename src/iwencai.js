@@ -16,7 +16,7 @@ const crawler = new PuppeteerCrawler({
         await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
         // 等待页面加载
-        console.log(222);
+        // console.log(222);
         // await delay(5000);
         // await page.waitForNavigation({ waitUntil: 'networkidle0' });
         await page.waitForNavigation({ waitUntil: 'networkidle0' }); // 等待页面跳转完成

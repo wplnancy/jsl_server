@@ -53,7 +53,7 @@ export async function fetchSummaryData(limit = 100, filters = {}) {
     // 直接将 limit 值添加到查询字符串中
     const safeLimit = Math.max(1, Math.min(1000, parseInt(limit) || 100));
     query += ` LIMIT ${safeLimit}`;
-    console.log(whereConditions, queryParams, query);
+    // console.log(whereConditions, queryParams, query);
     const [rows] =
       whereConditions.length > 0
         ? await conn.execute(query, queryParams)

@@ -190,7 +190,7 @@ router.get(API_URLS.SUMMARY, async (ctx) => {
 });
 // 获取策略视图数据
 router.get(API_URLS.STRATEGY_VIEW, async (ctx) => {
-  console.log('获取策略视图数据');
+  // console.log('获取策略视图数据');
   const { limit = 1000, is_blacklisted } = ctx.query;
   try {
     // 构建过滤条件对象
@@ -572,7 +572,7 @@ const startTradingTimer = () => {
 // 自动更新数据
 const autoUpdateDetailData = async () => {
   const data = await fetchDetailListData();
-  console.log('data', data?.length);
+  // console.log('data', data?.length);
   ctx.body = {
     success: true,
     length: data?.length || 0,

@@ -124,7 +124,7 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
           const updateSQL = `UPDATE bond_cells SET ${updateFields.join(', ')} WHERE bond_id = ?`;
           updateValues.push(finalBondId);
           await conn.execute(updateSQL, updateValues);
-          console.log(`更新${finalBondId}成功`, Object.keys(updateData));
+          // console.log(`更新${finalBondId}成功`, Object.keys(updateData));
         }
       } else {
         // 构建插入字段和值
@@ -227,10 +227,10 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
         const insertSQL = `INSERT INTO bond_cells (${insertFields.join(
           ', ',
         )}) VALUES (${placeholders.join(', ')})`;
-        console.log('执行插入 SQL:', insertSQL);
-        console.log('插入值:', insertValues);
+        // console.log('执行插入 SQL:', insertSQL);
+        // console.log('插入值:', insertValues);
         await conn.execute(insertSQL, insertValues);
-        console.log(`插入${finalBondId}成功`);
+        // console.log(`插入${finalBondId}成功`);
       }
     };
     for (let i = 0; i < bond_ids?.length; i++) {

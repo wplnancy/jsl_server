@@ -53,18 +53,18 @@ export const insertBoundCellData = async (data) => {
         formatDate(max_price_date)
       ];
 
-      console.log("准备插入的数据:", {
-        bond_id,
-        industry,
-        concept,
-        max_history_price,
-        min_history_price,
-        info_length: info ? info.length : 0,
-        adj_logs_length: adj_logs ? adj_logs.length : 0,
-        unadj_logs_length: unadj_logs ? unadj_logs.length : 0,
-        min_price_date: formatDate(min_price_date),
-        max_price_date: formatDate(max_price_date)
-      });
+      // console.log("准备插入的数据:", {
+      //   bond_id,
+      //   industry,
+      //   concept,
+      //   max_history_price,
+      //   min_history_price,
+      //   info_length: info ? info.length : 0,
+      //   adj_logs_length: adj_logs ? adj_logs.length : 0,
+      //   unadj_logs_length: unadj_logs ? unadj_logs.length : 0,
+      //   min_price_date: formatDate(min_price_date),
+      //   max_price_date: formatDate(max_price_date)
+      // });
 
       // 使用 ON DUPLICATE KEY UPDATE 实现 upsert
       const [result] = await connection.query(
@@ -100,14 +100,14 @@ export const insertBoundCellData = async (data) => {
       );
       
       if (stored && stored[0]) {
-        console.log("存储后的数据:", {
-          adj_logs_length: stored[0].adj_logs ? stored[0].adj_logs.length : 0,
-          min_price_date: stored[0].min_price_date,
-          max_price_date: stored[0].max_price_date
-        });
+        // console.log("存储后的数据:", {
+        //   adj_logs_length: stored[0].adj_logs ? stored[0].adj_logs.length : 0,
+        //   min_price_date: stored[0].min_price_date,
+        //   max_price_date: stored[0].max_price_date
+        // });
       }
       
-      console.log(`债券 ${bond_id} 数据${result.affectedRows === 1 ? '插入' : '更新'}成功`);
+      // console.log(`债券 ${bond_id} 数据${result.affectedRows === 1 ? '插入' : '更新'}成功`);
     }
   } catch (error) {
     console.error('插入/更新债券数据失败:', error);

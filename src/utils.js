@@ -13,9 +13,9 @@ const getCurrentDateTime = () => {
   )}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 };
 export const update_summary_bond_cells = async (data) => {
-  console.log('update_summary_bond_cells-start')
-  console.log(data)
-  console.log('update_summary_bond_cells-end')
+  // console.log('update_summary_bond_cells-start')
+  // console.log(data)
+  // console.log('update_summary_bond_cells-end')
   
   // 我需要查询summary表和bond_cells表，获取每一行的bond_id的值，如果bond_id的值不在data数组中，则删除这一行
   const connection = await mysql.createConnection(dbConfig);

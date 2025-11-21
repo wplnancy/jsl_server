@@ -8,6 +8,7 @@ import { logToFile } from '../utils/logger.js';
  * @returns {Promise<Array>} 可转债摘要数据数组
  */
 export async function fetchUpdateListData(currentRecentTradingDate, previousTradingDate) {
+  console.log('fetchUpdateListData', currentRecentTradingDate, previousTradingDate)
   let conn;
   try {
     conn = await pool.getConnection();
