@@ -245,7 +245,6 @@ export const insertDataToDB = async (data) => {
     console.error('Error inserting or updating data:', error);
   } finally {
     await connection.end();
-    console.log('Database connection closed.');
   }
 };
 
