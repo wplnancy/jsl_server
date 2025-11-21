@@ -155,3 +155,17 @@
 [2025年09月05日14时04分38秒] 未处理的Promise拒绝: fetch failed
 [2025年09月10日22时33分40秒] 更新或创建 bond_cells 记录失败: bond_id=123138, error=Data too long for column 'lt_bps' at row 1
 [2025年10月01日09时59分05秒] 未处理的Promise拒绝: fetch failed
+[2025年11月21日13时58分01秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日13时58分51秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日13时59分01秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时06分26秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时07分16秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时07分32秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时08分04秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时08分31秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时09分01秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时09分11秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时09分42秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时10分12秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时10分41秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日14时11分12秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update

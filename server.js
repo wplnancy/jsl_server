@@ -255,7 +255,7 @@ router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
       };
       return;
     }
-    console.log('summary批量更新字段数量', Object.keys(data[0])?.length, data.length);
+    console.log('summary批量更新字段数量', data.length);
     // 使用 insertDataToDB 函数处理数据更新
     await insertDataToDB(data);
     // console.log(data[0]);

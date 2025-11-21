@@ -16,31 +16,31 @@ export const update_summary_bond_cells = async (data) => {
   // console.log('update_summary_bond_cells-start')
   // console.log(data)
   // console.log('update_summary_bond_cells-end')
-  
+
   // 我需要查询summary表和bond_cells表，获取每一行的bond_id的值，如果bond_id的值不在data数组中，则删除这一行
   const connection = await mysql.createConnection(dbConfig);
-  
+
   try {
     // 如果data为空数组，则不执行任何删除操作
     if (data.length === 0) {
       console.log('传入数据为空，不执行删除操作');
       return;
     }
-    
+
     // 获取传入数据中的所有bond_id
     const dataBondIds = data;
     const placeholders = dataBondIds.map(() => '?').join(',');
-    
+
     // 删除summary表中不在data中的记录
     const deleteSummaryQuery = `DELETE FROM summary WHERE bond_id NOT IN (${placeholders})`;
     const [summaryResult] = await connection.execute(deleteSummaryQuery, dataBondIds);
     console.log(`从summary表中删除了 ${summaryResult.affectedRows} 条不在数据中的记录`);
-    
+
     // 删除bond_cells表中不在data中的记录
-    const deleteBondCellsQuery = `DELETE FROM bond_cells WHERE bond_id NOT IN (${placeholders})`;
-    const [bondCellsResult] = await connection.execute(deleteBondCellsQuery, dataBondIds);
-    console.log(`从bond_cells表中删除了 ${bondCellsResult.affectedRows} 条不在数据中的记录`);
-    
+    // const deleteBondCellsQuery = `DELETE FROM bond_cells WHERE bond_id NOT IN (${placeholders})`;
+    // const [bondCellsResult] = await connection.execute(deleteBondCellsQuery, dataBondIds);
+    // console.log(`从bond_cells表中删除了 ${bondCellsResult.affectedRows} 条不在数据中的记录`);
+
     console.log('update_summary_bond_cells 执行完成');
   } catch (error) {
     console.error('更新summary和bond_cells表时出错:', error);
