@@ -13,10 +13,6 @@ const getCurrentDateTime = () => {
   )}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 };
 export const update_summary_bond_cells = async (data) => {
-  // console.log('update_summary_bond_cells-start')
-  // console.log(data)
-  // console.log('update_summary_bond_cells-end')
-
   // 我需要查询summary表和bond_cells表，获取每一行的bond_id的值，如果bond_id的值不在data数组中，则删除这一行
   const connection = await mysql.createConnection(dbConfig);
 
@@ -35,6 +31,19 @@ export const update_summary_bond_cells = async (data) => {
     const deleteSummaryQuery = `DELETE FROM summary WHERE bond_id NOT IN (${placeholders})`;
     const [summaryResult] = await connection.execute(deleteSummaryQuery, dataBondIds);
     console.log(`从summary表中删除了 ${summaryResult.affectedRows} 条不在数据中的记录`);
+
+    // const deleteSummaryQuery = `DELETE FROM summary WHERE bond_id NOT IN (${placeholders})`;
+
+    // const [results2] = await connection.execute(
+    //   `SELECT bond_id FROM summary WHERE bond_id NOT IN (${placeholders})`,
+    // );
+
+    // const [results] = await connection.execute('SELECT bond_id FROM summary');
+    // console.log(results.map((item) => item.bond_id));
+    // console.log(
+    //   'dd',
+    //   results2.map((item) => item.bond_id),
+    // );
 
     // 删除bond_cells表中不在data中的记录
     // const deleteBondCellsQuery = `DELETE FROM bond_cells WHERE bond_id NOT IN (${placeholders})`;
@@ -224,6 +233,8 @@ export const insertDataToDB = async (data) => {
         // 更新现有记录，强制更新时间
         if (updateFields.length > 0) {
           const updateSQL = `UPDATE summary SET ${updateFields.join(', ')} WHERE bond_id = ?`;
+          // console.log('updateSQL:', updateSQL);
+          // console.log('updateValues:', [...updateValues, item.bond_id]);
           await connection.execute(updateSQL, [...updateValues, item.bond_id]);
         }
       } else {

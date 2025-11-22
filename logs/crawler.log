@@ -169,3 +169,12 @@
 [2025年11月21日14时10分12秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
 [2025年11月21日14时10分41秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
 [2025年11月21日14时11分12秒] 更新 summary 数据失败: Cannot convert undefined or null to object /api/summary/batch-update
+[2025年11月21日21时25分41秒] 未捕获的异常: listen EADDRINUSE: address already in use :::3000
+[2025年11月21日21时31分08秒] 未捕获的异常: listen EADDRINUSE: address already in use :::3000
+[2025年11月22日09时39分47秒] 更新或创建 bond_cells 记录失败: bond_id=110063, error=Incorrect date value: '2021-09-13 2021-09-10' for column 'max_price_date' at row 1
+[2025年11月22日11时00分27秒] 更新summary和bond_cells数据库表失败: Malformed communication packet. /api/summary/batch-update
+[2025年11月22日11时00分27秒] 更新summary和bond_cells数据库表失败: Malformed communication packet. /api/summary/batch-update
+[2025年11月22日13时52分37秒] 获取可转债摘要数据失败22: lastItem is not defined
+[2025年11月22日13时52分37秒] 获取更新列表数据失败: /api/update_list lastItem is not defined
+[2025年11月22日13时52分43秒] 获取可转债摘要数据失败22: lastItem is not defined
+[2025年11月22日13时52分43秒] 获取更新列表数据失败: /api/update_list lastItem is not defined

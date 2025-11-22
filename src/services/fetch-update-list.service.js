@@ -8,7 +8,7 @@ import { logToFile } from '../utils/logger.js';
  * @returns {Promise<Array>} 可转债摘要数据数组
  */
 export async function fetchUpdateListData(currentRecentTradingDate, previousTradingDate) {
-  console.log('fetchUpdateListData', currentRecentTradingDate, previousTradingDate)
+  // console.log('fetchUpdateListData', currentRecentTradingDate, previousTradingDate);
   let conn;
   try {
     conn = await pool.getConnection();
@@ -30,7 +30,13 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
         bc.update_time,
         bc.lt_bps,
         bc.info,
-        bc.cash_flow_data
+        bc.cash_flow_data,
+        bc.min_history_price,
+        bc.max_history_price,
+        bc.min_price_date,
+        bc.max_price_date,
+        bc.cpn_desc,
+        bc.issuanceScale
       FROM summary s
       LEFT JOIN bond_strategies bs ON s.bond_id = bs.bond_id
       LEFT JOIN bond_cells bc ON s.bond_id = bc.bond_id
@@ -54,7 +60,6 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
             row?.maturity_dt < today ||
             row?.market_cd === 'sb' || // 三板上市的
             row?.btype === 'E' || // EB的可交债
-            parseFloat(row?.price) > 180 ||
             row?.redeem_status === '已公告强赎' ||
             parseInt(row?.is_blacklisted) === 1 ||
             row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)
@@ -65,21 +70,44 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
       } catch (e) {
         console.error('maturity_dt 格式错误', row.bond_nm, row.maturity_dt);
       }
+      let lastItem = row?.info?.rows?.[0] || {};
+      let secondItem = row?.info?.rows?.[1] || {};
+      /*
+      if (
+        !row?.info ||
+        !row?.max_history_price ||
+        !row?.min_history_price ||
+        !row?.min_price_date ||
+        !row?.max_price_date ||
+        !row?.cpn_desc ||
+        !row?.issuanceScale ||
+        !row?.lt_bps ||
+        !row?.update_time
+      ) {
+        validRows.push({ ...row, info: {} }); // 临时添加
+      } else if (
+        row?.info &&
+        row?.info?.rows &&
+        lastItem &&
+        secondItem &&
+        lastItem.id === row.bond_id &&
+        secondItem.id === row.bond_id &&
+        (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
+          secondItem?.cell?.last_chg_dt !== previousTradingDate)
+      ) {
+        validRows.push({ ...row, info: {} }); // 临时添加
+      }
+  */
       let requireUpdate = false;
       let adjust_condition = row.adjust_condition || '';
       let redeem_status = row?.redeem_status || '';
       const pattern = /^\d+\/\d+\s*\|\s*\d+$/;
-      // if (!adjust_condition?.length || !redeem_status?.length) {
-      //   console.log('row', row.bond_nm, adjust_condition, redeem_status);
-      // }
       const isValid1 = pattern.test(adjust_condition);
       const matches1 = adjust_condition?.match(/(\d+)\/(\d+)/);
       if (isValid1 && matches1) {
         const firstNum = parseInt(matches1[1]); // "5"
         const secondNum = parseInt(matches1[2]); // "15"
         if (firstNum > secondNum - 2) {
-          // 14 15 firstNum > secondNum - 2 = 13
-          // console.log('isValid', isValid1, matches1, adjust_condition, row.bond_nm);
           requireUpdate = true;
         }
       }
@@ -89,27 +117,20 @@ export async function fetchUpdateListData(currentRecentTradingDate, previousTrad
         const firstNum = parseInt(matches2[1]); // "5"
         const secondNum = parseInt(matches2[2]); // "15"
         if (firstNum > secondNum - 2) {
-          // console.log('isValid', isValid2, matches2, redeem_status, row.bond_nm);
           requireUpdate = true;
         }
       }
-      let lastItem = row?.info?.rows?.[0];
-      let secondItem = row?.info?.rows?.[1];
-      // console.log('currentRecentTradingDate', currentRecentTradingDate);
-      // console.log('previousTradingDate', previousTradingDate);
-      // console.log('secondItem', secondItem?.cell?.last_chg_dt);
-      // console.log('lastItem', lastItem?.cell?.last_chg_dt);
-      // validRows.push({ ...row, info: {} }); // 临时添加
+
       if (
-        requireUpdate 
-          // || (row?.info &&
-          //   row?.info?.rows &&
-          //   lastItem &&
-          //   secondItem &&
-          //   lastItem.id === row.bond_id &&
-          //   secondItem.id === row.bond_id &&
-          //   (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
-          //     secondItem?.cell?.last_chg_dt !== previousTradingDate))
+        requireUpdate ||
+        (row?.info &&
+          row?.info?.rows &&
+          lastItem &&
+          secondItem &&
+          lastItem.id === row.bond_id &&
+          secondItem.id === row.bond_id &&
+          (lastItem?.cell?.last_chg_dt !== currentRecentTradingDate ||
+            secondItem?.cell?.last_chg_dt !== previousTradingDate))
       ) {
         validRows.push({ ...row, info: {} }); // 临时添加
       }

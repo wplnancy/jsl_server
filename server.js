@@ -255,10 +255,8 @@ router.post(API_URLS.SUMMARY_BATCH_UPDATE, async (ctx) => {
       };
       return;
     }
-    console.log('summary批量更新字段数量', data.length);
-    // 使用 insertDataToDB 函数处理数据更新
+    console.log('summary批量更新字段数量', Object.keys(data[0]).length);
     await insertDataToDB(data);
-    // console.log(data[0]);
     ctx.body = {
       success: true,
       message: '列表数据更新成功',
@@ -296,7 +294,9 @@ router.post(API_URLS.DELETE_EXPIRED_BONDS, async (ctx) => {
     };
   } catch (error) {
     console.error('更新summary和bond_cells数据库表失败:', error);
-    logToFile(`更新summary和bond_cells数据库表失败: ${error.message} ${API_URLS.SUMMARY_BATCH_UPDATE}`);
+    logToFile(
+      `更新summary和bond_cells数据库表失败: ${error.message} ${API_URLS.SUMMARY_BATCH_UPDATE}`,
+    );
     ctx.status = 500;
     ctx.body = {
       success: false,
