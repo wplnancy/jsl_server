@@ -56,6 +56,14 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
           updateFields.push('cash_flow_data = ?');
           updateValues.push(updateData.cash_flow_data);
         }
+        if ('min_price_date' in updateData) {
+          updateFields.push('min_price_date = ?');
+          updateValues.push(updateData.min_price_date);
+        }
+        if ('max_price_date' in updateData) {
+          updateFields.push('max_price_date = ?');
+          updateValues.push(updateData.max_price_date);
+        }
         if ('industry' in updateData) {
           updateFields.push('industry = ?');
           updateValues.push(updateData.industry);
@@ -135,6 +143,17 @@ export async function updateOrCreateBondCell({ stock_nm, bond_id, updateData = {
         if ('asset_data' in updateData) {
           insertFields.push('asset_data');
           insertValues.push(updateData.asset_data);
+          placeholders.push('?');
+        }
+
+        if ('min_price_date' in updateData) {
+          insertFields.push('min_price_date');
+          insertValues.push(updateData.min_price_date);
+          placeholders.push('?');
+        }
+        if ('max_price_date' in updateData) {
+          insertFields.push('max_price_date');
+          insertValues.push(updateData.max_price_date);
           placeholders.push('?');
         }
 
