@@ -144,6 +144,7 @@ router.post(API_URLS.BOND_CELLS_UPDATE, async (ctx) => {
     ctx.body = {
       success: true,
       message: `${bond_id}详情数据更新成功`,
+      requestBody: ctx.request.body,
       bond_id: result.bond_id,
     };
   } catch (error) {
