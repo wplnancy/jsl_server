@@ -178,3 +178,7 @@
 [2025年11月22日13时52分37秒] 获取更新列表数据失败: /api/update_list lastItem is not defined
 [2025年11月22日13时52分43秒] 获取可转债摘要数据失败22: lastItem is not defined
 [2025年11月22日13时52分43秒] 获取更新列表数据失败: /api/update_list lastItem is not defined
+[2025年11月22日16时35分15秒] 获取可转债摘要数据失败: Table 'kzz_datax.summary' doesn't exist
+[2025年11月22日16时35分15秒] 获取可转债摘要数据失败: /api/summary Table 'kzz_datax.summary' doesn't exist
+[2025年11月22日16时35分35秒] 获取可转债摘要数据失败: /api/summary Table 'kzz_datax.summary' doesn't exist
+[2025年11月22日16时35分35秒] 获取可转债摘要数据失败: Table 'kzz_datax.summary' doesn't exist

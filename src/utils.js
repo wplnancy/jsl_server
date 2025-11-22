@@ -59,6 +59,12 @@ export const update_summary_bond_cells = async (data) => {
   }
 };
 export const insertDataToDB = async (data) => {
+  // 添加对空数据的早期处理
+  if (!data || data.length === 0) {
+    console.log('没有数据需要插入或更新');
+    return;
+  }
+
   const fields = [
     'bond_id',
     'bond_nm',
@@ -215,6 +221,10 @@ export const insertDataToDB = async (data) => {
   try {
     console.log('Database connection established.');
 
+    // 使用事务来提高性能
+    await connection.beginTransaction();
+
+    let processedCount = 0;
     for (const item of data) {
       const { values, updateFields, updateValues } = sanitizeItem(item);
 
@@ -233,8 +243,6 @@ export const insertDataToDB = async (data) => {
         // 更新现有记录，强制更新时间
         if (updateFields.length > 0) {
           const updateSQL = `UPDATE summary SET ${updateFields.join(', ')} WHERE bond_id = ?`;
-          // console.log('updateSQL:', updateSQL);
-          // console.log('updateValues:', [...updateValues, item.bond_id]);
           await connection.execute(updateSQL, [...updateValues, item.bond_id]);
         }
       } else {
@@ -249,11 +257,17 @@ export const insertDataToDB = async (data) => {
         `;
         await connection.execute(insertSQL, values);
       }
+      processedCount++;
     }
 
-    console.log('Data inserted or updated successfully.');
+    // 提交事务
+    await connection.commit();
+    console.log(`成功处理 ${processedCount} 条数据`);
   } catch (error) {
+    // 回滚事务
+    await connection.rollback();
     console.error('Error inserting or updating data:', error);
+    throw error;
   } finally {
     await connection.end();
   }
