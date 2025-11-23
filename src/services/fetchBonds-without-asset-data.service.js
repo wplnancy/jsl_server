@@ -24,7 +24,12 @@ export async function fetchBondsWithoutAssetData() {
     LEFT JOIN bond_strategies bs ON bc.bond_id = bs.bond_id
     WHERE (bc.asset_data IS NULL OR bc.debt_data IS NULL OR bc.cash_flow_data IS NULL)
     `;
-
+    //  row?.maturity_dt < today ||
+    //         row?.market_cd === 'sb' || // 三板上市的
+    //         row?.btype === 'E' || // EB的可交债
+    //         row?.redeem_status === '已公告强赎' ||
+    //         parseInt(row?.is_blacklisted) === 1 ||
+    //         row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)
     const [rows] = await conn.execute(query);
 
     // 获取当前日期
@@ -33,7 +38,7 @@ export async function fetchBondsWithoutAssetData() {
     // 过滤数据
     const filteredRows = rows.filter((row) => {
       // 过滤掉 btype 为 'E' 的数据
-      if (row.btype === 'E') {
+      if (row.btype === 'E' || row?.market_cd === 'sb' || row?.redeem_status === '已公告强赎' || row?.redeem_status?.match(/强赎\s(\d{4}-\d{2}-\d{2})最后交易/)) {
         return false;
       }
 
