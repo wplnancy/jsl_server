@@ -16,11 +16,14 @@ export async function fetchBondsWithoutAssetData() {
       s.maturity_dt,
       bs.is_favorite,
       bs.is_blacklisted,
+      bc.asset_data as asset_data,
+      bc.debt_data as debt_data,
       bc.cash_flow_data as cash_flow_data
     FROM bond_cells bc
     LEFT JOIN summary s ON bc.bond_id = s.bond_id 
     LEFT JOIN bond_strategies bs ON bc.bond_id = bs.bond_id
-    WHERE cash_flow_data LIKE '%预估%'`;
+    WHERE (bc.asset_data IS NULL OR bc.debt_data IS NULL OR bc.cash_flow_data IS NULL)
+    `;
 
     const [rows] = await conn.execute(query);
 
